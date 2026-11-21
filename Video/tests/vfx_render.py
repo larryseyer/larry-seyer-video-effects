@@ -15,6 +15,7 @@ import os
 import re
 import struct
 import subprocess
+import tempfile
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -214,14 +215,86 @@ def check_test_install():
         raise RuntimeError("test install missing: expected a portable REAPER in " + TEST_ROOT)
 
 
+# Wraps a test script so nothing waits for a click: before quitting, every project tab is saved to projectN.RPP in the
+# run's folder, then replaced by an empty project with "noprompt:" (a plain save of a never-saved
+# project opens Save As, and saving a copy leaves the tab marked unsaved). A Lua error, also inside a deferred function,
+# is written to a file and quits instead of opening the ReaScript error window. The QUIT file tells run_script that
+# quitting has started.
+LAUNCHER = r"""
+local SCRIPT, WORK = %s, %s
+local defer, command = reaper.defer, reaper.Main_OnCommand
+local quitting = false
+local function quit()
+  if quitting then return end
+  quitting = true
+  local i = 0
+  while reaper.EnumProjects(i) do
+    local proj = reaper.EnumProjects(i)
+    reaper.Main_SaveProjectEx(proj, WORK .. "/project" .. i .. ".RPP", 0)
+    reaper.SelectProjectInstance(proj)
+    reaper.Main_openProject("noprompt:" .. WORK .. "/empty.RPP")
+    i = i + 1
+  end
+  io.open(WORK .. "/QUIT", "w"):close()
+  defer(function() command(40004, 0) end)
+end
+local function fail(e)
+  local f = io.open(WORK .. "/error.txt", "a")
+  if f then f:write(tostring(e), "\n", debug.traceback(), "\n"); f:close() end
+  quit()
+end
+reaper.defer = function(fn) return defer(function() local ok, e = pcall(fn); if not ok then fail(e) end end) end
+reaper.Main_OnCommand = function(cmd, flag) if cmd == 40004 then quit() else command(cmd, flag) end end
+local chunk, e = loadfile(SCRIPT)
+if not chunk then fail(e) else local ok, e2 = pcall(chunk); if not ok then fail(e2) end end
+"""
+
+QUIT_GRACE = 10.0   # seconds REAPER may take to exit once the script has asked it to quit
+
+
+def lua_string(s):
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def close_test_reaper():
+    """Closes the test install's REAPER (only that binary), so no dialog is left waiting for someone to click."""
+    subprocess.run(["pkill", "-f", REAPER_BIN])
+    wait_for_reaper_exit()
+
+
 def run_script(lua_path, timeout=120):
-    """Runs a ReaScript in the test install. The script must quit REAPER when done (Main_OnCommand(40004, 0)) after
-    saving or leaving its project unmodified."""
+    """Runs a ReaScript in the test install. The script must quit REAPER when done (Main_OnCommand(40004, 0)).
+    Every open project is saved into the run's temporary folder and closed first, so no save prompt
+    appears. A Lua error, the
+    script still running at `timeout`, or REAPER still open QUIT_GRACE seconds after the quit (a dialog) closes the
+    test REAPER and raises RuntimeError."""
     check_test_install()
     wait_for_reaper_exit()
-    subprocess.run([REAPER_BIN, "-newinst", "-nosplash", lua_path], timeout=timeout,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    work = tempfile.mkdtemp(prefix="lsvfx_run_")
+    launcher = os.path.join(work, "launcher.lua")
+    quit_mark = os.path.join(work, "QUIT")
+    with open(launcher, "w", encoding="utf-8") as fh:
+        fh.write(LAUNCHER % (lua_string(os.path.abspath(lua_path)), lua_string(work)))
+    with open(os.path.join(work, "empty.RPP"), "w", encoding="utf-8") as fh:
+        fh.write("<REAPER_PROJECT 0.1 \"7.0\" 0\n>\n")
+    proc = subprocess.Popen([REAPER_BIN, "-newinst", "-nosplash", launcher],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    start, quit_at = time.time(), None
+    while proc.poll() is None:
+        if quit_at is None and os.path.exists(quit_mark):
+            quit_at = time.time()
+        if quit_at is not None and time.time() - quit_at > QUIT_GRACE:
+            close_test_reaper()
+            raise RuntimeError(f"{lua_path}: the test REAPER showed a dialog when quitting; it was closed")
+        if time.time() - start > timeout:
+            close_test_reaper()
+            raise RuntimeError(f"{lua_path} did not quit the test REAPER within {timeout} s; it was closed")
+        time.sleep(0.25)
     wait_for_reaper_exit()
+    err_file = os.path.join(work, "error.txt")
+    if os.path.exists(err_file):
+        with open(err_file, encoding="utf-8") as fh:
+            raise RuntimeError(f"{lua_path} failed:\n{fh.read()}")
 
 
 def render(scene, out_dir, times, tag="run", media_dir=None, cols=None, thumb_w=640, timeout=240):
