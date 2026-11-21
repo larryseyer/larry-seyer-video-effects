@@ -1,0 +1,70 @@
+// LS Blur or Pixelate Region
+//@ls category Tutorial
+//@ls title Blur or Pixelate Region
+//@ls where both
+//@ls about Hides part of the picture, such as an email address, serial number or face, with blur, pixelation or a solid box. Stack several to hide several things.
+//@ls help rx Hidden area, fractions of the frame (left, top, width, height).
+//@ls help mode Blur, pixelate or a solid box.
+//@ls help strength Blur or pixel size.
+//@ls help shape Rectangle, rounded or ellipse.
+//@ls help feather Edge softness, fraction of frame height.
+//@ls example Hide an email address :: rx=0.6 ry=0.05 rw=0.3 rh=0.05 mode=0 strength=0.8
+//@ls tip Stack several instances to hide several things.
+//@ls enum mode Blur|Pixelate|Solid box
+//@ls enum shape Rectangle|Rounded|Ellipse
+//@ls rect "Hidden area" rx ry rw rh
+//@ls color "Box color" bcr bcg bcb
+//@param1:rx 'Area left' 0.4 0 1 0.4 0.0005
+//@param2:ry 'Area top' 0.4 0 1 0.4 0.0005
+//@param3:rw 'Area width' 0.2 0.005 1 0.2 0.0005
+//@param4:rh 'Area height' 0.1 0.005 1 0.1 0.0005
+//@param5:mode 'Mode' 0 0 2 0 1
+//@param6:strength 'Strength' 0.6 0 1 0.6 0.001
+//@param7:shape 'Shape' 1 0 2 1 1
+//@param8:feather 'Edge softness' 0.004 0 0.1 0.004 0.0005
+//@param9:bcr 'Box red' 0.1 0 1 0.1 0.001
+//@param10:bcg 'Box green' 0.1 0 1 0.1 0.001
+//@param11:bcb 'Box blue' 0.1 0 1 0.1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/pyramid.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  ax0 = rx*W; ay0 = ry*H; aw = rw*W; ah = rh*H; acx = ax0 + aw*0.5; acy = ay0 + ah*0.5;
+  arad = shape == 1 ? min(aw, ah)*0.25 : 0; shp = shape; fth = max(feather*H, 0.6);
+  pad = fth*2 + 2;
+  bx0 = max(floor(ax0 - pad), 0); by0 = max(floor(ay0 - pad), 0);
+  bw0 = min(ceil(ax0 + aw + pad), W) - bx0; bh0 = min(ceil(ay0 + ah + pad), H) - by0;
+  bw0 > 0 && bh0 > 0 ? (
+    rb_src = gfx_img_resize(rb_src, W, H);
+    mode == 0 ? (
+      blur_copy(rb_src, 2 + floor(strength*5));
+    ) : mode == 1 ? (
+      cell = max(4, strength*H*0.06);
+      pw = max(ceil(bw0/cell), 1); ph = max(ceil(bh0/cell), 1);
+      rb_small = gfx_img_resize(rb_small, pw, ph);
+      gfx_dest = rb_small; gfx_mode = 0x100; gfx_blit(-1, 0, 0, 0, pw, ph, bx0, by0, bw0, bh0);
+      gfx_dest = rb_src; gfx_mode = 0; gfx_blit(rb_small, 0, bx0, by0, bw0, bh0, 0, 0, pw, ph);
+      gfx_dest = -1;
+    ) : (
+      gfx_set(bcr, bcg, bcb, 1, 0, rb_src); gfx_fillrect(bx0, by0, bw0, bh0); gfx_dest = -1;
+    );
+    gfx_mode = 0; gfx_a = 1;
+    gfx_evalrect(bx0, by0, bw0, bh0, "
+      _2 = bx0 + (_1 % _span) + 0.5 - acx; _3 = by0 + _slice*_slice_size + floor(_1/_span) + 0.5 - acy;
+      shp == 2 ? ( _4 = (sqrt(sqr(_2/(aw*0.5)) + sqr(_3/(ah*0.5))) - 1)*min(aw, ah)*0.5; ) : (
+        _5 = abs(_2) - (aw*0.5 - arad); _6 = abs(_3) - (ah*0.5 - arad);
+        _4 = sqrt(sqr(max(_5, 0)) + sqr(max(_6, 0))) + min(max(_5, _6), 0) - arad;
+      );
+      _7 = min(max(0.5 - _4/(2*fth), 0), 1);
+      r += (sr - r)*_7; g += (sg - g)*_7; b += (sb - b)*_7;
+      _1 += 1;
+    ", 0, rb_src);
+  );
+);

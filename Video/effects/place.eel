@@ -1,0 +1,171 @@
+// LS Picture-in-Picture & Logo
+//@ls category Transform
+//@ls title Picture-in-Picture & Logo
+//@ls where both
+//@ls about Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles.
+//@ls help corner Where the box sits on screen.
+//@ls help size Box width as a fraction of frame width.
+//@ls help margin Gap from the frame edges, fraction of frame height.
+//@ls help offx Fine nudge in frame widths.
+//@ls help offy Fine nudge in frame heights.
+//@ls help aspect Box shape. Source keeps the clip's own shape; Circle shape always uses 1:1.
+//@ls help zoom Zoom into the clip inside the box.
+//@ls help panx Which part of the clip shows when zoomed or cut to another shape: -1 left, 1 right.
+//@ls help pany -1 top, 1 bottom.
+//@ls help shape Rectangle, rounded rectangle or circle.
+//@ls help radius Rounding for the Rounded shape, fraction of the shorter side.
+//@ls help border Border width, fraction of frame height (0 = none).
+//@ls help shadow Shadow strength; the shadow follows the shape and any PNG transparency.
+//@ls help usealpha Keep PNG transparency (logos). Turn off to show the image's transparent areas as black.
+//@ls help anim Entrance animation. It plays during the item fade-in and runs backwards during the fade-out.
+//@ls help animsrc Item fades: the item's fade handles drive the animation. Manual: Manual amount does (0 hidden, 1 shown).
+//@ls help amount Used when Animate with is Manual: 0 hidden, 1 fully shown. Keyframe it for custom timing.
+//@ls example Logo bug, bottom right :: corner=8 size=0.12 shape=0 border=0 shadow=0.4 anim=1 usealpha=1 :: Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.
+//@ls example Round webcam bubble :: corner=6 size=0.22 shape=2 border=0.004 anim=3 :: Put on the webcam item; use Zoom inside and Pan to frame the face.
+//@ls example Screenshot card sliding in :: corner=4 size=0.6 shape=1 radius=0.04 anim=2
+//@ls tip Use this instead of REAPER's stock Image overlay preset.
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls enum corner Top left|Top|Top right|Left|Center|Right|Bottom left|Bottom|Bottom right
+//@ls enum aspect Source|16:9|4:3|1:1|9:16|4:5
+//@ls enum shape Rectangle|Rounded|Circle
+//@ls enum anim None|Fade|Slide in|Pop|Zoom|Rise
+//@ls enum animsrc Item fades|Manual
+//@ls toggle usealpha
+//@ls color "Border color" bdr bdg bdb
+//@ls section "Placement" corner size margin offx offy
+//@ls section "Framing" aspect zoom panx pany shape radius
+//@ls section "Style" border shadow shdist shang shsoft opacity usealpha
+//@ls section "Animation" anim animsrc amount
+//@param1:corner 'Corner' 8 0 8 4 1
+//@param2:size 'Size' 0.3 0.02 1 0.3 0.001
+//@param3:margin 'Margin' 0.04 0 0.3 0.04 0.001
+//@param4:offx 'Nudge X' 0 -1 1 0 0.001
+//@param5:offy 'Nudge Y' 0 -1 1 0 0.001
+//@param6:aspect 'Aspect' 0 0 5 0 1
+//@param7:zoom 'Zoom inside' 1 1 4 1 0.001
+//@param8:panx 'Pan inside X' 0 -1 1 0 0.001
+//@param9:pany 'Pan inside Y' 0 -1 1 0 0.001
+//@param10:shape 'Shape' 1 0 2 1 1
+//@param11:radius 'Corner radius' 0.12 0 0.5 0.12 0.001
+//@param12:border 'Border width' 0.003 0 0.03 0.003 0.0005
+//@param13:bdr 'Border red' 1 0 1 1 0.001
+//@param14:bdg 'Border green' 1 0 1 1 0.001
+//@param15:bdb 'Border blue' 1 0 1 1 0.001
+//@param16:shadow 'Shadow opacity' 0.5 0 1 0.5 0.001
+//@param17:shdist 'Shadow distance' 0.008 0 0.1 0.008 0.0005
+//@param18:shang 'Shadow angle' 120 -180 180 120 1
+//@param19:shsoft 'Shadow softness' 0.02 0 0.1 0.02 0.0005
+//@param20:opacity 'Opacity' 1 0 1 1 0.001
+//@param21:usealpha 'Use image transparency' 1 0 1 1 1
+//@param22:anim 'Entrance' 1 0 5 1 1
+//@param23:animsrc 'Animate with' 0 0 1 0 1
+//@param24:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+// #include "lib/layer.eel"
+// #include "lib/ease.eel"
+
+// Shadow that follows the layer's alpha: downscale, blacken, upscale through the affine map.
+function alpha_shadow(lay, lw, lh, padpx, alpha) local(f, s1w, s1h, k) (
+  f = 1; while (f*2 <= padpx*0.5 && f < 32) ( f *= 2; );
+  s1w = ceil((lw + 2*padpx)/f); s1h = ceil((lh + 2*padpx)/f);
+  shimg = gfx_img_resize(shimg, s1w, s1h, 1);
+  gfx_dest = shimg; gfx_mode = 0x100; gfx_a = 1;
+  gfx_set(0, 0, 0, 1, 0x100, shimg, 0); gfx_fillrect(0, 0, s1w, s1h);
+  gfx_mode = 0x100;
+  gfx_blit(lay, 0, padpx/f, padpx/f, lw/f, lh/f, 0, 0, lw, lh);
+  gfx_evalrect(0, 0, s1w, s1h, "r = g = b = 0;");
+  k = 0;
+  loop(2,
+    shimg2 = gfx_img_resize(shimg2, max((s1w/2)|0, 2), max((s1h/2)|0, 2));
+    gfx_dest = shimg2; gfx_mode = 0x100;
+    gfx_blit(shimg, 0, 0, 0, max((s1w/2)|0, 2), max((s1h/2)|0, 2), 0, 0, s1w, s1h);
+    gfx_dest = shimg; gfx_blit(shimg2, 0, 0, 0, s1w, s1h, 0, 0, max((s1w/2)|0, 2), max((s1h/2)|0, 2));
+    k += 1;
+  );
+  gfx_dest = -1;
+  kx *= f; ky *= f; cx0 /= f; cy0 /= f; ax /= f; ay /= f;
+  gfx_mode = 0x10100;
+  xblit(shimg, s1w, s1h, -padpx/f, -padpx/f, alpha);
+  kx /= f; ky /= f; cx0 *= f; cy0 *= f; ax *= f; ay *= f;
+);
+
+own && bg != 0 ? (
+  gfx_mode = 0; gfx_a = 1;
+  input_info(bg, bgw, bgh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+
+  // framing window inside the source
+  ar = shape == 2 ? 1 : aspect == 1 ? 16/9 : aspect == 2 ? 4/3 : aspect == 3 ? 1 : aspect == 4 ? 9/16 : aspect == 5 ? 0.8 : sw/sh;
+  sw/sh > ar ? ( winh = sh; winw = sh*ar; ) : ( winw = sw; winh = sw/ar; );
+  winw /= max(zoom, 1); winh /= max(zoom, 1);
+  cx0 = floor(sw*0.5 + panx*(sw - winw)*0.5 - winw*0.5);
+  cy0 = floor(sh*0.5 + pany*(sh - winh)*0.5 - winh*0.5);
+  cw = max(ceil(winw), 2); ch = max(ceil(winh), 2);
+
+  // on-screen box
+  boxw = size*W; boxh = boxw/ar;
+  boxh > H*0.98 ? ( boxh = H*0.98; boxw = boxh*ar; );
+  col = corner % 3; row = floor(corner/3);
+  mpx = margin*H;
+  bx = col == 0 ? mpx : col == 1 ? (W - boxw)*0.5 : W - boxw - mpx;
+  by = row == 0 ? mpx : row == 1 ? (H - boxh)*0.5 : H - boxh - mpx;
+  bx += offx*W; by += offy*H;
+
+  // entrance animation
+  prog = animsrc == 1 ? amount : fadev;
+  esm = ls_ease(prog, 1); eout = ls_ease(prog, 3);
+  alpha = opacity; scl = 1; mvx = mvy = 0;
+  anim == 1 ? ( alpha *= esm; )
+  : anim == 2 ? (
+      col == 0 ? mvx = -(bx + boxw + 0.02*W)*(1 - eout)
+      : col == 2 ? mvx = (W - bx + 0.02*W)*(1 - eout)
+      : row == 0 ? mvy = -(by + boxh + 0.02*H)*(1 - eout)
+      : mvy = (H - by + 0.02*H)*(1 - eout);
+    )
+  : anim == 3 ? ( scl = max(ls_ease(prog, 4), 0.0001); alpha *= min(prog*3, 1); )
+  : anim == 4 ? ( scl = 0.6 + 0.4*eout; alpha *= esm; )
+  : anim == 5 ? ( mvy = 0.08*H*(1 - eout); alpha *= esm; );
+
+  alpha > 0.002 ? (
+    kx = ky = scl*boxw/winw; ca = 1; sa = 0;
+    ax = cx0 + winw*0.5; ay = cy0 + winh*0.5;
+    dax = bx + boxw*0.5 + mvx; day = by + boxh*0.5 + mvy;
+    rL = shape == 2 ? min(cw, ch)*0.5 : shape == 1 ? radius*min(cw, ch) : 0;
+
+    // content layer with framing and corner mask
+    layer = gfx_img_resize(layer, cw, ch);
+    gfx_dest = layer; gfx_mode = 0; gfx_a = 1;
+    gfx_blit(0, 0, 0, 0, cw, ch, cx0, cy0, cw, ch);
+    usealpha < 0.5 ? gfx_evalrect(0, 0, cw, ch, "a = 255;");
+    rL >= 1 ? round_corners(cw, ch, min(rL, min(cw, ch)*0.5));
+    gfx_dest = -1;
+
+    shadow > 0.001 ? (
+      sdx = cos(shang*$pi/180)*shdist*H; sdy = sin(shang*$pi/180)*shdist*H;
+      dax += sdx; day += sdy;
+      alpha_shadow(layer, cw, ch, max(shsoft*H/kx, 1), shadow*alpha);
+      dax -= sdx; day -= sdy;
+    );
+
+    bL = border*H/kx;
+    bL > 0.25 ? (
+      sprintf(#bkey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g", cw, ch, rL, bL, bdr, bdg, bdb);
+      strcmp(#bkey, #last_bkey) != 0 ? (
+        bimg = gfx_img_resize(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL));
+        soft_rrect(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL), rL > 0 ? rL + bL : 0, 0.75, bdr, bdg, bdb);
+        strcpy(#last_bkey, #bkey);
+      );
+      gfx_mode = 0x10100;
+      xblit(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL), -bL, -bL, alpha);
+    );
+
+    gfx_mode = 0x10100;
+    xblit(layer, cw, ch, 0, 0, alpha);
+    gfx_mode = 0; gfx_a = 1;
+  );
+) : own ? gfx_blit(0, 1);

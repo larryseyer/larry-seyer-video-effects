@@ -1,0 +1,110 @@
+// LS Lower Third
+//@ls category Title
+//@ls title Lower Third
+//@ls where item
+//@ls about Name and subtitle bar for the lower part of the screen. Name the item "Name | Subtitle". Drag the item fade-in and fade-out to set how long it animates on and off.
+//@ls help style Look of the bar.
+//@ls help align Left, center or right.
+//@ls help margin Distance from the side, fraction of frame width.
+//@ls help ypos Vertical center of the bar, fraction of frame height (0.8 is low on screen).
+//@ls help size Name text height, fraction of frame height.
+//@ls help subsize Subtitle size relative to the name.
+//@ls help baropacity Bar opacity.
+//@ls help font Font.
+//@ls help bold Bold name.
+//@ls help anim Animation; plays over the item fade-in and reverses over the fade-out.
+//@ls help animsrc Item fades or Manual amount.
+//@ls help amount Manual mode: 0 hidden, 1 shown.
+//@ls example Guest name :: style=0 align=0 :: Item name: "Jane Doe | Drums". Item fades 0.5 s.
+//@ls example Centered pill :: style=1 align=1 font=1
+//@ls tip Use the panel's + Lower third button, or put it on a transparent title item. The text is the item name; | starts the subtitle.
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls text "Name | Subtitle (item name)"
+//@ls enum style Bar with accent|Pill|Minimal line|Accent block
+//@ls enum align Left|Center|Right
+//@ls enum anim Slide|Wipe|Fade|Pop
+//@ls enum animsrc Item fades|Manual
+//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls toggle bold
+//@ls color "Bar" brr brg brb
+//@ls color "Accent" acr acg acb
+//@ls color "Text" tcr tcg tcb
+//@ls section "Layout" style align margin ypos size subsize
+//@ls section "Style" font bold baropacity
+//@ls section "Animation" anim animsrc amount
+//@param1:style 'Style' 0 0 3 0 1
+//@param2:align 'Align' 0 0 2 0 1
+//@param3:margin 'Side margin' 0.06 0 0.4 0.06 0.001
+//@param4:ypos 'Height on screen' 0.8 0 1 0.8 0.001
+//@param5:size 'Text size' 0.05 0.015 0.15 0.05 0.0005
+//@param6:subsize 'Subtitle size' 0.6 0.3 1 0.6 0.001
+//@param7:brr 'Bar red' 0.07 0 1 0.07 0.001
+//@param8:brg 'Bar green' 0.08 0 1 0.08 0.001
+//@param9:brb 'Bar blue' 0.1 0 1 0.1 0.001
+//@param10:baropacity 'Bar opacity' 0.85 0 1 0.85 0.001
+//@param11:acr 'Accent red' 0.24 0 1 0.24 0.001
+//@param12:acg 'Accent green' 0.87 0 1 0.87 0.001
+//@param13:acb 'Accent blue' 0.66 0 1 0.66 0.001
+//@param14:tcr 'Text red' 1 0 1 1 0.001
+//@param15:tcg 'Text green' 1 0 1 1 0.001
+//@param16:tcb 'Text blue' 1 0 1 1 0.001
+//@param17:font 'Font' 0 0 6 0 1
+//@param18:bold 'Bold name' 1 0 1 1 1
+//@param19:anim 'Animation' 0 0 3 0 1
+//@param20:animsrc 'Animate with' 0 0 1 0 1
+//@param21:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/shapes.eel"
+// #include "lib/overlay.eel"
+
+ls_draw_base();
+prog = animsrc == 1 ? amount : (own ? fadev : 1);
+prog > 0.001 ? (
+  #ls_src = ""; input_get_name(-1, #ls_src);
+  strlen(#ls_src) == 0 ? #ls_src = "Your Name | Subtitle";
+  nl = ls_split_lines();
+  e = ls_ease(prog, 3); es = ls_ease(prog, 1);
+  popk = anim == 3 ? max(ls_ease(prog, 4), 0.02) : 1;
+  s1 = size*H*popk; s2 = s1*subsize;
+  ls_font(font, s1, bold > 0.5 ? 'B' : 0); gfx_str_measure(#ls_l1, w1, h1);
+  ls_font(font, s2, 0); nl > 1 ? gfx_str_measure(#ls_l2, w2, h2) : ( w2 = 0; h2 = 0; );
+  padx = s1*0.6; pady = s1*0.3; gap = nl > 1 ? s1*(style == 2 ? 0.55 : 0.15) : 0;
+  accw = style == 0 ? max(s1*0.12, 2) : 0;
+  boxw = max(w1, w2) + padx*2 + accw; boxh = h1 + h2 + gap + pady*2;
+  bx = align == 0 ? margin*W : align == 1 ? (W - boxw)*0.5 : W - margin*W - boxw;
+  by = ypos*H - boxh*0.5;
+  op = anim == 2 || anim == 3 ? es : min(prog*2, 1);
+  slide = anim == 0 ? (align == 2 ? 1 : -1)*(1 - e)*(boxw*0.5 + margin*W*0.5) : 0;
+  wipe = anim == 1 ? e : 1;
+  bx += slide;
+  lw = max(H*0.003, 1);
+  style == 0 ? (
+    sdf_rrect(bx, by, boxw*wipe, boxh, 0, 0, 0, brr, brg, brb, baropacity*op);
+    sdf_rrect(bx, by, accw, boxh, 0, 0, 0, acr, acg, acb, op);
+  ) : style == 1 ? (
+    sdf_rrect(bx, by, boxw*wipe, boxh, boxh*0.5, 0, 0, brr, brg, brb, baropacity*op);
+    sdf_rrect(bx, by, boxw*wipe, boxh, boxh*0.5, lw, 1, acr, acg, acb, op);
+  ) : style == 2 ? (
+    sdf_rrect(bx + padx, by + pady + h1 + gap*0.5 - lw, (boxw - padx*2)*wipe, lw*2, lw, 0, 0, acr, acg, acb, op);
+  ) : (
+    sdf_rrect(bx, by, boxw*wipe, h1 + pady*2, 0, 0, 0, acr, acg, acb, op);
+    nl > 1 ? sdf_rrect(bx, by + h1 + pady*2, (w2 + padx*2)*wipe, h2 + pady*1.2, 0, 0, 0, brr, brg, brb, baropacity*op);
+  );
+  textop = anim == 1 ? min(max(prog*2 - 0.6, 0), 1) : op;
+  tx = bx + accw + padx;
+  ls_font(font, s1, bold > 0.5 ? 'B' : 0);
+  style == 3 ? gfx_set(brr, brg, brb, textop) : gfx_set(tcr, tcg, tcb, textop);
+  gfx_str_draw(#ls_l1, tx, by + pady);
+  nl > 1 ? (
+    ls_font(font, s2, 0);
+    gfx_set(tcr, tcg, tcb, textop*0.85);
+    gfx_str_draw(#ls_l2, tx, by + pady + h1 + gap + (style == 3 ? pady*0.6 : 0));
+  );
+);
+gfx_mode = 0; gfx_a = 1;

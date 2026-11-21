@@ -1,0 +1,71 @@
+// LS Dissolve & Dip
+//@ls category Transition
+//@ls title Dissolve & Dip
+//@ls where track
+//@ls about Put on a track: every crossfade between items on that track becomes this transition, lasting as long as the crossfade. Cross dissolve, dip to black, white or a color, additive, blur and luma dissolves.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
+//@ls help ease How the transition speeds up and slows down.
+//@ls help style Kind of dissolve.
+//@ls help dcr Dip color (used by Dip to color).
+//@ls example Cross dissolve :: style=0
+//@ls example Dip to black :: style=1
+//@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
+//@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
+//@ls enum style Cross dissolve|Dip to black|Dip to white|Dip to color|Additive dissolve|Blur dissolve|Luma dissolve
+//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls toggle reverse
+//@ls enum ease Linear|Smooth|Ease in|Ease out
+//@ls color "Dip color" dcr dcg dcb
+//@param1:style 'Style' 0 0 6 0 1
+//@param2:ease 'Smoothness' 1 0 3 1 1
+//@param3:dcr 'Dip red' 0.2 0 1 0.2 0.001
+//@param4:dcg 'Dip green' 0.6 0 1 0.6 0.001
+//@param5:dcb 'Dip blue' 0.9 0 1 0.9 0.001
+//@param6:srcmode 'Source' 0 0 1 0 1
+//@param7:progress 'Manual progress' 0 0 1 0 0.001
+//@param8:reverse 'Reverse' 0 0 1 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/pyramid.eel"
+// #include "lib/transition.eel"
+
+tr_setup() ? (
+  p = ls_ease(tr_p, ease == 0 ? 0 : ease);
+  gfx_mode = 0; gfx_a = 1;
+  style == 0 ? ( gfx_blit(tr_a); gfx_a = p; gfx_blit(tr_b); )
+  : style >= 1 && style <= 3 ? (
+    p < 0.5 ? gfx_blit(tr_a) : gfx_blit(tr_b);
+    style == 1 ? gfx_set(0, 0, 0, 1 - abs(p - 0.5)*2) : style == 2 ? gfx_set(1, 1, 1, 1 - abs(p - 0.5)*2)
+               : gfx_set(dcr, dcg, dcb, 1 - abs(p - 0.5)*2);
+    gfx_fillrect(0, 0, W, H);
+  )
+  : style == 4 ? (
+    gfx_set(0); gfx_fillrect(0, 0, W, H);
+    gfx_mode = 1; gfx_a = min(2*(1 - p), 1); gfx_blit(tr_a); gfx_a = min(2*p, 1); gfx_blit(tr_b);
+  )
+  : style == 5 ? (
+    gfx_blit(tr_a); gfx_a = p; gfx_blit(tr_b);
+    bamt = sin(p*$pi);
+    bamt > 0.02 ? (
+      trbl = gfx_img_resize(trbl, W, H);
+      blur_copy(trbl, 1 + floor(bamt*5));
+      gfx_mode = 0; gfx_a = min(bamt*1.5, 1); gfx_blit(trbl);
+    );
+  )
+  : (
+    gfx_blit(tr_a);
+    lp = p*1.3 - 0.15;
+    gfx_evalrect(0, 0, W, H, "
+      _1 = min(max((lp - (0.299*r + 0.587*g + 0.114*b)*(1/255))/0.15 + 0.5, 0), 1);
+      r += (sr - r)*_1; g += (sg - g)*_1; b += (sb - b)*_1;
+    ", 0, tr_b);
+  );
+  gfx_mode = 0; gfx_a = 1;
+) : own ? gfx_blit(0, 1);

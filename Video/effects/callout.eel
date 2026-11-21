@@ -1,0 +1,130 @@
+// LS Callout
+//@ls category Tutorial
+//@ls title Callout
+//@ls where item
+//@ls about Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out.
+//@ls help bx Highlight box rectangle, fractions of the frame (left, top, width, height).
+//@ls help lx Label pill center X, fraction of frame width.
+//@ls help ly Label pill center Y, fraction of frame height.
+//@ls help style Which parts to draw. Numbered badge is a pill sized for a short number.
+//@ls help size Label text height, fraction of frame height.
+//@ls help thick Line width of the box, arrow and pill outline, fraction of frame height.
+//@ls help radius Box corner rounding (0 square to 1 fully round).
+//@ls help dim Darkens everything outside the box.
+//@ls help font Font.
+//@ls help anim Fade, Draw on (the arrow grows toward the target) or Pop.
+//@ls help animsrc Item fades or Manual amount.
+//@ls help amount Manual mode: 0 hidden, 1 shown.
+//@ls example Point at a control :: bx=0.08 by=0.1 bw=0.18 bh=0.05 lx=0.45 ly=0.125 :: Item name: "Energy Levels". Place the box over the control and the label beside it.
+//@ls tip Use the panel's + Callout button. The label text is the item name.
+//@ls tip The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls tip The arrow runs from the label toward the box from any direction, so the label can sit on any side.
+//@ls text "Label text (item name)"
+//@ls enum style Box + arrow + label|Arrow + label|Label only|Box only|Numbered badge
+//@ls enum anim None|Fade|Draw on|Pop
+//@ls enum animsrc Item fades|Manual
+//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls rect "Highlight box" bx by bw bh
+//@ls point "Label" lx ly
+//@ls color "Accent" acr acg acb
+//@ls color "Label fill" fcr fcg fcb
+//@ls color "Text" tcr tcg tcb
+//@ls section "Layout" style bx by bw bh lx ly
+//@ls section "Style" size thick radius dim font
+//@ls section "Animation" anim animsrc amount
+//@param1:bx 'Box left' 0.08 0 1 0.08 0.0005
+//@param2:by 'Box top' 0.1 0 1 0.1 0.0005
+//@param3:bw 'Box width' 0.18 0.005 1 0.18 0.0005
+//@param4:bh 'Box height' 0.05 0.005 1 0.05 0.0005
+//@param5:lx 'Label X' 0.45 0 1 0.45 0.0005
+//@param6:ly 'Label Y' 0.125 0 1 0.125 0.0005
+//@param7:style 'Style' 0 0 4 0 1
+//@param8:size 'Text size' 0.032 0.01 0.12 0.032 0.0005
+//@param9:thick 'Line width' 0.0028 0.0005 0.01 0.0028 0.0001
+//@param10:radius 'Box rounding' 0.25 0 1 0.25 0.001
+//@param11:acr 'Accent red' 0.24 0 1 0.24 0.001
+//@param12:acg 'Accent green' 0.87 0 1 0.87 0.001
+//@param13:acb 'Accent blue' 0.66 0 1 0.66 0.001
+//@param14:fcr 'Label fill red' 0.06 0 1 0.06 0.001
+//@param15:fcg 'Label fill green' 0.09 0 1 0.09 0.001
+//@param16:fcb 'Label fill blue' 0.09 0 1 0.09 0.001
+//@param17:tcr 'Text red' 1 0 1 1 0.001
+//@param18:tcg 'Text green' 1 0 1 1 0.001
+//@param19:tcb 'Text blue' 1 0 1 1 0.001
+//@param20:dim 'Dim outside box' 0 0 1 0 0.001
+//@param21:font 'Font' 0 0 6 0 1
+//@param22:anim 'Animation' 2 0 3 2 1
+//@param23:animsrc 'Animate with' 0 0 1 0 1
+//@param24:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/shapes.eel"
+// #include "lib/overlay.eel"
+
+// Distance from the center of a w x h box to its edge along direction (ux, uy).
+function box_reach(hw, hh, ux, uy) ( min(abs(ux) > 0.0001 ? hw/abs(ux) : 1000000, abs(uy) > 0.0001 ? hh/abs(uy) : 1000000) );
+
+ls_draw_base();
+
+prog = animsrc == 1 ? amount : (own ? fadev : 1);
+prog > 0.001 ? (
+  op = anim == 1 || anim == 3 ? ls_ease(prog, 1) : anim == 2 ? min(prog*3, 1) : 1;
+  drawp = anim == 2 ? ls_ease(prog, 3) : 1;
+  popk = anim == 3 ? max(ls_ease(prog, 4), 0.01) : 1;
+  lw = max(thick*H, 1);
+  x0 = bx*W; y0 = by*H; ww = bw*W; hh = bh*H; tcx = x0 + ww*0.5; tcy = y0 + hh*0.5;
+  showbox = style == 0 || style == 3;
+  showarrow = style == 0 || style == 1;
+  showlabel = style != 3;
+
+  dim > 0.001 ? (
+    gfx_set(0, 0, 0, dim*op);
+    gfx_fillrect(0, 0, W, y0); gfx_fillrect(0, y0 + hh, W, H - y0 - hh);
+    gfx_fillrect(0, y0, x0, hh); gfx_fillrect(x0 + ww, y0, W - x0 - ww, hh);
+  );
+
+  // label geometry
+  #ls_src = ""; input_get_name(-1, #ls_src);
+  strlen(#ls_src) == 0 ? #ls_src = "Label";
+  tpx = size*H*popk;
+  ls_font(font, tpx, 'B');
+  gfx_str_measure(#ls_src, tw, th);
+  padx = tpx*0.75; pady = tpx*0.35;
+  pw = style == 4 ? max(tw, th) + pady*2 : tw + padx*2; ph = th + pady*2;
+  pcx = lx*W; pcy = ly*H;
+
+  showarrow ? (
+    dx = tcx - pcx; dy = tcy - pcy; dl = max(sqrt(dx*dx + dy*dy), 0.001); ux = dx/dl; uy = dy/dl;
+    sx = pcx + ux*box_reach(pw*0.5, ph*0.5, ux, uy);
+    ex = tcx - ux*(box_reach(ww*0.5, hh*0.5, ux, uy)*(showbox ? 1 : 0) + lw*2);
+    sy = pcy + uy*box_reach(pw*0.5, ph*0.5, ux, uy);
+    ey = tcy - uy*(box_reach(ww*0.5, hh*0.5, ux, uy)*(showbox ? 1 : 0) + lw*2);
+    ax2 = sx + (ex - sx)*drawp; ay2 = sy + (ey - sy)*drawp;
+    hd = lw*4.5;
+    sdf_line(sx, sy, ax2 - ux*hd*0.8, ay2 - uy*hd*0.8, lw, acr, acg, acb, op);
+    drawp > 0.05 ? sdf_tri(ax2, ay2, ax2 - ux*hd*1.6 - uy*hd, ay2 - uy*hd*1.6 + ux*hd,
+                           ax2 - ux*hd*1.6 + uy*hd, ay2 - uy*hd*1.6 - ux*hd, acr, acg, acb, op);
+  );
+
+  showbox ? (
+    grow = anim == 3 ? popk : 1;
+    rr = radius*min(ww, hh)*0.5;
+    sdf_rrect(tcx - ww*0.5*grow, tcy - hh*0.5*grow, ww*grow, hh*grow, rr, lw, 1, acr, acg, acb, op);
+  );
+
+  showlabel ? (
+    rp = style == 4 ? ph*0.5 : ph*0.5;
+    sdf_rrect(pcx - pw*0.5 + lw, pcy - ph*0.5 + lw*1.5, pw, ph, rp, lw*3, 2, 0, 0, 0, 0.35*op);
+    sdf_rrect(pcx - pw*0.5, pcy - ph*0.5, pw, ph, rp, 0, 0, fcr, fcg, fcb, 0.92*op);
+    sdf_rrect(pcx - pw*0.5, pcy - ph*0.5, pw, ph, rp, lw, 1, acr, acg, acb, op);
+    gfx_set(tcr, tcg, tcb, op);
+    gfx_str_draw(#ls_src, pcx - tw*0.5, pcy - th*0.5);
+  );
+);
+gfx_mode = 0; gfx_a = 1;

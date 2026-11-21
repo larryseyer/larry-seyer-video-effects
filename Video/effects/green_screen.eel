@@ -1,0 +1,63 @@
+// LS Green Screen Key
+//@ls category Compose
+//@ls title Green Screen Key
+//@ls where both
+//@ls about Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop.
+//@ls help keycolor Backdrop color to remove.
+//@ls help keyhue Custom hue in degrees (used with Custom hue).
+//@ls help tolerance Raise if backdrop color remains; lower if the subject gets holes.
+//@ls help softness Edge softness of the key.
+//@ls help choke Above 1 tightens edges.
+//@ls help spill Removes backdrop color reflected on the subject.
+//@ls help cropl Garbage matte: crop away parts outside the backdrop.
+//@ls help showmatte Shows the key as black and white. Turn off before rendering.
+//@ls example Standard green screen :: keycolor=0 :: Put on the green-screen clip on a track above the new background.
+//@ls enum keycolor Green|Blue|Custom hue
+//@ls toggle showmatte
+//@ls section "Key" keycolor keyhue tolerance softness choke
+//@ls section "Clean up" spill cropl cropr cropt cropb showmatte
+//@param1:keycolor 'Key color' 0 0 2 0 1
+//@param2:keyhue 'Custom hue' 120 0 360 120 0.1
+//@param3:tolerance 'Tolerance' 0.12 0 1 0.12 0.001
+//@param4:softness 'Softness' 0.12 0.005 1 0.12 0.001
+//@param5:choke 'Edge choke' 1 0.25 4 1 0.01
+//@param6:spill 'Spill removal' 0.7 0 1 0.7 0.001
+//@param7:cropl 'Crop left' 0 0 0.5 0 0.001
+//@param8:cropr 'Crop right' 0 0 0.5 0 0.001
+//@param9:cropt 'Crop top' 0 0 0.5 0 0.001
+//@param10:cropb 'Crop bottom' 0 0 0.5 0 0.001
+//@param11:showmatte 'Show matte' 0 0 1 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  showmatte > 0.5 ? ( gfx_set(0); gfx_fillrect(0, 0, W, H); )
+  : bg != 0 && input_info(bg, bw, bh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+  fgimg = gfx_img_resize(fgimg, W, H);
+  gfx_dest = fgimg; gfx_set(0, 0, 0, 1, 0, fgimg); gfx_fillrect(0, 0, W, H); gfx_mode = 0x100; gfx_blit(0, 1);
+  gfx_dest = -1; gfx_mode = 0;
+  kc = keycolor; kcs = cos(keyhue*$pi/180); ksn = sin(keyhue*$pi/180);
+  tol = tolerance; sft = softness; chk = choke; spl = spill; sm = showmatte > 0.5;
+  xl = cropl*W; xr = W*(1 - cropr); yt = cropt*H; yb = H*(1 - cropb);
+  gfx_evalrect(0, 0, W, H, "
+    _10 = (_1 % _span) + 0.5; _11 = _slice*_slice_size + floor(_1/_span) + 0.5;
+    kc == 0 ? ( _2 = (sg - max(sr, sb))*(1/255); )
+    : kc == 1 ? ( _2 = (sb - max(sr, sg))*(1/255); )
+    : ( _3 = (2*sr - sg - sb)*0.5; _4 = 0.8660254*(sg - sb); _2 = (_3*kcs + _4*ksn - abs(-_3*ksn + _4*kcs)*0.6)*(1/255); );
+    _5 = min(max((tol + sft - _2)/sft, 0), 1)^chk;
+    _5 *= (_10 >= xl && _10 <= xr && _11 >= yt && _11 <= yb);
+    _6 = sr; _7 = sg; _8 = sb;
+    kc == 0 ? ( _9 = max(sr, sb); _7 = _7 > _9 ? _9 + (_7 - _9)*(1 - spl) : _7; )
+    : kc == 1 ? ( _9 = max(sr, sg); _8 = _8 > _9 ? _9 + (_8 - _9)*(1 - spl) : _8; );
+    sm ? ( r = g = b = _5*255; ) : (
+      r += (_6 - r)*_5; g += (_7 - g)*_5; b += (_8 - b)*_5;
+    );
+    _1 += 1;
+  ", 0, fgimg);
+  gfx_mode = 0; gfx_a = 1;
+);

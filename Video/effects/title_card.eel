@@ -1,0 +1,98 @@
+// LS Title Card
+//@ls category Title
+//@ls title Title & Subtitle
+//@ls where item
+//@ls about Large centered title with an optional subtitle and backdrop. Name the item "Title | Subtitle". Item fades animate it in and out.
+//@ls help ypos Vertical position, fraction of frame height.
+//@ls help size Title text height, fraction of frame height.
+//@ls help subsize Subtitle size relative to the title.
+//@ls help backdrop Darkening, color or gradient behind the text.
+//@ls help bkop Backdrop opacity.
+//@ls help font Font.
+//@ls help bold Bold title.
+//@ls help shadow Soft text shadow.
+//@ls help anim Fade, rise, zoom or typewriter (types the text over the fade-in).
+//@ls help animsrc Item fades or Manual amount.
+//@ls help amount Manual mode: 0 hidden, 1 shown.
+//@ls example Episode title :: anim=1 font=1 backdrop=1 :: Item name: "The Spice of Life | The Larry Seyer Show".
+//@ls example Typewriter :: anim=3 font=5 backdrop=0
+//@ls tip Use the panel's + Title button. The text is the item name; | starts the subtitle.
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls text "Title | Subtitle (item name)"
+//@ls enum backdrop None|Dim picture|Solid color|Bottom gradient
+//@ls enum anim Fade|Rise|Zoom|Typewriter
+//@ls enum animsrc Item fades|Manual
+//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls toggle bold
+//@ls toggle shadow
+//@ls color "Title color" tcr tcg tcb
+//@ls color "Subtitle color" scr scg scb
+//@ls color "Backdrop color" bkr bkg bkb
+//@ls section "Text" ypos size subsize font bold shadow
+//@ls section "Backdrop" backdrop bkop
+//@ls section "Animation" anim animsrc amount
+//@param1:ypos 'Height on screen' 0.5 0 1 0.5 0.001
+//@param2:size 'Title size' 0.1 0.02 0.3 0.1 0.0005
+//@param3:subsize 'Subtitle size' 0.4 0.15 1 0.4 0.001
+//@param4:tcr 'Title red' 1 0 1 1 0.001
+//@param5:tcg 'Title green' 1 0 1 1 0.001
+//@param6:tcb 'Title blue' 1 0 1 1 0.001
+//@param7:scr 'Subtitle red' 0.85 0 1 0.85 0.001
+//@param8:scg 'Subtitle green' 0.85 0 1 0.85 0.001
+//@param9:scb 'Subtitle blue' 0.85 0 1 0.85 0.001
+//@param10:backdrop 'Backdrop' 1 0 3 1 1
+//@param11:bkr 'Backdrop red' 0 0 1 0 0.001
+//@param12:bkg 'Backdrop green' 0 0 1 0 0.001
+//@param13:bkb 'Backdrop blue' 0 0 1 0 0.001
+//@param14:bkop 'Backdrop opacity' 0.45 0 1 0.45 0.001
+//@param15:font 'Font' 1 0 6 1 1
+//@param16:bold 'Bold' 1 0 1 1 1
+//@param17:shadow 'Text shadow' 1 0 1 1 1
+//@param18:anim 'Animation' 1 0 3 1 1
+//@param19:animsrc 'Animate with' 0 0 1 0 1
+//@param20:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/shapes.eel"
+// #include "lib/overlay.eel"
+
+ls_draw_base();
+prog = animsrc == 1 ? amount : (own ? fadev : 1);
+prog > 0.001 ? (
+  #ls_src = ""; input_get_name(-1, #ls_src);
+  strlen(#ls_src) == 0 ? #ls_src = "Title | Subtitle";
+  nl = ls_split_lines();
+  es = ls_ease(prog, 1); eo = ls_ease(prog, 3);
+  backdrop == 1 ? ( gfx_set(0, 0, 0, bkop*es); gfx_fillrect(0, 0, W, H); )
+  : backdrop == 2 ? ( gfx_set(bkr, bkg, bkb, bkop*es); gfx_fillrect(0, 0, W, H); )
+  : backdrop == 3 ? ( gfx_mode = 0x40000; gfx_gradrect(0, H*0.45, W, H*0.55, bkr, bkg, bkb, 0, 0, 0, 0, 0, 0, 0, 0, bkop*es/(H*0.55)); gfx_mode = 0; );
+  zk = anim == 2 ? 0.85 + 0.15*eo : 1;
+  s1 = size*H*zk; s2 = s1*subsize;
+  op = anim == 3 ? 1 : es;
+  rise = anim == 1 ? (1 - eo)*H*0.04 : 0;
+  anim == 3 ? (
+    n1 = strlen(#ls_l1); n2 = strlen(#ls_l2); tot = n1 + n2;
+    shown = floor(prog*tot*1.05);
+    strcpy_substr(#t1, #ls_l1, 0, min(shown, n1)); strcpy_substr(#t2, #ls_l2, 0, max(shown - n1, 0));
+  ) : ( strcpy(#t1, #ls_l1); strcpy(#t2, #ls_l2); );
+  fl = bold > 0.5 ? (shadow > 0.5 ? 'BS' : 'B') : (shadow > 0.5 ? 'S' : 0);
+  ls_font(font, s1, fl);
+  gfx_str_measure(#ls_l1, w1, h1);
+  ls_font(font, s2, 0); nl > 1 ? gfx_str_measure(#ls_l2, w2, h2) : ( w2 = h2 = 0; );
+  gap = nl > 1 ? s1*0.25 : 0;
+  ty = ypos*H - (h1 + gap + h2)*0.5 + rise;
+  ls_font(font, s1, fl);
+  gfx_set(tcr, tcg, tcb, op);
+  gfx_str_draw(#t1, (W - w1)*0.5, ty, 0, 0, 0);
+  nl > 1 ? (
+    ls_font(font, s2, shadow > 0.5 ? 'S' : 0);
+    gfx_set(scr, scg, scb, op*(anim == 3 ? 1 : min(max(prog*1.6 - 0.3, 0), 1)));
+    gfx_str_draw(#t2, (W - w2)*0.5, ty + h1 + gap, 0, 0, 0);
+  );
+);
+gfx_mode = 0; gfx_a = 1;

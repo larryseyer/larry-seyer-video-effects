@@ -1,0 +1,68 @@
+// LS Glow & Bloom
+//@ls category Look
+//@ls title Glow & Bloom
+//@ls where both
+//@ls about Bright parts bloom into a soft glow, or the whole image gets a dreamy diffusion like a mist filter.
+//@ls help mode Bloom glows only bright areas; Soft diffusion blends a soft copy over everything (mist filter).
+//@ls help intensity Glow strength.
+//@ls help thresh Bloom: only parts brighter than this glow.
+//@ls help radius Glow size.
+//@ls example Stage light bloom :: mode=0 intensity=0.8 thresh=0.6
+//@ls example Mist filter :: mode=1 intensity=0.6
+//@ls enum mode Bloom|Soft diffusion
+//@ls color "Tint" tr tg tb
+//@param1:mode 'Mode' 0 0 1 0 1
+//@param2:intensity 'Intensity' 0.6 0 2 0.6 0.001
+//@param3:thresh 'Threshold' 0.65 0 1 0.65 0.001
+//@param4:radius 'Size' 0.5 0 1 0.5 0.001
+//@param5:tr 'Tint red' 1 0 1 1 0.001
+//@param6:tg 'Tint green' 1 0 1 1 0.001
+//@param7:tb 'Tint blue' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/pyramid.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  intensity > 0.001 ? (
+    levels = 6;
+    pyr_down(-1, W, H, levels);
+    // bright pass on the half-size level
+    th = mode == 1 ? 0 : thresh;
+    sprintf(#gkey, "%.9g %.9g %.9g %.9g", th, tr, tg, tb);
+    strcmp(#gkey, #last_gkey) != 0 ? (
+      i = 0;
+      loop(256,
+        v = i/255; v = th < 0.999 ? max(v - th, 0)/(1 - th) : 0;
+        i[0] = v*tr; i[256] = v*tg; i[512] = v*tb;
+        i += 1;
+      );
+      strcpy(#last_gkey, #gkey);
+    );
+    gfx_dest = pyr_img[1]; gfx_procrect(0, 0, pyr_w[1], pyr_h[1], 0);
+    k = 2;
+    loop(levels - 1,
+      gfx_dest = pyr_img[k]; gfx_mode = 0x100;
+      gfx_blit(pyr_img[k - 1], 0, 0, 0, pyr_w[k], pyr_h[k], 0, 0, pyr_w[k - 1], pyr_h[k - 1]);
+      k += 1;
+    );
+    // accumulate from coarse to fine, weighting levels by size
+    k = levels;
+    while (k > 1) (
+      gfx_dest = pyr_img[k - 1]; gfx_mode = 0x101;
+      gfx_a = 0.35 + radius*0.9;
+      gfx_blit(pyr_img[k], 0, 0, 0, pyr_w[k - 1], pyr_h[k - 1], 0, 0, pyr_w[k], pyr_h[k]);
+      k -= 1;
+    );
+    gfx_dest = -1;
+    mode == 1 ? ( gfx_mode = 0x100; gfx_a = min(intensity*0.35, 1); )
+              : ( gfx_mode = 0x101; gfx_a = intensity*0.45; );
+    gfx_blit(pyr_img[1], 0, 0, 0, W, H, 0, 0, pyr_w[1], pyr_h[1]);
+    gfx_mode = 0; gfx_a = 1;
+  );
+);

@@ -1,0 +1,9 @@
+// Base picture for overlays (titles, callouts). On a tiny transparent carrier image the overlay draws the tracks
+// below; on a real video item it keeps that item's picture; on an empty track it draws what is underneath.
+function ls_draw_base() local(bw, bh, base) (
+  gfx_mode = 0; gfx_a = 1;
+  base = (own && sw <= 64 && sh <= 64) ? input_track(0) : 0;
+  base != 0 && input_info(base, bw, bh) ? gfx_blit(base, 1)
+  : own && !(sw <= 64 && sh <= 64) ? gfx_blit(0, 1)
+  : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+);

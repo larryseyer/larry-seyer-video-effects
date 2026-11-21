@@ -1,0 +1,83 @@
+// Shared layer helpers: rounded-corner alpha, soft rounded-rect images, blurred fill, affine blit.
+// Callers set W, H (frame size) and, for xblit, the affine map globals dax, day, ax, ay, kx, ky, ca, sa, cx0, cy0.
+
+// Writes alpha for a rounded-corner mask into the current gfx_dest, one corner at a time.
+function round_corners(iw, ih, r) local(k) (
+  rr = r;
+  k = 0;
+  loop(4,
+    rx0 = (k & 1) ? iw - r : 0;
+    ry0 = (k & 2) ? ih - r : 0;
+    rcx = (k & 1) ? iw - r : r;
+    rcy = (k & 2) ? ih - r : r;
+    gfx_evalrect(rx0, ry0, ceil(r), ceil(r), "
+      _2 = rx0 + (_1 % _span) + 0.5; _3 = ry0 + _slice*_slice_size + floor(_1/_span) + 0.5;
+      _4 = rr - sqrt(sqr(_2 - rcx) + sqr(_3 - rcy)) + 0.5;
+      a *= min(max(_4, 0), 1);
+      _1 += 1;
+    ");
+    k += 1;
+  );
+);
+
+// Soft rounded rectangle alpha into image `img` (w x h), corner radius r, feather f (pixels).
+function soft_rrect(img, w, h, r, f, colr, colg, colb) (
+  srw = w; srh = h; srr = r; srf = max(f, 0.75);
+  gfx_dest = img;
+  gfx_set(colr, colg, colb, 1, 0, img, 1);
+  gfx_fillrect(0, 0, w, h);
+  gfx_evalrect(0, 0, w, h, "
+    _2 = (_1 % _span) + 0.5; _3 = _slice*_slice_size + floor(_1/_span) + 0.5;
+    _4 = abs(_2 - srw*0.5) - (srw*0.5 - srr - srf);
+    _5 = abs(_3 - srh*0.5) - (srh*0.5 - srr - srf);
+    _6 = sqrt(sqr(max(_4, 0)) + sqr(max(_5, 0))) + min(max(_4, _5), 0) - srr;
+    a = 255 * min(max(0.5 - _6/(2*srf), 0), 1);
+    _1 += 1;
+  ");
+  gfx_dest = -1;
+);
+
+// Blurred, darkened copy of `src` covering the frame.
+function blur_fill(src) local(bw2, bh2, i, iw, ih, s) (
+  input_info(src, iw, ih) ? (
+    s = max(W/iw, H/ih);
+    bw2 = (W/2)|0; bh2 = (H/2)|0;
+    gfx_mode = 0x100; gfx_a = 1;
+    bfa = gfx_img_resize(bfa, bw2, bh2);
+    gfx_dest = bfa;
+    gfx_blit(src, 0, (bw2 - iw*s*0.5)*0.5, (bh2 - ih*s*0.5)*0.5, iw*s*0.5, ih*s*0.5);
+    i = 0;
+    loop(4,
+      bw2 = max((bw2/2)|0, 2); bh2 = max((bh2/2)|0, 2);
+      (i & 1) ? (bfa = gfx_img_resize(bfa, bw2, bh2); gfx_dest = bfa; gfx_blit(bfb, 0, 0, 0, bw2, bh2, 0, 0, bw2*2, bh2*2);)
+              : (bfb = gfx_img_resize(bfb, bw2, bh2); gfx_dest = bfb; gfx_blit(bfa, 0, 0, 0, bw2, bh2, 0, 0, bw2*2, bh2*2););
+      i += 1;
+    );
+    gfx_dest = -1;
+    gfx_blit(bfa, 0, 0, 0, W, H, 0, 0, bw2, bh2);
+    gfx_mode = 0; gfx_set(0, 0, 0, 0.35); gfx_fillrect(0, 0, W, H);
+  );
+);
+
+// Draw image `img` (iw x ih, pixel offset ox,oy relative to the crop origin) through the current affine map.
+function xblit(img, iw, ih, ox, oy, alpha) local(c, s, x0, y0, x1, y1, px, py, k, qx, qy, dx, dy) (
+  // forward-map the four corners to find the destination bounding box
+  x0 = W; y0 = H; x1 = 0; y1 = 0; k = 0;
+  loop(4,
+    qx = cx0 + ox + ((k & 1) ? iw : 0) - ax;
+    qy = cy0 + oy + ((k & 2) ? ih : 0) - ay;
+    px = dax + ca*kx*qx - sa*ky*qy;
+    py = day + sa*kx*qx + ca*ky*qy;
+    x0 = min(x0, px); x1 = max(x1, px); y0 = min(y0, py); y1 = max(y1, py);
+    k += 1;
+  );
+  x0 = max(floor(x0) - 1, 0); y0 = max(floor(y0) - 1, 0);
+  x1 = min(ceil(x1) + 1, W); y1 = min(ceil(y1) + 1, H);
+  x1 > x0 && y1 > y0 ? (
+    dx = x0 + 0.5 - dax; dy = y0 + 0.5 - day;
+    gfx_a = alpha;
+    gfx_deltablit(img, x0, y0, x1 - x0, y1 - y0,
+      ax + ( ca*dx + sa*dy)/kx - cx0 - ox - 0.5, ay + (-sa*dx + ca*dy)/ky - cy0 - oy - 0.5,
+      ca/kx, -sa/ky, sa/kx, ca/ky, 0, 0);
+  );
+);

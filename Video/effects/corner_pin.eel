@@ -1,0 +1,72 @@
+// LS Corner Pin
+//@ls category Transform
+//@ls title Corner Pin
+//@ls where both
+//@ls about Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot.
+//@ls help tlx Corner positions are fractions of the frame (0..1, may go off screen).
+//@ls example Screen recording on a monitor in the shot :: tlx=0.31 tly=0.22 trx=0.62 try=0.2 brx=0.63 bry=0.55 blx=0.3 bly=0.56 :: Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.
+//@ls tip Drag the four corner points on the panel's frame pad.
+//@ls point "Top left" tlx tly
+//@ls point "Top right" trx try
+//@ls point "Bottom right" brx bry
+//@ls point "Bottom left" blx bly
+//@ls section "Corners" tlx tly trx try brx bry blx bly
+//@ls section "Look" opacity
+//@param1:tlx 'Top left X' 0.15 -0.5 1.5 0.15 0.0005
+//@param2:tly 'Top left Y' 0.15 -0.5 1.5 0.15 0.0005
+//@param3:trx 'Top right X' 0.85 -0.5 1.5 0.85 0.0005
+//@param4:try 'Top right Y' 0.1 -0.5 1.5 0.1 0.0005
+//@param5:brx 'Bottom right X' 0.8 -0.5 1.5 0.8 0.0005
+//@param6:bry 'Bottom right Y' 0.9 -0.5 1.5 0.9 0.0005
+//@param7:blx 'Bottom left X' 0.2 -0.5 1.5 0.2 0.0005
+//@param8:bly 'Bottom left Y' 0.85 -0.5 1.5 0.85 0.0005
+//@param9:opacity 'Opacity' 1 0 1 1 0.001
+
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+own && bg != 0 ? (
+  gfx_mode = 0; gfx_a = 1;
+  input_info(bg, bgw, bgh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+  qx0 = tlx*W; qy0 = tly*H; qx1 = trx*W; qy1 = try*H; qx2 = brx*W; qy2 = bry*H; qx3 = blx*W; qy3 = bly*H;
+  // homography from the unit square to the quad
+  ex1 = qx1 - qx2; ex2 = qx3 - qx2; ex3 = qx0 - qx1 + qx2 - qx3;
+  ey1 = qy1 - qy2; ey2 = qy3 - qy2; ey3 = qy0 - qy1 + qy2 - qy3;
+  den = ex1*ey2 - ex2*ey1;
+  abs(den) < 0.000001 ? ( hg = hh = 0; ) : ( hg = (ex3*ey2 - ex2*ey3)/den; hh = (ex1*ey3 - ex3*ey1)/den; );
+  ha = qx1 - qx0 + hg*qx1; hb = qx3 - qx0 + hh*qx3; hc = qx0;
+  hd = qy1 - qy0 + hg*qy1; he = qy3 - qy0 + hh*qy3; hf = qy0;
+  // inverse via adjugate
+  ia = he - hf*hh; ib = hc*hh - hb; ic = hb*hf - hc*he;
+  id = hf*hg - hd; ie = ha - hc*hg; iff = hc*hd - ha*hf;
+  ig = hd*hh - he*hg; ih = hb*hg - ha*hh; ii = ha*he - hb*hd;
+  bx0 = max(floor(min(min(qx0, qx1), min(qx2, qx3))) - 2, 0);
+  by0 = max(floor(min(min(qy0, qy1), min(qy2, qy3))) - 2, 0);
+  bx1 = min(ceil(max(max(qx0, qx1), max(qx2, qx3))) + 2, W);
+  by1 = min(ceil(max(max(qy0, qy1), max(qy2, qy3))) + 2, H);
+  side = min(min(sqrt(sqr(qx1 - qx0) + sqr(qy1 - qy0)), sqrt(sqr(qx3 - qx0) + sqr(qy3 - qy0))),
+             min(sqrt(sqr(qx2 - qx1) + sqr(qy2 - qy1)), sqrt(sqr(qx2 - qx3) + sqr(qy2 - qy3))));
+  bx1 > bx0 + 2 && by1 > by0 + 2 && side > 2 ? (
+    gw = min(max(ceil((bx1 - bx0)/5), 8), 128); gh = min(max(ceil((by1 - by0)/5), 8), 128);  // xformblit tables must stay under 65536 entries
+    cellpx = max((bx1 - bx0)/(gw - 1), (by1 - by0)/(gh - 1));
+    tab = 0; j = 0;
+    loop(gh,
+      py = by0 + (by1 - by0)*j/(gh - 1);
+      i = 0;
+      loop(gw,
+        px = bx0 + (bx1 - bx0)*i/(gw - 1);
+        dd = ig*px + ih*py + ii;
+        uu = (ia*px + ib*py + ic)/dd; vv = (id*px + ie*py + iff)/dd;
+        tab[0] = min(max(uu, 0), 1)*sw; tab[1] = min(max(vv, 0), 1)*sh;
+        tab[2] = dd > 0 || dd < 0 ? min(max(0.5 + min(min(uu, 1 - uu), min(vv, 1 - vv))*side/cellpx, 0), 1) : 0;
+        tab += 3; i += 1;
+      );
+      j += 1;
+    );
+    gfx_mode = 0x100; gfx_a = opacity;
+    gfx_xformblit(0, bx0, by0, bx1 - bx0, by1 - by0, gw, gh, 0, 1);
+    gfx_mode = 0; gfx_a = 1;
+  );
+) : own ? gfx_blit(0, 1);

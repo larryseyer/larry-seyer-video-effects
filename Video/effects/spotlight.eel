@@ -1,0 +1,94 @@
+// LS Spotlight
+//@ls category Tutorial
+//@ls title Spotlight
+//@ls where both
+//@ls about Dims and optionally blurs everything except one area, with an outline around it, to pull attention to a control or part of the screen. Item fades animate it.
+//@ls help sx Spotlight area, fractions of the frame (left, top, width, height).
+//@ls help shape Rectangle, rounded or ellipse.
+//@ls help radius Rounding for the Rounded shape.
+//@ls help feather Edge softness, fraction of frame height.
+//@ls help dim Darkness outside the area.
+//@ls help blur Blur outside the area (slower at 4K).
+//@ls help outline Outline width, fraction of frame height (0 = none).
+//@ls help animsrc Item fades or Manual amount.
+//@ls help amount Manual mode: 0 off, 1 full.
+//@ls example Focus on one panel :: sx=0.1 sy=0.15 sw2=0.35 sh2=0.4 shape=1 dim=0.6
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls enum shape Rectangle|Rounded|Ellipse
+//@ls enum animsrc Item fades|Manual
+//@ls rect "Spotlight area" sx sy sw2 sh2
+//@ls color "Outline color" ocr ocg ocb
+//@ls section "Area" sx sy sw2 sh2 shape radius feather
+//@ls section "Outside" dim blur
+//@ls section "Outline" outline
+//@ls section "Animation" animsrc amount
+//@param1:sx 'Area left' 0.3 0 1 0.3 0.0005
+//@param2:sy 'Area top' 0.3 0 1 0.3 0.0005
+//@param3:sw2 'Area width' 0.4 0.01 1 0.4 0.0005
+//@param4:sh2 'Area height' 0.3 0.01 1 0.3 0.0005
+//@param5:shape 'Shape' 1 0 2 1 1
+//@param6:radius 'Rounding' 0.15 0 1 0.15 0.001
+//@param7:feather 'Edge softness' 0.01 0 0.2 0.01 0.0005
+//@param8:dim 'Dim outside' 0.6 0 1 0.6 0.001
+//@param9:blur 'Blur outside' 0 0 1 0 0.001
+//@param10:outline 'Outline width' 0.003 0 0.02 0.003 0.0001
+//@param11:ocr 'Outline red' 0.24 0 1 0.24 0.001
+//@param12:ocg 'Outline green' 0.87 0 1 0.87 0.001
+//@param13:ocb 'Outline blue' 0.66 0 1 0.66 0.001
+//@param14:animsrc 'Animate with' 0 0 1 0 1
+//@param15:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/pyramid.eel"
+// #include "lib/shapes.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  prog = ls_ease(animsrc == 1 ? amount : fadev, 1);
+  prog > 0.001 ? (
+    ax0 = sx*W; ay0 = sy*H; aw = sw2*W; ah = sh2*H;
+    acx = ax0 + aw*0.5; acy = ay0 + ah*0.5;
+    arad = shape == 0 ? 0 : radius*min(aw, ah)*0.5;
+    fth = max(feather*H, 0.75);
+    dm = dim*prog; shp = shape;
+    // keep a sharp copy of the area, with its shape as alpha, to put back after treating the outside
+    pad = fth*2 + 2;
+    bx0 = max(floor(ax0 - pad), 0); by0 = max(floor(ay0 - pad), 0);
+    bw0 = min(ceil(ax0 + aw + pad), W) - bx0; bh0 = min(ceil(ay0 + ah + pad), H) - by0;
+    bw0 > 0 && bh0 > 0 ? (
+      spin = gfx_img_resize(spin, bw0, bh0);
+      gfx_dest = spin; gfx_mode = 0; gfx_a = 1;
+      gfx_blit(-1, 0, 0, 0, bw0, bh0, bx0, by0, bw0, bh0);
+      gfx_evalrect(0, 0, bw0, bh0, "
+        _2 = bx0 + (_1 % _span) + 0.5 - acx; _3 = by0 + _slice*_slice_size + floor(_1/_span) + 0.5 - acy;
+        shp == 2 ? (
+          _4 = (sqrt(sqr(_2/(aw*0.5)) + sqr(_3/(ah*0.5))) - 1)*min(aw, ah)*0.5;
+        ) : (
+          _5 = abs(_2) - (aw*0.5 - arad); _6 = abs(_3) - (ah*0.5 - arad);
+          _4 = sqrt(sqr(max(_5, 0)) + sqr(max(_6, 0))) + min(max(_5, _6), 0) - arad;
+        );
+        a = 255*min(max(0.5 - _4/(2*fth), 0), 1);
+        _1 += 1;
+      ");
+      gfx_dest = -1;
+    );
+    blur > 0.001 ? (
+      spb = gfx_img_resize(spb, W, H);
+      blur_copy(spb, 1 + floor(blur*5));
+      gfx_mode = 0; gfx_a = min(blur*3, 1)*prog; gfx_blit(spb);
+    );
+    dm > 0.001 ? ( gfx_mode = 0; gfx_set(0, 0, 0, dm); gfx_fillrect(0, 0, W, H); );
+    bw0 > 0 && bh0 > 0 ? ( gfx_mode = 0x10000; gfx_a = 1; gfx_blit(spin, 0, bx0, by0, bw0, bh0, 0, 0, bw0, bh0); gfx_mode = 0; );
+    outline > 0.0001 ? (
+      lwid = max(outline*H, 1);
+      shape == 2 ? sdf_ellipse(acx, acy, aw*0.5, ah*0.5, lwid, 1, ocr, ocg, ocb, prog)
+                 : sdf_rrect(ax0, ay0, aw, ah, arad, lwid, 1, ocr, ocg, ocb, prog);
+    );
+  );
+);

@@ -1,0 +1,55 @@
+// LS Vignette
+//@ls category Color
+//@ls title Vignette
+//@ls where both
+//@ls about Darkens (or tints) the edges of the frame to pull the eye to the center, with adjustable size, softness, shape and center.
+//@ls help amount Strength at the edges.
+//@ls help size Where the darkening is complete; 1 reaches the edges.
+//@ls help soft Width of the transition.
+//@ls help round 0 follows the frame shape, 1 is circular.
+//@ls help cx Center, -1 left to 1 right.
+//@ls help cy Center, -1 top to 1 bottom.
+//@ls example Subtle :: amount=0.35
+//@ls example White dreamy edges :: vr=1 vg=1 vb=1 amount=0.5
+//@ls point "Center" cx cy
+//@ls color "Color" vr vg vb
+//@param1:amount 'Amount' 0.5 0 1 0.5 0.001
+//@param2:size 'Size' 1 0.1 2 1 0.001
+//@param3:soft 'Softness' 0.7 0.01 1 0.7 0.001
+//@param4:round 'Roundness' 0.5 0 1 0.5 0.001
+//@param5:cx 'Center X' 0 -1 1 0 0.001
+//@param6:cy 'Center Y' 0 -1 1 0 0.001
+//@param7:vr 'Color red' 0 0 1 0 0.001
+//@param8:vg 'Color green' 0 0 1 0 0.001
+//@param9:vb 'Color blue' 0 0 1 0 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  mw = max(ceil(W/8), 16); mh = max(ceil(H/8), 16);
+  sprintf(#key, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", amount, size, soft, round, cx, cy, vr, vg, vb, mw, mh);
+  strcmp(#key, #last_key) != 0 ? (
+    vmask = gfx_img_resize(vmask, mw, mh);
+    gfx_set(vr, vg, vb, 1, 0, vmask, 1); gfx_fillrect(0, 0, mw, mh);
+    asp = W/H; cnorm = 1.25/sqrt(asp*asp + 1);
+    inner = size*(1 - soft); outer = max(size, inner + 0.001);
+    gfx_dest = vmask;
+    gfx_evalrect(0, 0, mw, mh, "
+      _2 = ((_1 % _span) + 0.5)/mw*2 - 1 - cx; _3 = (_slice*_slice_size + floor(_1/_span) + 0.5)/mh*2 - 1 - cy;
+      _4 = (sqrt(sqr(_2) + sqr(_3))*0.8839*(1 - round) + sqrt(sqr(_2*asp) + sqr(_3))*cnorm*round);
+      _5 = min(max((_4 - inner)/(outer - inner), 0), 1);
+      a = 255*amount*_5*_5*(3 - 2*_5);
+      _1 += 1;
+    ");
+    gfx_dest = -1;
+    strcpy(#last_key, #key);
+  );
+  gfx_mode = 0x10100; gfx_a = 1;
+  gfx_blit(vmask, 0, 0, 0, W, H, 0, 0, mw, mh);
+  gfx_mode = 0;
+);

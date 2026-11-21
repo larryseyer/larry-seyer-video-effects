@@ -1,0 +1,53 @@
+// LS Beat Pulse
+//@ls category Look
+//@ls title Beat Pulse
+//@ls where both
+//@ls about Punches the picture in time with the music using the project tempo: zoom kicks, light flashes, color split and shake on every beat, half beat or bar.
+//@ls help division How often it pulses, using the project tempo.
+//@ls help decay How fast each pulse fades, as a fraction of the interval.
+//@ls help offset Moves pulses earlier or later, in beats.
+//@ls help zoom Zoom kick size.
+//@ls help flash Light flash strength.
+//@ls help rgb Color split on the hit.
+//@ls help shake Shake on the hit.
+//@ls example Kick on every beat :: division=2 zoom=0.05 flash=0.2
+//@ls example Bar accents :: division=0 zoom=0.1 flash=0.5 rgb=0.5
+//@ls tip Uses the project tempo and time signature: set them to match the song.
+//@ls enum division Every bar|Every 2 beats|Every beat|Every 1/2 beat|Every 1/4 beat
+//@ls color "Flash color" fr fg fb
+//@ls section "Timing" division decay offset
+//@ls section "Hits" zoom flash rgb shake
+//@param1:division 'Pulse on' 2 0 4 2 1
+//@param2:decay 'Decay' 0.35 0.02 1 0.35 0.001
+//@param3:offset 'Offset (beats)' 0 -0.5 0.5 0 0.001
+//@param4:zoom 'Zoom kick' 0.05 0 0.3 0.05 0.001
+//@param5:flash 'Flash' 0.25 0 1 0.25 0.001
+//@param6:rgb 'Color split' 0 0 1 0 0.001
+//@param7:shake 'Shake' 0 0 1 0 0.001
+//@param8:fr 'Flash red' 1 0 1 1 0.001
+//@param9:fg 'Flash green' 1 0 1 1 0.001
+//@param10:fb 'Flash blue' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/noise.eel"
+// #include "lib/rgbsplit.eel"
+
+own ? (
+  interval = division == 0 ? project_ts_num : division == 1 ? 2 : division == 2 ? 1 : division == 3 ? 0.5 : 0.25;
+  pos = (project_time_qn + offset)/max(interval, 0.0001);
+  ph = pos - floor(pos);
+  env = ph < decay ? (1 - ph/decay) : 0; env *= env;
+  zk = 1 + zoom*env;
+  jx = hash1(floor(pos)*1.3)*shake*env*W*0.02; jy = hash1(floor(pos)*2.1)*shake*env*H*0.02;
+  gfx_set(0); gfx_fillrect(0, 0, W, H);
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 1, (W - W*zk)*0.5 + jx, (H - H*zk)*0.5 + jy, W*zk, H*zk);
+  gfx_mode = 0;
+  rgb > 0.001 && env > 0.01 ? rgb_split(rgb*env*W*0.012, 0);
+  flash*env > 0.002 ? ( gfx_set(fr, fg, fb, flash*env, 0); gfx_fillrect(0, 0, W, H); );
+  gfx_mode = 0; gfx_a = 1;
+);

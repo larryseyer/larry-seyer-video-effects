@@ -1,0 +1,85 @@
+// LS Magnifier
+//@ls category Tutorial
+//@ls title Magnifier
+//@ls where both
+//@ls about A zoom lens that shows a small detail enlarged somewhere else on screen, with a marker on the original spot and an optional connecting line. Item fades animate it.
+//@ls help dx Spot to magnify X, fraction of frame width.
+//@ls help dy Spot to magnify Y, fraction of frame height.
+//@ls help lx Where the lens appears X.
+//@ls help ly Where the lens appears Y.
+//@ls help size Lens diameter, fraction of frame height.
+//@ls help zoom Magnification.
+//@ls help shape Circle or rounded square.
+//@ls help border Border width, fraction of frame height.
+//@ls help shadow Lens shadow.
+//@ls help marker Circles the original spot and draws a line to the lens.
+//@ls help animsrc Item fades or Manual amount.
+//@ls help amount Manual mode: 0 hidden, 1 shown.
+//@ls example Enlarge a small knob :: dx=0.3 dy=0.4 lx=0.7 ly=0.5 size=0.35 zoom=3
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls enum shape Circle|Rounded square
+//@ls enum animsrc Item fades|Manual
+//@ls toggle marker
+//@ls point "Detail" dx dy
+//@ls point "Lens" lx ly
+//@ls color "Border color" bcr bcg bcb
+//@ls section "Lens" dx dy lx ly size zoom shape
+//@ls section "Style" border shadow marker
+//@ls section "Animation" animsrc amount
+//@param1:dx 'Detail X' 0.3 0 1 0.3 0.0005
+//@param2:dy 'Detail Y' 0.3 0 1 0.3 0.0005
+//@param3:lx 'Lens X' 0.7 0 1 0.7 0.0005
+//@param4:ly 'Lens Y' 0.5 0 1 0.5 0.0005
+//@param5:size 'Lens size' 0.35 0.05 1 0.35 0.001
+//@param6:zoom 'Zoom' 2.5 1 8 2.5 0.01
+//@param7:shape 'Shape' 0 0 1 0 1
+//@param8:border 'Border width' 0.004 0 0.03 0.004 0.0001
+//@param9:bcr 'Border red' 1 0 1 1 0.001
+//@param10:bcg 'Border green' 1 0 1 1 0.001
+//@param11:bcb 'Border blue' 1 0 1 1 0.001
+//@param12:shadow 'Shadow' 0.5 0 1 0.5 0.001
+//@param13:marker 'Mark the detail' 1 0 1 1 1
+//@param14:animsrc 'Animate with' 0 0 1 0 1
+//@param15:amount 'Manual amount' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/layer.eel"
+// #include "lib/shapes.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  prog = animsrc == 1 ? amount : fadev;
+  prog > 0.001 ? (
+    ek = ls_ease(prog, 4);
+    ls = max(floor(size*H*max(ek, 0.01)), 4);
+    lcx = lx*W; lcy = ly*H; dcx = dx*W; dcy = dy*H;
+    srcsz = ls/max(zoom, 1);
+    rad = shape == 0 ? ls*0.5 : ls*0.15;
+    op = min(prog*2, 1);
+    lens = gfx_img_resize(lens, ls, ls);
+    gfx_dest = lens; gfx_mode = 0x100; gfx_a = 1;
+    gfx_blit(-1, 0, 0, 0, ls, ls, dcx - srcsz*0.5, dcy - srcsz*0.5, srcsz, srcsz);
+    gfx_mode = 0;
+    round_corners(ls, ls, rad);
+    gfx_dest = -1;
+    bwid = max(border*H, 0);
+    marker > 0.5 ? (
+      shape == 0 ? sdf_ellipse(dcx, dcy, srcsz*0.5, srcsz*0.5, max(bwid*0.6, 1), 1, bcr, bcg, bcb, op)
+                 : sdf_rrect(dcx - srcsz*0.5, dcy - srcsz*0.5, srcsz, srcsz, srcsz*0.15, max(bwid*0.6, 1), 1, bcr, bcg, bcb, op);
+      ux = lcx - dcx; uy = lcy - dcy; ul = max(sqrt(ux*ux + uy*uy), 1); ux /= ul; uy /= ul;
+      ul > (ls + srcsz)*0.5 ? sdf_line(dcx + ux*srcsz*0.5, dcy + uy*srcsz*0.5, lcx - ux*ls*0.5, lcy - uy*ls*0.5,
+                                       max(bwid*0.6, 1), bcr, bcg, bcb, op*0.8);
+    );
+    shadow > 0.001 ? sdf_rrect(lcx - ls*0.5 + H*0.006, lcy - ls*0.5 + H*0.01, ls, ls, rad, H*0.02, 2, 0, 0, 0, shadow*op);
+    bwid > 0.25 ? sdf_rrect(lcx - ls*0.5 - bwid, lcy - ls*0.5 - bwid, ls + 2*bwid, ls + 2*bwid, rad + bwid, 0, 0, bcr, bcg, bcb, op);
+    gfx_mode = 0x10000; gfx_a = op;
+    gfx_blit(lens, 0, lcx - ls*0.5, lcy - ls*0.5, ls, ls, 0, 0, ls, ls);
+    gfx_mode = 0; gfx_a = 1;
+  );
+);

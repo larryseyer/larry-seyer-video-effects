@@ -1,0 +1,27 @@
+// LS Freeze & Stutter
+//@ls category Time
+//@ls title Freeze & Stutter
+//@ls where both
+//@ls about Freeze holds the picture from the moment it switches on (automate it for freeze frames). Stutter holds every frame for several frames for a choppy, stop-motion feel.
+//@ls help freeze Turn on (keyframe it) to hold the current picture.
+//@ls help stutter Holds each frame for this many frames (1 = off).
+//@ls example Freeze frame :: freeze=1 :: Keyframe Freeze from 0 to 1 at the moment to hold, and back to 0 to release.
+//@ls toggle freeze
+//@param1:freeze 'Freeze' 0 0 1 0 1
+//@param2:stutter 'Stutter (hold frames)' 1 1 30 1 1
+
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  freeze > 0.5 ? (
+    !held ? held = gfx_img_hold(0);
+  ) : stutter > 1.5 ? (
+    (cnt -= 1) < 0 || !held ? ( gfx_img_free(held); held = gfx_img_hold(0); cnt = stutter - 1; );
+  ) : (
+    held ? ( gfx_img_free(held); held = 0; );
+  );
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(held ? held : 0, 1);
+);

@@ -1,0 +1,64 @@
+// LS Zoom to Region
+//@ls category Transform
+//@ls title Zoom to Region
+//@ls where both
+//@ls about Smoothly zooms into a chosen rectangle, ideal for showing a control in a screen recording. Drag the item fade-in and fade-out to set how long the zoom in and out take, or automate the amount.
+//@ls help rx Left edge of the zoom region, fraction of the picture width.
+//@ls help ry Top edge, fraction of picture height.
+//@ls help rw Region width, fraction of picture width.
+//@ls help rh Region height, fraction of picture height.
+//@ls help animsrc Item fades: zooms in over the fade-in and out over the fade-out. Manual: Manual amount controls it.
+//@ls help amount Manual mode: 0 whole picture, 1 zoomed into the region.
+//@ls help showbox Draws the region outline while you set it up. Turn it off before rendering.
+//@ls example Zoom into a control :: rx=0.05 ry=0.1 rw=0.3 rh=0.2 animsrc=0 :: Split the screen recording so one item covers the zoom; its fade-in is the zoom-in time, its fade-out the zoom-out time.
+//@ls tip The region is grown to the frame shape so the picture never stretches.
+//@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls enum animsrc Item fades|Manual
+//@ls enum ease Linear|Smooth|Ease in|Ease out
+//@ls toggle showbox
+//@ls rect "Zoom region" rx ry rw rh
+//@ls section "Region" rx ry rw rh
+//@ls section "Animation" animsrc amount ease showbox
+//@param1:rx 'Region left' 0.3 0 1 0.3 0.001
+//@param2:ry 'Region top' 0.3 0 1 0.3 0.001
+//@param3:rw 'Region width' 0.4 0.02 1 0.4 0.001
+//@param4:rh 'Region height' 0.4 0.02 1 0.4 0.001
+//@param5:animsrc 'Animate with' 0 0 1 0 1
+//@param6:amount 'Manual amount' 1 0 1 1 0.001
+//@param7:ease 'Easing' 1 0 3 1 1
+//@param8:showbox 'Show region outline' 0 0 1 0 1
+
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+
+own ? (
+  fr = W/H;
+  // full view: the source as it normally fills the frame
+  sw/sh > fr ? ( fw = sh*fr; fh = sh; ) : ( fw = sw; fh = sw/fr; );
+  fx = (sw - fw)*0.5; fy = (sh - fh)*0.5;
+  // target: the region grown to the frame aspect, kept inside the source
+  tw = rw*sw; th = rh*sh;
+  tw/th < fr ? tw = th*fr : th = tw/fr;
+  tw > fw ? ( tw = fw; th = fw/fr; );
+  tx = min(max((rx + rw*0.5)*sw - tw*0.5, 0), sw - tw);
+  ty = min(max((ry + rh*0.5)*sh - th*0.5, 0), sh - th);
+  prog = ls_ease(animsrc == 1 ? amount : fadev, ease);
+  cw = fw*((tw/fw)^prog);
+  kz = fw > tw + 0.5 ? (fw - cw)/(fw - tw) : 1;
+  chh = cw/fr;
+  cx = fx + fw*0.5 + ((tx + tw*0.5) - (fx + fw*0.5))*kz - cw*0.5;
+  cy = fy + fh*0.5 + ((ty + th*0.5) - (fy + fh*0.5))*kz - chh*0.5;
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 0, 0, 0, W, H, cx, cy, cw, chh);
+  gfx_mode = 0;
+  showbox > 0.5 ? (
+    ox = (rx*sw - cx)*W/cw; oy = (ry*sh - cy)*H/chh; ow = rw*sw*W/cw; oh = rh*sh*H/chh;
+    lw = max(2, H/360);
+    gfx_set(1, 0.8, 0.1, 0.9);
+    gfx_fillrect(ox, oy, ow, lw); gfx_fillrect(ox, oy + oh - lw, ow, lw);
+    gfx_fillrect(ox, oy, lw, oh); gfx_fillrect(ox + ow - lw, oy, lw, oh);
+  );
+);

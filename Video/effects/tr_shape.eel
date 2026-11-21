@@ -1,0 +1,82 @@
+// LS Shape Wipe
+//@ls category Transition
+//@ls title Shape Wipe
+//@ls where track
+//@ls about Put on a track: crossfades reveal the next shot through a growing circle, box, diamond, clock sweep, barn doors, angled wipe or blinds, with soft edges and an optional glowing border.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
+//@ls help shape Shape of the reveal.
+//@ls help soft Edge softness.
+//@ls help cx Center, -1 left to 1 right.
+//@ls help cy Center, -1 top to 1 bottom.
+//@ls help angle Angle for Angled wipe and Blinds, degrees.
+//@ls help count Number of blinds.
+//@ls help border Glowing edge width (0 = none).
+//@ls help shrink Shrink from the edges instead of growing from the center.
+//@ls example Iris open :: shape=0 soft=0.05
+//@ls example Clock wipe :: shape=3
+//@ls example Angled wipe with glowing edge :: shape=6 angle=30 border=0.01
+//@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
+//@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
+//@ls enum shape Circle|Box|Diamond|Clock|Barn doors (vertical)|Barn doors (horizontal)|Angled wipe|Blinds
+//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls toggle reverse
+//@ls toggle shrink
+//@ls point "Center" cx cy
+//@ls color "Border color" bcr bcg bcb
+//@param1:shape 'Shape' 0 0 7 0 1
+//@param2:soft 'Softness' 0.08 0.002 0.5 0.08 0.001
+//@param3:cx 'Center X' 0 -1 1 0 0.001
+//@param4:cy 'Center Y' 0 -1 1 0 0.001
+//@param5:angle 'Angle' 0 -180 180 0 0.1
+//@param6:count 'Blinds count' 8 2 40 8 1
+//@param7:border 'Border' 0 0 0.05 0 0.0005
+//@param8:bcr 'Border red' 1 0 1 1 0.001
+//@param9:bcg 'Border green' 0.85 0 1 0.85 0.001
+//@param10:bcb 'Border blue' 0.5 0 1 0.5 0.001
+//@param11:shrink 'Shrink instead of grow' 0 0 1 0 1
+//@param12:srcmode 'Source' 0 0 1 0 1
+//@param13:progress 'Manual progress' 0 0 1 0 0.001
+//@param14:reverse 'Reverse' 0 0 1 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/transition.eel"
+
+tr_setup() ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(tr_a);
+  pp = ls_ease(tr_p, 1)*(1 + soft);
+  ccx = W*(0.5 + cx*0.5); ccy = H*(0.5 + cy*0.5);
+  maxd = sqrt(sqr(max(ccx, W - ccx)) + sqr(max(ccy, H - ccy)));
+  hx = max(ccx, W - ccx); hy = max(ccy, H - ccy);
+  dcos = cos(angle*$pi/180); dsin = sin(angle*$pi/180);
+  ext = abs(dcos)*W + abs(dsin)*H;
+  bdw = border*H/max(maxd, 1); brd_r = bcr*255; brd_g = bcg*255; brd_b = bcb*255;
+  shp = shape; shr = shrink > 0.5; cnt = count;
+  gfx_evalrect(0, 0, W, H, "
+    _2 = (_1 % _span) + 0.5 - ccx; _3 = _slice*_slice_size + floor(_1/_span) + 0.5 - ccy;
+    _4 = shp == 0 ? sqrt(_2*_2 + _3*_3)/maxd
+       : shp == 1 ? max(abs(_2)/hx, abs(_3)/hy)
+       : shp == 2 ? (abs(_2)/hx + abs(_3)/hy)*0.5
+       : shp == 3 ? (_12 = atan2(_2, -_3)/(2*$pi) + 1; _12 - floor(_12))
+       : shp == 4 ? abs(_2)/hx
+       : shp == 5 ? abs(_3)/hy
+       : shp == 6 ? ((_2*dcos + _3*dsin)/ext + 0.5)
+       : (_12 = ((_2 + ccx)*dcos + (_3 + ccy)*dsin)/ext*cnt; _12 - floor(_12));
+    shr ? _4 = 1 - _4;
+    _5 = min(max((pp - _4)/soft, 0), 1);
+    r += (sr - r)*_5; g += (sg - g)*_5; b += (sb - b)*_5;
+    bdw > 0 ? (
+      _6 = max(1 - abs(pp - soft*0.5 - _4)/bdw, 0)*(pp > 0.001 && pp < 1 + soft - 0.001);
+      r += (brd_r - r)*_6; g += (brd_g - g)*_6; b += (brd_b - b)*_6;
+    );
+    _1 += 1;
+  ", 0, tr_b);
+  gfx_mode = 0; gfx_a = 1;
+) : own ? gfx_blit(0, 1);

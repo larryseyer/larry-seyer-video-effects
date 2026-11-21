@@ -1,0 +1,85 @@
+// LS Push & Slide
+//@ls category Transition
+//@ls title Push & Slide
+//@ls where track
+//@ls about Put on a track: crossfades become a push, slide, reveal, split or squeeze in any direction, with optional motion blur.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
+//@ls help ease How the transition speeds up and slows down.
+//@ls help style Push moves both shots; Slide in covers; Slide out uncovers; Split opens like doors; Squeeze compresses.
+//@ls help dir Direction of motion.
+//@ls help blur Motion blur during the move.
+//@ls example Push left :: style=0 dir=0
+//@ls example Slide up :: style=1 dir=2
+//@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
+//@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
+//@ls enum style Push|Slide in|Slide out|Split open|Squeeze
+//@ls enum dir Left|Right|Up|Down
+//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls toggle reverse
+//@ls enum ease Linear|Smooth|Ease in|Ease out
+//@param1:style 'Style' 0 0 4 0 1
+//@param2:dir 'Direction' 0 0 3 0 1
+//@param3:blur 'Motion blur' 0.5 0 1 0.5 0.001
+//@param4:ease 'Smoothness' 1 0 3 1 1
+//@param5:srcmode 'Source' 0 0 1 0 1
+//@param6:progress 'Manual progress' 0 0 1 0 0.001
+//@param7:reverse 'Reverse' 0 0 1 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/transition.eel"
+
+// Draw image at offset with a short motion-blur smear along the movement.
+function smear(img, ox, oy, vx, vy) local(k, n) (
+  n = blur > 0.01 ? 6 : 1; k = 0;
+  loop(n,
+    gfx_a = 1/(k + 1);
+    gfx_blit(img, 0, ox - vx*k/n, oy - vy*k/n, W, H);
+    k += 1;
+  );
+  gfx_a = 1;
+);
+
+tr_setup() ? (
+  p = ls_ease(tr_p, ease == 0 ? 0 : ease);
+  vel = sin(tr_p*$pi)*blur*0.06;
+  dx = dir == 0 ? -1 : dir == 1 ? 1 : 0; dy = dir == 2 ? -1 : dir == 3 ? 1 : 0;
+  vx = dx*W*vel; vy = dy*H*vel;
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_set(0); gfx_fillrect(0, 0, W, H);
+  style == 0 ? (
+    smear(tr_a, dx*W*p, dy*H*p, vx, vy);
+    smear(tr_b, dx*W*(p - 1), dy*H*(p - 1), vx, vy);
+  ) : style == 1 ? (
+    gfx_blit(tr_a);
+    smear(tr_b, dx*W*(p - 1), dy*H*(p - 1), vx, vy);
+  ) : style == 2 ? (
+    gfx_blit(tr_b);
+    smear(tr_a, dx*W*p, dy*H*p, vx, vy);
+  ) : style == 3 ? (
+    gfx_blit(tr_b);
+    dy == 0 ? (
+      hw = W*0.5*(1 - p);
+      gfx_blit(tr_a, 0, -W*0.5*p, 0, W*0.5, H, 0, 0, W*0.5, H);
+      gfx_blit(tr_a, 0, W*0.5 + W*0.5*p, 0, W*0.5, H, W*0.5, 0, W*0.5, H);
+    ) : (
+      gfx_blit(tr_a, 0, 0, -H*0.5*p, W, H*0.5, 0, 0, W, H*0.5);
+      gfx_blit(tr_a, 0, 0, H*0.5 + H*0.5*p, W, H*0.5, 0, H*0.5, W, H*0.5);
+    );
+  ) : (
+    dy == 0 ? (
+      aw = W*(1 - p); dx < 0 ? ( gfx_blit(tr_a, 0, 0, 0, aw, H); gfx_blit(tr_b, 0, aw, 0, W - aw, H); )
+                             : ( gfx_blit(tr_b, 0, 0, 0, W - aw, H); gfx_blit(tr_a, 0, W - aw, 0, aw, H); );
+    ) : (
+      ah = H*(1 - p); dy < 0 ? ( gfx_blit(tr_a, 0, 0, 0, W, ah); gfx_blit(tr_b, 0, 0, ah, W, H - ah); )
+                             : ( gfx_blit(tr_b, 0, 0, 0, W, H - ah); gfx_blit(tr_a, 0, 0, H - ah, W, ah); );
+    );
+  );
+  gfx_mode = 0; gfx_a = 1;
+) : own ? gfx_blit(0, 1);

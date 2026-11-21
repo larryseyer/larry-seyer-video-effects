@@ -1,0 +1,13 @@
+// Chromatic split of the framebuffer: red taken from a copy shifted by (dx, dy), blue from (-dx, -dy).
+function rgb_split(dx, dy) (
+  abs(dx) + abs(dy) >= 0.5 ? (
+    rs_c = gfx_img_resize(rs_c, W, H); gfx_dest = rs_c; gfx_mode = 0; gfx_a = 1; gfx_blit(-1);
+    rs_a = gfx_img_resize(rs_a, W, H); gfx_dest = rs_a; gfx_set(0, 0, 0, 1, 0, rs_a); gfx_fillrect(0, 0, W, H);
+    gfx_blit(rs_c, 0, dx, dy, W, H);
+    rs_b = gfx_img_resize(rs_b, W, H); gfx_dest = rs_b; gfx_set(0, 0, 0, 1, 0, rs_b); gfx_fillrect(0, 0, W, H);
+    gfx_blit(rs_c, 0, -dx, -dy, W, H);
+    gfx_dest = -1; gfx_mode = 0; gfx_a = 1;
+    gfx_evalrect(0, 0, W, H, "r = sr;", 0, rs_a);
+    gfx_evalrect(0, 0, W, H, "b = sb;", 0, rs_b);
+  );
+);

@@ -1,0 +1,22 @@
+// Hash noise in -1..1 and luminance grain over the framebuffer.
+function hash1(nv) local(q) ( q = sin(nv*12.9898 + 4.1414)*43758.5453; (q - floor(q))*2 - 1 );
+// Adds signed monochrome grain of strength amt (0..1) with grain cell size gsz pixels. The noise texture is
+// made once and tiled at a random offset each frame, which keeps the cost independent of frame size.
+function add_grain(amt, gsz) local(tile, frn, ox, oy, gx, gy) (
+  amt > 0.001 ? (
+    !gr_tex ? (
+      gr_tex = gfx_img_resize(gr_tex, 512, 512);
+      gfx_dest = gr_tex;
+      gfx_evalrect(0, 0, 512, 512, "r = g = b = rand(255); a = 255;");
+      gfx_dest = -1;
+    );
+    tile = 512*max(gsz, 1);
+    frn = floor(project_time*max(framerate, 1));
+    ox = -(hash1(frn*1.37)*0.5 + 0.5)*tile; oy = -(hash1(frn*2.71 + 3)*0.5 + 0.5)*tile;
+    gfx_mode = 0x101; gfx_a = amt*0.6;
+    gy = oy;
+    while (gy < H) ( gx = ox; while (gx < W) ( gfx_blit(gr_tex, 0, gx, gy, tile, tile, 0, 0, 512, 512); gx += tile; ); gy += tile; );
+    gfx_mode = 1; gfx_set(0.5, 0.5, 0.5, -amt*0.6, 1); gfx_fillrect(0, 0, W, H);
+    gfx_mode = 0; gfx_a = 1;
+  );
+);

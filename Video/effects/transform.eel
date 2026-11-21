@@ -1,0 +1,145 @@
+// LS Transform
+//@ls category Transform
+//@ls title Transform
+//@ls where both
+//@ls about Position, scale, rotate, crop, round corners, border and drop shadow in one pass. Keyframe any control with envelopes.
+//@ls help posx Horizontal offset in frame widths: 0 centered, 0.5 moves it half a frame right.
+//@ls help posy Vertical offset in frame heights: positive moves down.
+//@ls help scale Size relative to the whole picture fitting the frame: 1 fits, 0.5 is half size.
+//@ls help stx Extra horizontal stretch (1 = none).
+//@ls help sty Extra vertical stretch (1 = none).
+//@ls help rot Rotation in degrees, clockwise.
+//@ls help ancx Pivot for rotate and scale: -1 left edge, 0 center, 1 right edge of the picture.
+//@ls help ancy Pivot for rotate and scale: -1 top edge, 0 center, 1 bottom edge of the picture.
+//@ls help cl Fraction of the picture cut off the left. Cropping does not re-center the picture.
+//@ls help cr Fraction cut off the right.
+//@ls help ct Fraction cut off the top.
+//@ls help cb Fraction cut off the bottom.
+//@ls help opacity 0 invisible, 1 solid.
+//@ls help radius Corner rounding as a fraction of the shorter side; 0.5 makes a pill or circle.
+//@ls help border Border width as a fraction of frame height (0.005 is a thin line at any resolution).
+//@ls help shadow Drop shadow strength (0 = off).
+//@ls help shdist Shadow offset, fraction of frame height.
+//@ls help shang Direction the shadow falls in degrees: 90 straight down, 135 down-left, 45 down-right.
+//@ls help shsoft Blur of the shadow edge, fraction of frame height.
+//@ls help bgmode What shows around the picture when it is smaller than the frame.
+//@ls example Picture-in-picture, top right :: scale=0.35 posx=0.3 posy=-0.28 radius=0.06 border=0.004 shadow=0.6 :: Put on the inset clip's item, on a track above the main video.
+//@ls example Tilted card :: scale=0.6 rot=-6 radius=0.05 border=0.006 shadow=0.7
+//@ls example Animated zoom-out :: scale=1.5 :: Keyframe Scale at 1.5 at the item start and 1 two seconds later.
+//@ls tip On an item it changes only that clip; on a track it changes everything on the track.
+//@ls tip For moves, keyframe Position, Scale and Rotation; the keyframes are ordinary REAPER envelopes.
+//@ls point "Position" posx posy
+//@ls section "Position & Size" posx posy scale stx sty rot ancx ancy
+//@ls section "Crop" cl cr ct cb
+//@ls section "Look" opacity fliph flipv radius border
+//@ls color "Border color" bdr bdg bdb
+//@ls section "Shadow" shadow shdist shang shsoft
+//@ls section "Background" bgmode
+//@ls color "Background color" bgr bgg bgb
+//@ls toggle fliph
+//@ls toggle flipv
+//@ls enum bgmode Tracks below|Black|Blurred copy|Solid color
+//@param1:posx 'Position X' 0 -1.5 1.5 0 0.001
+//@param2:posy 'Position Y' 0 -1.5 1.5 0 0.001
+//@param3:scale 'Scale' 1 0 5 1 0.001
+//@param4:stx 'Stretch X' 1 0.1 4 1 0.001
+//@param5:sty 'Stretch Y' 1 0.1 4 1 0.001
+//@param6:rot 'Rotation' 0 -720 720 0 0.1
+//@param7:ancx 'Anchor X' 0 -1 1 0 0.001
+//@param8:ancy 'Anchor Y' 0 -1 1 0 0.001
+//@param9:cl 'Crop left' 0 0 0.95 0 0.001
+//@param10:cr 'Crop right' 0 0 0.95 0 0.001
+//@param11:ct 'Crop top' 0 0 0.95 0 0.001
+//@param12:cb 'Crop bottom' 0 0 0.95 0 0.001
+//@param13:opacity 'Opacity' 1 0 1 1 0.001
+//@param14:fliph 'Flip horizontal' 0 0 1 0 1
+//@param15:flipv 'Flip vertical' 0 0 1 0 1
+//@param16:radius 'Corner radius' 0 0 0.5 0 0.001
+//@param17:border 'Border width' 0 0 0.05 0 0.0005
+//@param18:bdr 'Border red' 1 0 1 1 0.001
+//@param19:bdg 'Border green' 1 0 1 1 0.001
+//@param20:bdb 'Border blue' 1 0 1 1 0.001
+//@param21:shadow 'Shadow opacity' 0 0 1 0 0.001
+//@param22:shdist 'Shadow distance' 0.012 0 0.1 0.012 0.0005
+//@param23:shang 'Shadow angle' 135 -180 180 135 1
+//@param24:shsoft 'Shadow softness' 0.02 0 0.1 0.02 0.0005
+//@param25:bgmode 'Background' 0 0 3 0 1
+//@param26:bgr 'Background red' 0 0 1 0 0.001
+//@param27:bgg 'Background green' 0 0 1 0 0.001
+//@param28:bgb 'Background blue' 0 0 1 0 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+// #include "lib/layer.eel"
+
+own && bg != 0 ? (
+  // background
+  gfx_mode = 0; gfx_a = 1;
+  bgmode == 1 ? ( gfx_set(0); gfx_fillrect(0, 0, W, H); )
+  : bgmode == 2 ? ( blur_fill(0); )
+  : bgmode == 3 ? ( gfx_set(bgr, bgg, bgb); gfx_fillrect(0, 0, W, H); )
+  : ( input_info(bg, bw, bh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); ); );
+
+  cx0 = floor(sw*cl); cy0 = floor(sh*ct);
+  cw = max(floor(sw*(1 - cl - cr)), 2); ch = max(floor(sh*(1 - ct - cb)), 2);
+  base = min(W/sw, H/sh);
+  kx = base*max(scale, 0.0001)*stx*(fliph > 0.5 ? -1 : 1);
+  ky = base*max(scale, 0.0001)*sty*(flipv > 0.5 ? -1 : 1);
+  ca = cos(rot*$pi/180); sa = sin(rot*$pi/180);
+  ax = sw*0.5*(1 + ancx); ay = sh*0.5*(1 + ancy);
+  dax = W*0.5 + posx*W + (ax - sw*0.5)*base;
+  day = H*0.5 + posy*H + (ay - sh*0.5)*base;
+  onw = cw*abs(kx); onh = ch*abs(ky);
+  rpx = radius*min(onw, onh);           // corner radius in screen pixels
+  rL = rpx/max(abs(kx), 0.0001);        // corner radius in source pixels
+  bL = border*H/max(abs(kx), 0.0001);   // border width in source pixels
+
+  shadow > 0.001 ? (
+    sk = shsoft*H/max(abs(kx), 0.0001);
+    ssc = max(1, (max(cw, ch) + 2*sk)/256);          // shadow image is built small and scaled up
+    sws = ceil((cw + 2*sk)/ssc); shs = ceil((ch + 2*sk)/ssc);
+    sprintf(#skey, "%.9g %.9g %.9g %.9g", sws, shs, rL, sk);
+    strcmp(#skey, #last_skey) != 0 ? (
+      simg = gfx_img_resize(simg, sws, shs);
+      soft_rrect(simg, sws, shs, (rL + sk*0.5)/ssc, sk/ssc, 0, 0, 0);
+      strcpy(#last_skey, #skey);
+    );
+    sdx = cos(shang*$pi/180)*shdist*H; sdy = sin(shang*$pi/180)*shdist*H;
+    dax += sdx; day += sdy;
+    kx *= ssc; ky *= ssc; cx0 /= ssc; cy0 /= ssc; ax /= ssc; ay /= ssc;
+    gfx_mode = 0x10100;
+    xblit(simg, sws, shs, -sk/ssc, -sk/ssc, shadow*opacity);
+    kx /= ssc; ky /= ssc; cx0 *= ssc; cy0 *= ssc; ax *= ssc; ay *= ssc;
+    dax -= sdx; day -= sdy;
+  );
+
+  bL > 0.25 ? (
+    sprintf(#bkey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g", cw, ch, rL, bL, bdr, bdg, bdb);
+    strcmp(#bkey, #last_bkey) != 0 ? (
+      bimg = gfx_img_resize(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL));
+      soft_rrect(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL), rL > 0 ? rL + bL : 0, 0.75, bdr, bdg, bdb);
+      strcpy(#last_bkey, #bkey);
+    );
+    gfx_mode = 0x10100;
+    xblit(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL), -bL, -bL, opacity);
+  );
+
+  // content: copy the crop into a layer when it needs a mask, otherwise draw the source directly
+  rL >= 1 || cl + cr + ct + cb > 0 ? (
+    layer = gfx_img_resize(layer, cw, ch);
+    gfx_dest = layer; gfx_mode = 0; gfx_a = 1;
+    gfx_blit(0, 0, 0, 0, cw, ch, cx0, cy0, cw, ch);
+    rL >= 1 ? round_corners(cw, ch, min(rL, min(cw, ch)*0.5));
+    gfx_dest = -1;
+    gfx_mode = 0x10100;
+    xblit(layer, cw, ch, 0, 0, opacity);
+  ) : (
+    gfx_mode = 0x100;
+    xblit(0, sw, sh, 0, 0, opacity);
+  );
+  gfx_mode = 0; gfx_a = 1;
+) : own ? gfx_blit(0, 1);

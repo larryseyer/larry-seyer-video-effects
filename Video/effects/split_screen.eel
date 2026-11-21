@@ -1,0 +1,89 @@
+// LS Split Screen
+//@ls category Compose
+//@ls title Split Screen
+//@ls where track
+//@ls about Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.
+//@ls help layout Panel arrangement.
+//@ls help split Where two-panel layouts divide.
+//@ls help gap Gap between panels, fraction of frame height.
+//@ls help margin Outer margin, fraction of frame height.
+//@ls help radius Panel corner rounding.
+//@ls help pan1 Which part of the source shows in its panel, -1..1 (along the cropped direction).
+//@ls help zoomall Zoom inside every panel.
+//@ls example Two cameras side by side :: layout=0 gap=0.008 :: Put on the top video track; the track directly below supplies panel 2.
+//@ls tip Panel 1 is this track; panels 2-4 are the next tracks below that have video.
+//@ls enum layout Side by side|Stacked|One large + two small|2x2 grid|Three columns
+//@ls color "Gap color" gcr gcg gcb
+//@ls section "Layout" layout split gap margin radius
+//@ls section "Framing" pan1 pan2 pan3 pan4 zoomall
+//@param1:layout 'Layout' 0 0 4 0 1
+//@param2:split 'Split position' 0.5 0.2 0.8 0.5 0.001
+//@param3:gap 'Gap' 0.008 0 0.05 0.008 0.0005
+//@param4:margin 'Outer margin' 0 0 0.1 0 0.0005
+//@param5:radius 'Corner radius' 0 0 0.2 0 0.001
+//@param6:gcr 'Gap red' 0.05 0 1 0.05 0.001
+//@param7:gcg 'Gap green' 0.05 0 1 0.05 0.001
+//@param8:gcb 'Gap blue' 0.06 0 1 0.06 0.001
+//@param9:pan1 'Panel 1 pan' 0 -1 1 0 0.001
+//@param10:pan2 'Panel 2 pan' 0 -1 1 0 0.001
+//@param11:pan3 'Panel 3 pan' 0 -1 1 0 0.001
+//@param12:pan4 'Panel 4 pan' 0 -1 1 0 0.001
+//@param13:zoomall 'Zoom' 1 1 3 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/layer.eel"
+
+// Fill rect with input `src`, cropped to cover, panned by `pan` along the cropped axis.
+function panel(src, x, y, pw, ph, pan) local(iw, ih, ar, ox, oy, cw, ch, lay) (
+  input_info(src, iw, ih) ? (
+    ar = pw/ph;
+    iw/ih > ar ? ( ch = ih; cw = ih*ar; ) : ( cw = iw; ch = iw/ar; );
+    cw /= zoomall; ch /= zoomall;
+    ox = (iw - cw)*0.5*(1 + (iw/ih > ar ? pan : 0)); oy = (ih - ch)*0.5*(1 + (iw/ih > ar ? 0 : pan));
+    radius > 0.001 ? (
+      lay = (src == 0 ? 0 : src == input_track(0) ? 1 : src == input_track(1) ? 2 : 3);
+      lay_img = 9500 + lay;
+      lay_img[0] = gfx_img_resize(lay_img[0], ceil(pw), ceil(ph));
+      gfx_dest = lay_img[0]; gfx_mode = 0x100; gfx_a = 1;
+      gfx_blit(src, 0, 0, 0, ceil(pw), ceil(ph), ox, oy, cw, ch);
+      round_corners(ceil(pw), ceil(ph), radius*min(pw, ph));
+      gfx_dest = -1; gfx_mode = 0x10000;
+      gfx_blit(lay_img[0], 0, x, y, ceil(pw), ceil(ph), 0, 0, ceil(pw), ceil(ph));
+    ) : (
+      gfx_mode = 0x100; gfx_a = 1;
+      gfx_blit(src, 0, x, y, pw, ph, ox, oy, cw, ch);
+    );
+    gfx_mode = 0;
+  );
+);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_set(gcr, gcg, gcb); gfx_fillrect(0, 0, W, H);
+  in1 = 0; in2 = input_track(0); in3 = input_track(1); in4 = input_track(2);
+  mg = margin*H; gp = gap*H;
+  X0 = mg; Y0 = mg; AW = W - 2*mg; AH = H - 2*mg;
+  layout == 0 ? (
+    w1 = (AW - gp)*split;
+    panel(in1, X0, Y0, w1, AH, pan1); panel(in2, X0 + w1 + gp, Y0, AW - w1 - gp, AH, pan2);
+  ) : layout == 1 ? (
+    h1 = (AH - gp)*split;
+    panel(in1, X0, Y0, AW, h1, pan1); panel(in2, X0, Y0 + h1 + gp, AW, AH - h1 - gp, pan2);
+  ) : layout == 2 ? (
+    w1 = (AW - gp)*max(split, 0.55); h2 = (AH - gp)*0.5;
+    panel(in1, X0, Y0, w1, AH, pan1);
+    panel(in2, X0 + w1 + gp, Y0, AW - w1 - gp, h2, pan2); panel(in3, X0 + w1 + gp, Y0 + h2 + gp, AW - w1 - gp, AH - h2 - gp, pan3);
+  ) : layout == 3 ? (
+    w1 = (AW - gp)*0.5; h1 = (AH - gp)*0.5;
+    panel(in1, X0, Y0, w1, h1, pan1); panel(in2, X0 + w1 + gp, Y0, w1, h1, pan2);
+    panel(in3, X0, Y0 + h1 + gp, w1, h1, pan3); panel(in4, X0 + w1 + gp, Y0 + h1 + gp, w1, h1, pan4);
+  ) : (
+    w1 = (AW - 2*gp)/3;
+    panel(in1, X0, Y0, w1, AH, pan1); panel(in2, X0 + w1 + gp, Y0, w1, AH, pan2); panel(in3, X0 + 2*(w1 + gp), Y0, w1, AH, pan3);
+  );
+  gfx_mode = 0; gfx_a = 1;
+);

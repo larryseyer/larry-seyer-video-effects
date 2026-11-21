@@ -1,0 +1,54 @@
+// LS Camera Shake
+//@ls category Transform
+//@ls title Camera Shake
+//@ls where both
+//@ls about Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments.
+//@ls help amount Movement in frame widths (0.015 gentle, 0.05 violent).
+//@ls help rotamt Rotation wobble in degrees.
+//@ls help speed Wobbles per second.
+//@ls help style Smooth handheld drift, nervous jitter, or a mix (earthquake).
+//@ls help seed Changes the random pattern.
+//@ls help zoomcomp Zooms in slightly so moving edges stay hidden.
+//@ls example Handheld feel :: amount=0.01 rotamt=0.6 speed=1 style=0
+//@ls example Impact hit :: style=2 amount=0.04 :: Keyframe Amount from 0.04 down to 0 over half a second.
+//@ls enum style Handheld|Jitter|Earthquake
+//@ls toggle zoomcomp
+//@param1:amount 'Amount' 0.015 0 0.1 0.015 0.0005
+//@param2:rotamt 'Rotation (deg)' 1 0 10 1 0.01
+//@param3:speed 'Speed' 1.5 0.05 20 1.5 0.01
+//@param4:style 'Style' 0 0 2 0 1
+//@param5:seed 'Seed' 1 0 100 1 1
+//@param6:zoomcomp 'Zoom to hide edges' 1 0 1 1 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/layer.eel"
+
+function smooth_noise(tv, sd) ( sin(tv + sd)*0.5 + sin(tv*2.31 + sd*1.7)*0.3 + sin(tv*5.13 + sd*2.9)*0.2 );
+function hash_noise(nv, sd) local(q) ( q = sin(nv*12.9898 + sd*78.233)*43758.5453; (q - floor(q))*2 - 1 );
+
+own ? (
+  tv = project_time*speed*2*$pi;
+  style == 1 ? (
+    step = floor(project_time*speed*6);
+    nx = hash_noise(step, seed); ny = hash_noise(step + 17.3, seed); nr = hash_noise(step + 41.1, seed);
+  ) : style == 2 ? (
+    nx = smooth_noise(tv*3, seed)*0.6 + hash_noise(floor(project_time*30), seed)*0.4;
+    ny = smooth_noise(tv*3.3, seed + 5)*0.6 + hash_noise(floor(project_time*30) + 9, seed)*0.4;
+    nr = smooth_noise(tv*2.7, seed + 9);
+  ) : (
+    nx = smooth_noise(tv, seed); ny = smooth_noise(tv*0.87, seed + 11); nr = smooth_noise(tv*0.71, seed + 23);
+  );
+  ang = nr*rotamt*$pi/180;
+  base = max(W/sw, H/sh);
+  zc = zoomcomp > 0.5 ? 1 + 2.2*amount + abs(sin(rotamt*$pi/180))*0.9 : 1;
+  gfx_set(0); gfx_fillrect(0, 0, W, H);
+  dax = W*0.5 + nx*amount*W; day = H*0.5 + ny*amount*W;
+  ax = sw*0.5; ay = sh*0.5; kx = ky = base*zc; ca = cos(ang); sa = sin(ang); cx0 = cy0 = 0;
+  gfx_mode = 0x100;
+  xblit(0, sw, sh, 0, 0, 1);
+  gfx_mode = 0; gfx_a = 1;
+);

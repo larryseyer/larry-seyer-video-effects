@@ -1,0 +1,38 @@
+// LS Flip & Mirror
+//@ls category Transform
+//@ls title Flip & Mirror
+//@ls where both
+//@ls about Flips the picture or mirrors one half onto the other, including a four-way kaleidoscope.
+//@ls help mode What to flip or mirror.
+//@ls help center Moves the mirror line away from the center, -0.5..0.5.
+//@ls example Kaleidoscope :: mode=8
+//@ls enum mode Off|Flip horizontal|Flip vertical|Rotate 180|Mirror left half|Mirror right half|Mirror top half|Mirror bottom half|Kaleidoscope
+//@param1:mode 'Mode' 1 0 8 1 1
+//@param2:center 'Mirror line' 0 -0.5 0.5 0 0.001
+
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  canvas = gfx_img_resize(canvas, W, H);
+  gfx_dest = canvas; gfx_mode = 0x100; gfx_a = 1;
+  gfx_set(0); gfx_fillrect(0, 0, W, H);
+  gfx_blit(0, 1);
+  gfx_dest = -1; gfx_mode = 0;
+  mx = floor(W*(0.5 + center)); my = floor(H*(0.5 + center));
+  mode == 0 ? gfx_blit(canvas)
+  : mode == 1 ? gfx_deltablit(canvas, 0, 0, W, H, W - 0.5, 0, -1, 0, 0, 1, 0, 0)
+  : mode == 2 ? gfx_deltablit(canvas, 0, 0, W, H, 0, H - 0.5, 1, 0, 0, -1, 0, 0)
+  : mode == 3 ? gfx_deltablit(canvas, 0, 0, W, H, W - 0.5, H - 0.5, -1, 0, 0, -1, 0, 0)
+  : mode == 4 ? ( gfx_blit(canvas); gfx_deltablit(canvas, mx, 0, W - mx, H, mx - 0.5, 0, -1, 0, 0, 1, 0, 0); )
+  : mode == 5 ? ( gfx_blit(canvas); gfx_deltablit(canvas, 0, 0, mx, H, 2*mx - 0.5, 0, -1, 0, 0, 1, 0, 0); )
+  : mode == 6 ? ( gfx_blit(canvas); gfx_deltablit(canvas, 0, my, W, H - my, 0, my - 0.5, 1, 0, 0, -1, 0, 0); )
+  : mode == 7 ? ( gfx_blit(canvas); gfx_deltablit(canvas, 0, 0, W, my, 0, 2*my - 0.5, 1, 0, 0, -1, 0, 0); )
+  : mode == 8 ? (
+    gfx_blit(canvas);
+    gfx_deltablit(canvas, mx, 0, W - mx, my, mx - 0.5, 0, -1, 0, 0, 1, 0, 0);
+    gfx_deltablit(canvas, 0, my, mx, H - my, 0, my - 0.5, 1, 0, 0, -1, 0, 0);
+    gfx_deltablit(canvas, mx, my, W - mx, H - my, mx - 0.5, my - 0.5, -1, 0, 0, -1, 0, 0);
+  );
+);

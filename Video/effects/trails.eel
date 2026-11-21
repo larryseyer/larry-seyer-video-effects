@@ -1,0 +1,40 @@
+// LS Echo Trails
+//@ls category Look
+//@ls title Echo Trails
+//@ls where both
+//@ls about Moving subjects leave fading echoes behind them, with optional zoom or spin drift for psychedelic tunnels.
+//@ls help persist Trail length (0 none, 0.95 very long).
+//@ls help mode Blend smears; Additive glow brightens overlapping trails.
+//@ls help drift Trails zoom in or out over time.
+//@ls help spin Trails rotate over time, degrees per frame.
+//@ls example Dreamy echoes :: persist=0.85
+//@ls example Psychedelic tunnel :: persist=0.9 mode=1 drift=0.01 spin=1
+//@ls enum mode Blend|Additive glow
+//@param1:persist 'Trail length' 0.8 0 0.98 0.8 0.001
+//@param2:mode 'Mode' 0 0 1 0 1
+//@param3:drift 'Zoom drift' 0 -0.05 0.05 0 0.0005
+//@param4:spin 'Spin drift' 0 -5 5 0 0.01
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  jump = abs(project_time - last_t) > 0.5 || !acc || acc_w != W || acc_h != H;
+  last_t = project_time;
+  gfx_mode = 0; gfx_a = 1;
+  jump || persist < 0.001 ? (
+    gfx_blit(0, 1);
+  ) : (
+    mode == 1 ? ( gfx_blit(0, 1); gfx_mode = 0x101; ) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); gfx_mode = 0x100; );
+    gfx_a = persist*(mode == 1 ? 0.4 : 1);
+    zs = 1 + drift;
+    abs(spin) > 0.001 ? (
+      gfx_rotoblit(acc, spin*$pi/180, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
+    ) : gfx_blit(acc, 0, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
+    mode == 0 ? ( gfx_mode = 0x100; gfx_a = 1 - persist; gfx_blit(0, 1); gfx_a = 1; gfx_mode = 0; );
+  );
+  acc = gfx_img_resize(acc, W, H); acc_w = W; acc_h = H;
+  gfx_dest = acc; gfx_mode = 0; gfx_a = 1; gfx_blit(-1); gfx_dest = -1;
+);

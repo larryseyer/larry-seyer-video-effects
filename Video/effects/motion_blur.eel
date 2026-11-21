@@ -1,0 +1,47 @@
+// LS Zoom & Motion Blur
+//@ls category Look
+//@ls title Zoom & Motion Blur
+//@ls where both
+//@ls about Radial zoom blur bursting from a point, or directional blur that streaks the picture at any angle.
+//@ls help mode Zoom blurs outward from a point; Directional streaks along an angle.
+//@ls help amount Blur strength.
+//@ls help cx Zoom center, -1 left to 1 right.
+//@ls help cy Zoom center, -1 top to 1 bottom.
+//@ls help angle Directional angle in degrees.
+//@ls help quality More samples look smoother but are slower.
+//@ls example Burst from center :: mode=0 amount=0.5
+//@ls enum mode Zoom|Directional
+//@ls point "Center" cx cy
+//@param1:mode 'Mode' 0 0 1 0 1
+//@param2:amount 'Amount' 0.3 0 1 0.3 0.001
+//@param3:cx 'Center X' 0 -1 1 0 0.001
+//@param4:cy 'Center Y' 0 -1 1 0 0.001
+//@param5:angle 'Angle' 0 -180 180 0 0.1
+//@param6:quality 'Quality' 16 4 32 16 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  amount > 0.001 ? (
+    mb_c = gfx_img_resize(mb_c, W, H); gfx_dest = mb_c; gfx_blit(-1); gfx_dest = -1;
+    px = W*(0.5 + cx*0.5); py = H*(0.5 + cy*0.5);
+    n = max(quality, 2); k = 1;
+    loop(n,
+      gfx_mode = 0x100; gfx_a = 1/(k + 1);
+      mode == 0 ? (
+        zs = 1 + amount*0.12*k/n;
+        gfx_blit(mb_c, 0, px - px*zs, py - py*zs, W*zs, H*zs);
+      ) : (
+        dd = (k/n - 0.5)*amount*W*0.04;
+        gfx_blit(mb_c, 0, cos(angle*$pi/180)*dd, sin(angle*$pi/180)*dd, W, H);
+      );
+      k += 1;
+    );
+  );
+  gfx_mode = 0; gfx_a = 1;
+);

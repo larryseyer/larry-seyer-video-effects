@@ -1,0 +1,32 @@
+// Transition setup. On a track, crossfades between items run the transition automatically (the crossfade length
+// is the duration); in Manual mode `progress` blends from this track (A) to the next track down (B).
+// Fills canvases tr_a (outgoing) and tr_b (incoming), both W x H, and tr_p in 0..1. Returns 1 when active.
+function tr_canvas(img, src) (
+  img = gfx_img_resize(img, W, H);
+  gfx_dest = img; gfx_mode = 0x100; gfx_a = 1;
+  gfx_set(0, 0, 0, 1, 0x100, img); gfx_fillrect(0, 0, W, H);
+  gfx_blit(src, 1);
+  gfx_dest = -1; gfx_mode = 0;
+  img;
+);
+function tr_setup() local(nx, ntk, iw0, ih0, st0, wet0, iw1, ih1, st1, wet1, src_a, src_b, ok) (
+  ok = 0;
+  srcmode == 1 ? (
+    src_a = 0; src_b = input_track(0);
+    ok = src_b != 0 && input_info(src_b, iw1, ih1);
+    tr_p = progress;
+  ) : (
+    nx = input_next_item(0); ntk = input_next_track(0);
+    input_info(0, iw0, ih0, st0, wet0);
+    nx != ntk && input_info(nx, iw1, ih1, st1, wet1) && (wet0 < 0.9999 || wet1 < 0.9999) ? (
+      ok = 1; src_a = nx; src_b = 0;
+      tr_p = atan2(wet0, wet1)/($pi*0.5);
+    );
+  );
+  ok ? (
+    reverse > 0.5 ? ( iw0 = src_a; src_a = src_b; src_b = iw0; tr_p = 1 - tr_p; );
+    tr_a = tr_canvas(tr_a, src_a);
+    tr_b = tr_canvas(tr_b, src_b);
+  );
+  ok;
+);

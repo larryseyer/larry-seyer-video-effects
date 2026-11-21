@@ -1,0 +1,78 @@
+// LS Isolate Color
+//@ls category Color
+//@ls title Isolate Color
+//@ls where both
+//@ls about Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.
+//@ls help selhue Color to select in degrees: 0 red, 30 orange, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta.
+//@ls help width How wide a range of hues counts as selected.
+//@ls help soft Softness of the selection edge in degrees.
+//@ls help satmin Ignore pale colors below this saturation.
+//@ls help lummin Ignore pixels darker than this.
+//@ls help lummax Ignore pixels brighter than this.
+//@ls help ihue Hue shift for the selected color.
+//@ls help isat Saturation of the selected color.
+//@ls help ilum Brightness change for the selected color.
+//@ls help osat Saturation of everything else: 0 makes it black and white (color pop).
+//@ls help olum Brightness change for everything else.
+//@ls help invert Swap selected and unselected.
+//@ls help showmask Shows the selection in white. Turn off before rendering.
+//@ls help mix Blend with the original.
+//@ls example Color pop: keep only reds :: selhue=0 width=30 osat=0
+//@ls example Turn a red guitar blue :: selhue=0 width=40 ihue=-120 osat=1
+//@ls tip Turn on Show selection while adjusting Hue, Hue width and Min saturation.
+//@ls toggle invert
+//@ls toggle showmask
+//@ls section "Select" selhue width soft satmin lummin lummax
+//@ls section "Inside" ihue isat ilum
+//@ls section "Outside" osat olum
+//@ls section "Output" invert showmask mix
+//@param1:selhue 'Hue' 0 0 360 0 0.1
+//@param2:width 'Hue width' 30 2 180 30 0.1
+//@param3:soft 'Softness' 20 0 90 20 0.1
+//@param4:satmin 'Min saturation' 0.2 0 1 0.2 0.001
+//@param5:lummin 'Min brightness' 0 0 1 0 0.001
+//@param6:lummax 'Max brightness' 1 0 1 1 0.001
+//@param7:ihue 'Inside hue shift' 0 -180 180 0 0.1
+//@param8:isat 'Inside saturation' 1.2 0 2 1.2 0.001
+//@param9:ilum 'Inside brightness' 0 -0.5 0.5 0 0.001
+//@param10:osat 'Outside saturation' 0 0 2 0 0.001
+//@param11:olum 'Outside brightness' 0 -0.5 0.5 0 0.001
+//@param12:invert 'Invert selection' 0 0 1 0 1
+//@param13:showmask 'Show selection' 0 0 1 0 1
+//@param14:mix 'Mix' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  hcos = cos(ihue*$pi/180); hsin = sin(ihue*$pi/180);
+  halfw = width*0.5; sft = max(soft, 0.5);
+  lsoft = 0.05;
+  gfx_evalrect(0, 0, W, H, "
+    _1 = 2*r - g - b; _2 = 1.7320508*(g - b);
+    _3 = max(r, max(g, b)); _4 = _3 - min(r, min(g, b));
+    _5 = atan2(_2, _1)*(180/$pi);
+    _6 = abs(_5 - selhue); _6 = _6 % 360; _6 > 180 ? _6 = 360 - _6;
+    _7 = min(max((halfw + sft - _6)/sft, 0), 1);
+    _8 = _4/max(_3, 72);
+    _7 *= min(max((_8 - satmin)/0.08 + 0.5, 0), 1);
+    _9 = (0.2126*r + 0.7152*g + 0.0722*b)*(1/255);
+    _7 *= min(max((_9 - lummin)/lsoft + 0.5, 0), 1)*min(max((lummax - _9)/lsoft + 0.5, 0), 1);
+    _7 = _7*_7*(3 - 2*_7);
+    invert > 0.5 ? _7 = 1 - _7;
+    showmask > 0.5 ? ( r = g = b = _7*255; ) : (
+      _10 = (r + g + b)*(1/3);
+      _11 = (_1*hcos - _2*hsin)*isat; _12 = (_1*hsin + _2*hcos)*isat;
+      _13 = _10 + ilum*255;
+      _14 = _13 + _11*(1/3); _15 = _13 + (-_11*(1/3) + _12*0.57735027)*0.5; _16 = _13 + (-_11*(1/3) - _12*0.57735027)*0.5;
+      _17 = _9*255 + olum*255;
+      _18 = _17 + (r - _9*255)*osat; _19 = _17 + (g - _9*255)*osat; _20 = _17 + (b - _9*255)*osat;
+      _21 = _18 + (_14 - _18)*_7; _22 = _19 + (_15 - _19)*_7; _23 = _20 + (_16 - _20)*_7;
+      r = min(max(r + (_21 - r)*mix, 0), 255); g = min(max(g + (_22 - g)*mix, 0), 255); b = min(max(b + (_23 - b)*mix, 0), 255);
+    );
+  ");
+);

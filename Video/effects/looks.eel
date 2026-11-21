@@ -1,0 +1,103 @@
+// LS Looks
+//@ls category Color
+//@ls title Looks
+//@ls where both
+//@ls about One-knob film and music-video looks: black and white, sepia, teal and orange, warm film, cool night, bleach bypass, faded vintage, cross process, punch, golden hour, noir and duotone.
+//@ls help look The look.
+//@ls help amount Blend with the original.
+//@ls help strength Contrast multiplier for the look.
+//@ls help bwr Black and white mix: how much red contributes (used by Black & White, Sepia and Noir).
+//@ls help bwg How much green contributes.
+//@ls help bwb How much blue contributes.
+//@ls example Teal and orange :: look=2
+//@ls example Black and white :: look=0
+//@ls example Duotone in brand colors :: look=11 dsr=0.05 dsg=0.1 dsb=0.12 dhr=0.24 dhg=0.87 dhb=0.66
+//@ls enum look Black & White|Sepia|Teal & Orange|Warm Film|Cool Night|Bleach Bypass|Faded Vintage|Cross Process|Punch|Golden Hour|Noir|Duotone
+//@ls color "Duotone shadows" dsr dsg dsb
+//@ls color "Duotone highlights" dhr dhg dhb
+//@ls section "Look" look amount strength
+//@ls section "Black & white mix" bwr bwg bwb
+//@param1:look 'Look' 2 0 11 2 1
+//@param2:amount 'Amount' 1 0 1 1 0.001
+//@param3:strength 'Contrast' 1 0 2 1 0.001
+//@param4:bwr 'B&W red weight' 0.3 -1 2 0.3 0.001
+//@param5:bwg 'B&W green weight' 0.59 -1 2 0.59 0.001
+//@param6:bwb 'B&W blue weight' 0.11 -1 2 0.11 0.001
+//@param7:dsr 'Duotone shadow red' 0.08 0 1 0.08 0.001
+//@param8:dsg 'Duotone shadow green' 0.07 0 1 0.07 0.001
+//@param9:dsb 'Duotone shadow blue' 0.3 0 1 0.3 0.001
+//@param10:dhr 'Duotone highlight red' 1 0 1 1 0.001
+//@param11:dhg 'Duotone highlight green' 0.78 0 1 0.78 0.001
+//@param12:dhb 'Duotone highlight blue' 0.45 0 1 0.45 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+function curve_v(v, lift, gam, gain, con) (
+  v = v + lift*(1 - v);
+  v *= gain;
+  v = v > 0 ? v^gam : v;
+  min(max((v - 0.45)*con + 0.45, 0), 1);
+);
+
+// Fill tables: 0..767 per-channel curves (0..1), 1000..1767 luma-indexed tone adds (0..255 units).
+function build_look() local(i, v, lft, gmr, gmg, gmb, gnr, gng, gnb, con, shr, shg, shb, hir, hig, hib, wl, tb) (
+  lft = 0; gmr = gmg = gmb = 1; gnr = gng = gnb = 1; con = 1; shr = shg = shb = hir = hig = hib = 0;
+  lsat = 1; mono = 0;
+  look == 0 ? ( lsat = 0; con = 1.1; mono = 1; )
+  : look == 1 ? ( lsat = 0; con = 1.05; mono = 1; gnr = 1.08; gng = 0.9; gnb = 0.68; lft = 0.03; )
+  : look == 2 ? ( lsat = 1.15; con = 1.12; shr = -16; shg = 4; shb = 18; hir = 20; hig = 4; hib = -22; )
+  : look == 3 ? ( lsat = 0.9; con = 0.95; lft = 0.04; gnr = 1.05; gnb = 0.9; hir = 8; hig = 3; hib = -6; )
+  : look == 4 ? ( lsat = 0.8; con = 1.1; gnr = 0.84; gng = 0.95; gnb = 1.12; gmr = gmg = gmb = 1.15; )
+  : look == 5 ? ( lsat = 0.45; con = 1.35; )
+  : look == 6 ? ( lsat = 0.7; con = 0.85; lft = 0.08; gnr = gng = gnb = 0.95; shr = 4; shg = 6; shb = 14; hir = 14; hig = 9; )
+  : look == 7 ? ( lsat = 1.2; con = 1.15; gmr = 0.85; gnb = 0.85; gmb = 1.25; shb = 22; hir = 10; hig = 14; )
+  : look == 8 ? ( lsat = 1.3; con = 1.3; )
+  : look == 9 ? ( lsat = 1.1; con = 1.05; gnr = 1.12; gnb = 0.82; hir = 14; hig = 7; hib = -10; )
+  : look == 10 ? ( lsat = 0; con = 1.6; lft = -0.03; mono = 1; )
+  : look == 11 ? ( lsat = 0; mono = 2; );
+  con *= strength;
+  i = 0;
+  loop(256,
+    v = i/255;
+    mono == 2 ? (
+      i[0] = i[256] = i[512] = min(max((v - 0.5)*strength + 0.5, 0), 1);
+      tb = 1000 + i;
+      wl = i[0];
+      tb[0] = (dsr + (dhr - dsr)*wl)*255 - wl*255;
+      tb[256] = (dsg + (dhg - dsg)*wl)*255 - wl*255;
+      tb[512] = (dsb + (dhb - dsb)*wl)*255 - wl*255;
+    ) : (
+      i[0] = curve_v(v, lft, gmr, gnr, con);
+      i[256] = curve_v(v, lft, gmg, gng, con);
+      i[512] = curve_v(v, lft, gmb, gnb, con);
+      wl = v*v*(3 - 2*v);
+      tb = 1000 + i;
+      tb[0] = shr*(1 - wl) + hir*wl; tb[256] = shg*(1 - wl) + hig*wl; tb[512] = shb*(1 - wl) + hib*wl;
+    );
+    i += 1;
+  );
+);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  sprintf(#key, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", look, strength, dsr, dsg, dsb, dhr, dhg, dhb);
+  strcmp(#key, #last_key) != 0 ? ( build_look(); strcpy(#last_key, #key); );
+  wsum = bwr + bwg + bwb; abs(wsum) < 0.001 ? wsum = 1;
+  wr = mono ? bwr/wsum : 0.2126; wg = mono ? bwg/wsum : 0.7152; wb = mono ? bwb/wsum : 0.0722;
+  gfx_evalrect(0, 0, W, H, "
+    _4 = r; _5 = g; _6 = b;
+    _1 = min(max(wr*r + wg*g + wb*b, 0), 255);
+    _7 = floor(_1 + 0.5);
+    mono ? ( _1 = _7[0]*255; _2 = _7[256]*255; _3 = _7[512]*255; ) : (
+      _1 = r[0]*255; _2 = g[256]*255; _3 = b[512]*255;
+      _8 = 0.2126*_1 + 0.7152*_2 + 0.0722*_3;
+      _1 = _8 + (_1 - _8)*lsat; _2 = _8 + (_2 - _8)*lsat; _3 = _8 + (_3 - _8)*lsat;
+    );
+    _1 += _7[1000]; _2 += _7[1256]; _3 += _7[1512];
+    r = min(max(_4 + (_1 - _4)*amount, 0), 255); g = min(max(_5 + (_2 - _5)*amount, 0), 255); b = min(max(_6 + (_3 - _6)*amount, 0), 255);
+  ");
+);

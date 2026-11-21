@@ -1,0 +1,44 @@
+// LS Blend Modes
+//@ls category Compose
+//@ls title Blend Modes
+//@ls where both
+//@ls about Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.
+//@ls help mode How this layer combines with the tracks below.
+//@ls help opacity Layer opacity.
+//@ls example Light leak overlay :: mode=2 opacity=0.8 :: Put on a track holding a light-leak clip, above the footage.
+//@ls tip Put this on the upper track; it blends that track's video over everything below.
+//@ls enum mode Normal|Multiply|Screen|Overlay|Soft light|Add|Subtract|Difference|Lighten|Darken|Color dodge
+//@param1:mode 'Blend mode' 2 0 10 2 1
+//@param2:opacity 'Opacity' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+own && bg != 0 ? (
+  gfx_mode = 0; gfx_a = 1;
+  input_info(bg, bw, bh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+  topimg = gfx_img_resize(topimg, W, H);
+  gfx_dest = topimg; gfx_set(0, 0, 0, 1, 0, topimg); gfx_fillrect(0, 0, W, H); gfx_mode = 0x100; gfx_blit(0, 1);
+  gfx_dest = -1; gfx_mode = 0;
+  bm = mode; op = opacity;
+  gfx_evalrect(0, 0, W, H, "
+    _1 = r*(1/255); _2 = g*(1/255); _3 = b*(1/255);
+    _4 = sr*(1/255); _5 = sg*(1/255); _6 = sb*(1/255);
+    bm == 1 ? ( _7 = _1*_4; _8 = _2*_5; _9 = _3*_6; )
+    : bm == 2 ? ( _7 = 1 - (1 - _1)*(1 - _4); _8 = 1 - (1 - _2)*(1 - _5); _9 = 1 - (1 - _3)*(1 - _6); )
+    : bm == 3 ? ( _7 = _1 < 0.5 ? 2*_1*_4 : 1 - 2*(1 - _1)*(1 - _4); _8 = _2 < 0.5 ? 2*_2*_5 : 1 - 2*(1 - _2)*(1 - _5);
+                  _9 = _3 < 0.5 ? 2*_3*_6 : 1 - 2*(1 - _3)*(1 - _6); )
+    : bm == 4 ? ( _7 = (1 - 2*_4)*_1*_1 + 2*_4*_1; _8 = (1 - 2*_5)*_2*_2 + 2*_5*_2; _9 = (1 - 2*_6)*_3*_3 + 2*_6*_3; )
+    : bm == 5 ? ( _7 = _1 + _4; _8 = _2 + _5; _9 = _3 + _6; )
+    : bm == 6 ? ( _7 = _1 - _4; _8 = _2 - _5; _9 = _3 - _6; )
+    : bm == 7 ? ( _7 = abs(_1 - _4); _8 = abs(_2 - _5); _9 = abs(_3 - _6); )
+    : bm == 8 ? ( _7 = max(_1, _4); _8 = max(_2, _5); _9 = max(_3, _6); )
+    : bm == 9 ? ( _7 = min(_1, _4); _8 = min(_2, _5); _9 = min(_3, _6); )
+    : bm == 10 ? ( _7 = _4 < 0.999 ? _1/(1 - _4) : 1; _8 = _5 < 0.999 ? _2/(1 - _5) : 1; _9 = _6 < 0.999 ? _3/(1 - _6) : 1; )
+    : ( _7 = _4; _8 = _5; _9 = _6; );
+    r = min(max(r + (_7*255 - r)*op, 0), 255); g = min(max(g + (_8*255 - g)*op, 0), 255); b = min(max(b + (_9*255 - b)*op, 0), 255);
+  ", 0, topimg);
+) : own ? gfx_blit(0, 1);

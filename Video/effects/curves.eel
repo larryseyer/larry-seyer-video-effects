@@ -1,0 +1,88 @@
+// LS Curves
+//@ls category Color
+//@ls title Curves
+//@ls where both
+//@ls about Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel.
+//@ls help cm0 Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.
+//@ls help mix Blend with the original.
+//@ls example Gentle S-curve :: cm1=0.12 cm2=0.29 cm4=0.71 cm5=0.88
+//@ls example Faded blacks :: cm0=0.08
+//@ls example Warmer highlights :: cr5=0.86 cr6=1 cb5=0.8 cb6=0.95
+//@ls tip The channel curves (red, green, blue) are applied first, then the master curve.
+//@ls curve "Master" cm0 cm1 cm2 cm3 cm4 cm5 cm6
+//@ls curve "Red" cr0 cr1 cr2 cr3 cr4 cr5 cr6
+//@ls curve "Green" cg0 cg1 cg2 cg3 cg4 cg5 cg6
+//@ls curve "Blue" cb0 cb1 cb2 cb3 cb4 cb5 cb6
+//@ls section "Output" mix
+//@param1:cm0 'Master 0%' 0.000000 0 1 0.000000 0.001
+//@param2:cm1 'Master 17%' 0.166667 0 1 0.166667 0.001
+//@param3:cm2 'Master 33%' 0.333333 0 1 0.333333 0.001
+//@param4:cm3 'Master 50%' 0.500000 0 1 0.500000 0.001
+//@param5:cm4 'Master 67%' 0.666667 0 1 0.666667 0.001
+//@param6:cm5 'Master 83%' 0.833333 0 1 0.833333 0.001
+//@param7:cm6 'Master 100%' 1.000000 0 1 1.000000 0.001
+//@param8:cr0 'Red 0%' 0.000000 0 1 0.000000 0.001
+//@param9:cr1 'Red 17%' 0.166667 0 1 0.166667 0.001
+//@param10:cr2 'Red 33%' 0.333333 0 1 0.333333 0.001
+//@param11:cr3 'Red 50%' 0.500000 0 1 0.500000 0.001
+//@param12:cr4 'Red 67%' 0.666667 0 1 0.666667 0.001
+//@param13:cr5 'Red 83%' 0.833333 0 1 0.833333 0.001
+//@param14:cr6 'Red 100%' 1.000000 0 1 1.000000 0.001
+//@param15:cg0 'Green 0%' 0.000000 0 1 0.000000 0.001
+//@param16:cg1 'Green 17%' 0.166667 0 1 0.166667 0.001
+//@param17:cg2 'Green 33%' 0.333333 0 1 0.333333 0.001
+//@param18:cg3 'Green 50%' 0.500000 0 1 0.500000 0.001
+//@param19:cg4 'Green 67%' 0.666667 0 1 0.666667 0.001
+//@param20:cg5 'Green 83%' 0.833333 0 1 0.833333 0.001
+//@param21:cg6 'Green 100%' 1.000000 0 1 1.000000 0.001
+//@param22:cb0 'Blue 0%' 0.000000 0 1 0.000000 0.001
+//@param23:cb1 'Blue 17%' 0.166667 0 1 0.166667 0.001
+//@param24:cb2 'Blue 33%' 0.333333 0 1 0.333333 0.001
+//@param25:cb3 'Blue 50%' 0.500000 0 1 0.500000 0.001
+//@param26:cb4 'Blue 67%' 0.666667 0 1 0.666667 0.001
+//@param27:cb5 'Blue 83%' 0.833333 0 1 0.833333 0.001
+//@param28:cb6 'Blue 100%' 1.000000 0 1 1.000000 0.001
+//@param29:mix 'Mix' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// Monotone cubic (Fritsch-Carlson) through 7 evenly spaced points stored at pts[0..6]; v in 0..1.
+function mono_curve(pts, v) local(seg, t, y0, y1, d0, d1, m0, m1, hx, k) (
+  seg = min(floor(v*6), 5); t = v*6 - seg; hx = 1/6;
+  y0 = pts[seg]; y1 = pts[seg + 1];
+  k = (y1 - y0)/hx;
+  d0 = seg > 0 ? (pts[seg] - pts[seg - 1])/hx : k;
+  d1 = seg < 5 ? (pts[seg + 2] - pts[seg + 1])/hx : k;
+  m0 = d0*k <= 0 ? 0 : (d0 + k)*0.5;
+  m1 = d1*k <= 0 ? 0 : (d1 + k)*0.5;
+  k == 0 ? ( m0 = m1 = 0; );
+  abs(m0) > 3*abs(k) ? m0 = 3*k;
+  abs(m1) > 3*abs(k) ? m1 = 3*k;
+  y0*(2*t*t*t - 3*t*t + 1) + hx*m0*(t*t*t - 2*t*t + t) + y1*(-2*t*t*t + 3*t*t) + hx*m1*(t*t*t - t*t);
+);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  pts = 2000;
+  sprintf(#key, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", cm0, cm1, cm2, cm3, cm4, cm5, cm6, cr0, cr1, cr2, cr3, cr4, cr5, cr6, cg0, cg1, cg2, cg3, cg4, cg5, cg6, cb0, cb1, cb2, cb3, cb4, cb5, cb6, mix);
+  strcmp(#key, #last_key) != 0 ? (
+    pts[0] = cm0; pts[1] = cm1; pts[2] = cm2; pts[3] = cm3; pts[4] = cm4; pts[5] = cm5; pts[6] = cm6;
+    pts[10] = cr0; pts[11] = cr1; pts[12] = cr2; pts[13] = cr3; pts[14] = cr4; pts[15] = cr5; pts[16] = cr6;
+    pts[20] = cg0; pts[21] = cg1; pts[22] = cg2; pts[23] = cg3; pts[24] = cg4; pts[25] = cg5; pts[26] = cg6;
+    pts[30] = cb0; pts[31] = cb1; pts[32] = cb2; pts[33] = cb3; pts[34] = cb4; pts[35] = cb5; pts[36] = cb6;
+    i = 0;
+    loop(256,
+      v = i/255;
+      i[0] = v + (min(max(mono_curve(pts, min(max(mono_curve(pts + 10, v), 0), 1)), 0), 1) - v)*mix;
+      i[256] = v + (min(max(mono_curve(pts, min(max(mono_curve(pts + 20, v), 0), 1)), 0), 1) - v)*mix;
+      i[512] = v + (min(max(mono_curve(pts, min(max(mono_curve(pts + 30, v), 0), 1)), 0), 1) - v)*mix;
+      i += 1;
+    );
+    strcpy(#last_key, #key);
+  );
+  gfx_procrect(0, 0, W, H, 0);
+);

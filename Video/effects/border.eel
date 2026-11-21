@@ -1,0 +1,173 @@
+// LS Border & Shadow
+//@ls category Transform
+//@ls title Border & Shadow
+//@ls where both
+//@ls about Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color.
+//@ls help size 1 makes picture plus border fill the frame; smaller insets it.
+//@ls help posx Offset, -1 left to 1 right (half-frame units).
+//@ls help posy Offset, -1 up to 1 down.
+//@ls help radius Corner rounding, fraction of the shorter side.
+//@ls help bstyle Border look.
+//@ls help bwidth Border width, fraction of frame height (glow spreads three times wider).
+//@ls help bopacity Border opacity.
+//@ls help shadow Drop shadow strength.
+//@ls help shdist Shadow offset, fraction of frame height.
+//@ls help shang Direction the shadow falls in degrees (90 = down).
+//@ls help shsoft Shadow blur, fraction of frame height.
+//@ls help inner Darkens the picture toward its edges.
+//@ls help innersize How far the inner shading reaches.
+//@ls help bgmode What shows around the framed picture.
+//@ls example Framed clip over blurred background :: size=0.85 bstyle=1 bwidth=0.008 radius=0.03 bgmode=1 shadow=0.6
+//@ls example Mint glow frame :: size=1 bstyle=3 bwidth=0.008 bcr=0.24 bcg=0.87 bcb=0.66
+//@ls enum bstyle None|Solid|Double line|Glow|Gradient
+//@ls enum bgmode Tracks below|Blurred copy|Solid color|Black
+//@ls point "Position" posx posy
+//@ls color "Border color" bcr bcg bcb
+//@ls color "Second border color" b2r b2g b2b
+//@ls color "Shadow color" scr scg scb
+//@ls color "Background color" bgr bgg bgb
+//@ls section "Picture" size posx posy radius
+//@ls section "Border" bstyle bwidth bopacity
+//@ls section "Drop shadow" shadow shdist shang shsoft
+//@ls section "Inner shading" inner innersize
+//@ls section "Background" bgmode
+//@param1:size 'Picture size' 0.85 0.1 1 0.85 0.001
+//@param2:posx 'Position X' 0 -1 1 0 0.001
+//@param3:posy 'Position Y' 0 -1 1 0 0.001
+//@param4:radius 'Corner radius' 0.03 0 0.5 0.03 0.001
+//@param5:bstyle 'Border style' 1 0 4 1 1
+//@param6:bwidth 'Border width' 0.008 0 0.06 0.008 0.0005
+//@param7:bcr 'Border red' 1 0 1 1 0.001
+//@param8:bcg 'Border green' 1 0 1 1 0.001
+//@param9:bcb 'Border blue' 1 0 1 1 0.001
+//@param10:b2r 'Second red' 0.24 0 1 0.24 0.001
+//@param11:b2g 'Second green' 0.87 0 1 0.87 0.001
+//@param12:b2b 'Second blue' 0.66 0 1 0.66 0.001
+//@param13:bopacity 'Border opacity' 1 0 1 1 0.001
+//@param14:shadow 'Shadow opacity' 0.6 0 1 0.6 0.001
+//@param15:shdist 'Shadow distance' 0.015 0 0.1 0.015 0.0005
+//@param16:shang 'Shadow angle' 120 -180 180 120 1
+//@param17:shsoft 'Shadow softness' 0.03 0 0.15 0.03 0.0005
+//@param18:scr 'Shadow red' 0 0 1 0 0.001
+//@param19:scg 'Shadow green' 0 0 1 0 0.001
+//@param20:scb 'Shadow blue' 0 0 1 0 0.001
+//@param21:inner 'Inner shading' 0.25 0 1 0.25 0.001
+//@param22:innersize 'Shading size' 0.06 0.005 0.3 0.06 0.0005
+//@param23:bgmode 'Background' 0 0 3 0 1
+//@param24:bgr 'Background red' 0.1 0 1 0.1 0.001
+//@param25:bgg 'Background green' 0.1 0 1 0.1 0.001
+//@param26:bgb 'Background blue' 0.12 0 1 0.12 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+bg = input_track(0);
+
+// #include "lib/layer.eel"
+
+// Border image (iw x ih) around a content box inset by `pad`: ring styles drawn from the rounded-box distance.
+function build_border(img, iw, ih, pad, rad, bw) (
+  fb_pad = pad; fb_rad = rad; fb_bw = max(bw, 0.75); fb_style = bstyle; fb_iw = iw; fb_ih = ih;
+  fb_c1r = bcr*255; fb_c1g = bcg*255; fb_c1b = bcb*255; fb_c2r = b2r*255; fb_c2g = b2g*255; fb_c2b = b2b*255;
+  gfx_dest = img;
+  gfx_set(0, 0, 0, 1, 0, img, 0); gfx_fillrect(0, 0, iw, ih);
+  gfx_evalrect(0, 0, iw, ih, "
+    _2 = abs((_1 % _span) + 0.5 - fb_iw*0.5) - (fb_iw*0.5 - fb_pad - fb_rad);
+    _3 = abs(_slice*_slice_size + floor(_1/_span) + 0.5 - fb_ih*0.5) - (fb_ih*0.5 - fb_pad - fb_rad);
+    _4 = sqrt(sqr(max(_2, 0)) + sqr(max(_3, 0))) + min(max(_2, _3), 0) - fb_rad;
+    _5 = min(max(0.5 + _4, 0), 1)*min(max(fb_bw + 0.5 - _4, 0), 1);
+    _6 = 0;
+    fb_style == 2 ? (
+      _6 = (_4 > fb_bw*0.6)*1;
+      _5 = min(max(0.5 + _4, 0), 1)*(min(max(fb_bw*0.4 + 0.5 - _4, 0), 1) + min(max(_4 - fb_bw*0.6 + 0.5, 0), 1)*min(max(fb_bw + 0.5 - _4, 0), 1));
+    ) : fb_style == 3 ? (
+      _7 = max(_4, 0)/fb_bw; _5 = (_4 > -0.5)*min(max(1 - _7, 0), 1)^2;
+    ) : fb_style == 4 ? (
+      _6 = (_slice*_slice_size + floor(_1/_span))/fb_ih;
+    );
+    r = fb_c1r + (fb_c2r - fb_c1r)*_6; g = fb_c1g + (fb_c2g - fb_c1g)*_6; b = fb_c1b + (fb_c2b - fb_c1b)*_6;
+    a = 255*_5;
+    _1 += 1;
+  ");
+  gfx_dest = -1;
+);
+
+// Inner shading image (iw x ih): shadow color fading in from the box edges.
+function build_inner(img, iw, ih, rad, sz) (
+  in_iw = iw; in_ih = ih; in_rad = rad; in_sz = max(sz, 1);
+  gfx_set(scr, scg, scb, 1, 0, img, 1); gfx_fillrect(0, 0, iw, ih);
+  gfx_dest = img;
+  gfx_evalrect(0, 0, iw, ih, "
+    _2 = abs((_1 % _span) + 0.5 - in_iw*0.5) - (in_iw*0.5 - in_rad);
+    _3 = abs(_slice*_slice_size + floor(_1/_span) + 0.5 - in_ih*0.5) - (in_ih*0.5 - in_rad);
+    _4 = -(sqrt(sqr(max(_2, 0)) + sqr(max(_3, 0))) + min(max(_2, _3), 0) - in_rad);
+    _5 = 1 - min(max(_4/in_sz, 0), 1);
+    a = 255*_5*_5*min(max(_4 + 0.5, 0), 1);
+    _1 += 1;
+  ");
+  gfx_dest = -1;
+);
+
+own && bg != 0 ? (
+  gfx_mode = 0; gfx_a = 1;
+  bgmode == 1 ? blur_fill(0)
+  : bgmode == 2 ? ( gfx_set(bgr, bgg, bgb); gfx_fillrect(0, 0, W, H); )
+  : bgmode == 3 ? ( gfx_set(0); gfx_fillrect(0, 0, W, H); )
+  : ( input_info(bg, bw0, bh0) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); ); );
+
+  // content box: the source fitted so picture plus border fills the frame at size 1, then offset
+  bpx = bstyle == 0 ? 0 : bwidth*H*(bstyle == 3 ? 3 : 1);
+  fit = min((W - 2*bpx)/sw, (H - 2*bpx)/sh)*size;
+  cw = floor(sw*fit); ch = floor(sh*fit);
+  cx = floor((W - cw)*0.5 + posx*W*0.5); cy = floor((H - ch)*0.5 + posy*H*0.5);
+  rad = radius*min(cw, ch)*0.5;
+
+  shadow > 0.001 ? (
+    sk = max(shsoft*H, 1);
+    ssc = max(1, (max(cw, ch) + 2*sk)/320);
+    sws = ceil((cw + 2*sk)/ssc); shs = ceil((ch + 2*sk)/ssc);
+    sprintf(#skey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g", sws, shs, rad, sk, scr, scg, scb);
+    strcmp(#skey, #last_skey) != 0 ? (
+      simg = gfx_img_resize(simg, sws, shs);
+      soft_rrect(simg, sws, shs, (rad + sk*0.5)/ssc, sk/ssc, scr, scg, scb);
+      strcpy(#last_skey, #skey);
+    );
+    gfx_mode = 0x10100; gfx_a = shadow;
+    gfx_blit(simg, 0, cx - sk + cos(shang*$pi/180)*shdist*H, cy - sk + sin(shang*$pi/180)*shdist*H,
+             cw + 2*sk, ch + 2*sk, 0, 0, sws, shs);
+  );
+
+  bpx > 0.25 ? (
+    pad = ceil(bpx) + 2;
+    sprintf(#bkey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", cw, ch, rad, bpx, bstyle, bcr, bcg, bcb, b2r, b2g, b2b);
+    strcmp(#bkey, #last_bkey) != 0 ? (
+      bimg = gfx_img_resize(bimg, cw + 2*pad, ch + 2*pad);
+      build_border(bimg, cw + 2*pad, ch + 2*pad, pad, rad, bpx);
+      strcpy(#last_bkey, #bkey);
+    );
+    gfx_mode = 0x10000; gfx_a = bopacity;
+    gfx_blit(bimg, 0, cx - pad, cy - pad, cw + 2*pad, ch + 2*pad, 0, 0, cw + 2*pad, ch + 2*pad);
+  );
+
+  layer = gfx_img_resize(layer, cw, ch);
+  gfx_dest = layer; gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 0, 0, 0, cw, ch, 0, 0, sw, sh);
+  gfx_mode = 0;
+  rad >= 1 ? round_corners(cw, ch, min(rad, min(cw, ch)*0.5));
+  gfx_dest = -1;
+  gfx_mode = 0x10000; gfx_a = 1;
+  gfx_blit(layer, 0, cx, cy, cw, ch, 0, 0, cw, ch);
+
+  inner > 0.001 ? (
+    sprintf(#ikey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g", cw, ch, rad, innersize, scr, scg, scb);
+    strcmp(#ikey, #last_ikey) != 0 ? (
+      iimg = gfx_img_resize(iimg, cw, ch);
+      build_inner(iimg, cw, ch, rad, innersize*H);
+      strcpy(#last_ikey, #ikey);
+    );
+    gfx_mode = 0x10000; gfx_a = inner;
+    gfx_blit(iimg, 0, cx, cy, cw, ch, 0, 0, cw, ch);
+  );
+  gfx_mode = 0; gfx_a = 1;
+) : own ? gfx_blit(0, 1);

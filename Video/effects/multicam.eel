@@ -1,0 +1,93 @@
+// LS Multiview Camera Select
+//@ls category Transform
+//@ls title Multiview Camera Select
+//@ls where both
+//@ls about Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions.
+//@ls help cam Camera to show. 2x2: 1 top-left, 2 top-right, 3 bottom-left, 4 bottom-right. 0 shows the whole multiview.
+//@ls help grid Layout of the multiview recording.
+//@ls help zoom Punch in on the chosen camera.
+//@ls help panx With punch-in: which part of that camera shows, -1 left to 1 right.
+//@ls help pany -1 top to 1 bottom.
+//@ls help trim Cuts this fraction off each camera's edges to hide multiview dividers.
+//@ls help sharpen Restores crispness when a quarter is enlarged (costs speed at 4K).
+//@ls help layout One camera, two side by side, or one inset over another.
+//@ls help camb Second camera for Two-up and Picture-in-picture.
+//@ls help split Where the two-up divides the frame.
+//@ls help gap Gap between two-up panels, fraction of frame width.
+//@ls help pipcorner Corner for the inset camera.
+//@ls help pipsize Inset width, fraction of frame width.
+//@ls example Camera 2 full screen :: cam=2
+//@ls example Guitar close-up from camera 1 :: cam=1 zoom=1.8 panx=0.4 pany=0.3 sharpen=0.4
+//@ls example Cameras 1 and 4 side by side :: layout=1 cam=1 camb=4
+//@ls tip Split the recording at every cut and set the camera on each item.
+//@ls tip Crossfade neighbouring items and put a Transition effect on the track for dissolves or pushes between cameras.
+//@ls enum grid 2x2 (4 cameras)|3x3 (9 cameras)|Side by side (2)|Stacked (2)
+//@ls enum layout Single camera|Two-up|Picture-in-picture
+//@ls enum pipcorner Top left|Top right|Bottom left|Bottom right
+//@ls point "Pan" panx pany
+//@ls section "Camera" cam grid zoom panx pany trim sharpen
+//@ls section "Layout" layout camb split gap pipcorner pipsize
+//@param1:cam 'Camera' 1 0 9 1 1
+//@param2:grid 'Multiview grid' 0 0 3 0 1
+//@param3:zoom 'Punch in' 1 1 3 1 0.001
+//@param4:panx 'Pan X' 0 -1 1 0 0.001
+//@param5:pany 'Pan Y' 0 -1 1 0 0.001
+//@param6:trim 'Edge trim' 0.004 0 0.05 0.004 0.0005
+//@param7:sharpen 'Sharpen' 0 0 1 0 0.001
+//@param8:layout 'Layout' 0 0 2 0 1
+//@param9:camb 'Second camera' 2 1 9 2 1
+//@param10:split 'Two-up split' 0.5 0.2 0.8 0.5 0.001
+//@param11:gap 'Gap' 0.006 0 0.05 0.006 0.0005
+//@param12:pipcorner 'Inset corner' 3 0 3 3 1
+//@param13:pipsize 'Inset size' 0.32 0.1 0.6 0.32 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// Draw camera `cn` into the destination rect, cropped to fill it, with punch-in and pan.
+function draw_cam(cn, dx, dy, dw, dh, zm) local(cols, rows, cc, rr, cellw, cellh, ox, oy, iw, ih, ar) (
+  cols = grid == 1 ? 3 : grid == 2 ? 2 : grid == 3 ? 1 : 2;
+  rows = grid == 1 ? 3 : grid == 2 ? 1 : grid == 3 ? 2 : 2;
+  cn = min(max(cn, 1), cols*rows);
+  cc = (cn - 1) % cols; rr = floor((cn - 1)/cols);
+  cellw = sw/cols; cellh = sh/rows;
+  ox = cc*cellw + trim*cellw; oy = rr*cellh + trim*cellh;
+  iw = cellw*(1 - 2*trim); ih = cellh*(1 - 2*trim);
+  ar = dw/dh;
+  iw/ih > ar ? ( ox += (iw - ih*ar)*0.5; iw = ih*ar; ) : ( oy += (ih - iw/ar)*0.5; ih = iw/ar; );
+  ox += (iw - iw/zm)*0.5*(1 + panx); oy += (ih - ih/zm)*0.5*(1 + pany);
+  iw /= zm; ih /= zm;
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 0, dx, dy, dw, dh, ox, oy, iw, ih);
+);
+
+own ? (
+  cam < 0.5 ? gfx_blit(0, 1) : (
+    gfx_set(0); gfx_fillrect(0, 0, W, H);
+    layout == 1 ? (
+      gp = floor(gap*W*0.5);
+      sx = floor(W*split);
+      draw_cam(cam, 0, 0, sx - gp, H, zoom);
+      draw_cam(camb, sx + gp, 0, W - sx - gp, H, zoom);
+    ) : layout == 2 ? (
+      draw_cam(cam, 0, 0, W, H, zoom);
+      pw = floor(W*pipsize); ph = floor(pw*H/W); mg = floor(H*0.04); bd = max(2, floor(H/270));
+      px = (pipcorner & 1) ? W - pw - mg : mg; py = (pipcorner & 2) ? H - ph - mg : mg;
+      gfx_mode = 0; gfx_set(0, 0, 0, 0.35); gfx_fillrect(px - bd + mg*0.15, py - bd + mg*0.15, pw + 2*bd, ph + 2*bd);
+      gfx_set(1, 1, 1, 1); gfx_fillrect(px - bd, py - bd, pw + 2*bd, ph + 2*bd);
+      draw_cam(camb, px, py, pw, ph, 1);
+    ) : draw_cam(cam, 0, 0, W, H, zoom);
+    sharpen > 0.001 ? (
+      sb1 = gfx_img_resize(sb1, (W/2)|0, (H/2)|0); gfx_dest = sb1; gfx_mode = 0x100;
+      gfx_blit(-1, 0, 0, 0, (W/2)|0, (H/2)|0, 0, 0, W, H);
+      sb2 = gfx_img_resize(sb2, W, H); gfx_dest = sb2;
+      gfx_blit(sb1, 0, 0, 0, W, H, 0, 0, (W/2)|0, (H/2)|0);
+      gfx_dest = -1; gfx_mode = 0;
+      shamt = sharpen*1.6;
+      gfx_evalrect(0, 0, W, H, "r = min(max(r + shamt*(r - sr), 0), 255); g = min(max(g + shamt*(g - sg), 0), 255); b = min(max(b + shamt*(b - sb), 0), 255);", 0, sb2);
+    );
+    gfx_mode = 0; gfx_a = 1;
+  );
+);

@@ -1,0 +1,29 @@
+// Image pyramid. pyr_down(src, srcw, srch, levels) fills level k (1..levels) with a filtered half-size copy of
+// level k-1 (level 0 = src). Handles and sizes live in memory: pyr_img[k], pyr_w[k], pyr_h[k].
+pyr_img = 9100; pyr_w = 9200; pyr_h = 9300;
+function pyr_down(src, srcw, srch, levels) local(k, prev, pw, ph) (
+  prev = src; pw = srcw; ph = srch; k = 1;
+  loop(levels,
+    pyr_w[k] = max((pw/2)|0, 2); pyr_h[k] = max((ph/2)|0, 2);
+    pyr_img[k] = gfx_img_resize(pyr_img[k], pyr_w[k], pyr_h[k]);
+    gfx_dest = pyr_img[k]; gfx_mode = 0x100; gfx_a = 1;
+    gfx_blit(prev, 0, 0, 0, pyr_w[k], pyr_h[k], 0, 0, pw, ph);
+    prev = pyr_img[k]; pw = pyr_w[k]; ph = pyr_h[k]; k += 1;
+  );
+  gfx_dest = -1; gfx_mode = 0;
+  prev;
+);
+// Blurred copy of the framebuffer into image `dst` (W x H): down `levels` times, then back up.
+function blur_copy(dst, levels) local(k) (
+  pyr_down(-1, W, H, levels);
+  k = levels;
+  while (k > 1) (
+    gfx_dest = pyr_img[k - 1]; gfx_mode = 0x100; gfx_a = 1;
+    gfx_blit(pyr_img[k], 0, 0, 0, pyr_w[k - 1], pyr_h[k - 1], 0, 0, pyr_w[k], pyr_h[k]);
+    k -= 1;
+  );
+  gfx_dest = dst; gfx_mode = 0x100;
+  gfx_blit(pyr_img[1], 0, 0, 0, W, H, 0, 0, pyr_w[1], pyr_h[1]);
+  gfx_dest = -1; gfx_mode = 0;
+  dst;
+);

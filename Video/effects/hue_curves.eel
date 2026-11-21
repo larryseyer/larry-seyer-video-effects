@@ -1,0 +1,96 @@
+// LS Hue Curves
+//@ls category Color
+//@ls title Hue Curves
+//@ls where both
+//@ls about Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.
+//@ls help hh0 Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.
+//@ls help hs0 Saturation multiplier per color range (same order; 1 unchanged).
+//@ls help hl0 Brightness offset per color range (same order).
+//@ls help ls0 Saturation of dark areas.
+//@ls help ls1 Saturation of midtones.
+//@ls help ls2 Saturation of bright areas.
+//@ls help mix Blend with the original.
+//@ls example Calm down greens :: hs2=0.4
+//@ls example Push oranges toward red :: hh1=-10
+//@ls example Desaturate the shadows :: ls0=0.4
+//@ls huecurve "Hue vs Hue shift" hh0 hh1 hh2 hh3 hh4 hh5
+//@ls huecurve "Hue vs Saturation" hs0 hs1 hs2 hs3 hs4 hs5
+//@ls huecurve "Hue vs Brightness" hl0 hl1 hl2 hl3 hl4 hl5
+//@ls section "Saturation by brightness" ls0 ls1 ls2
+//@ls section "Output" mix
+//@param1:hh0 'Red hue shift' 0 -60 60 0 0.1
+//@param2:hh1 'Yellow hue shift' 0 -60 60 0 0.1
+//@param3:hh2 'Green hue shift' 0 -60 60 0 0.1
+//@param4:hh3 'Cyan hue shift' 0 -60 60 0 0.1
+//@param5:hh4 'Blue hue shift' 0 -60 60 0 0.1
+//@param6:hh5 'Magenta hue shift' 0 -60 60 0 0.1
+//@param7:hs0 'Red saturation' 1 0 2 1 0.001
+//@param8:hs1 'Yellow saturation' 1 0 2 1 0.001
+//@param9:hs2 'Green saturation' 1 0 2 1 0.001
+//@param10:hs3 'Cyan saturation' 1 0 2 1 0.001
+//@param11:hs4 'Blue saturation' 1 0 2 1 0.001
+//@param12:hs5 'Magenta saturation' 1 0 2 1 0.001
+//@param13:hl0 'Red brightness' 0 -0.3 0.3 0 0.001
+//@param14:hl1 'Yellow brightness' 0 -0.3 0.3 0 0.001
+//@param15:hl2 'Green brightness' 0 -0.3 0.3 0 0.001
+//@param16:hl3 'Cyan brightness' 0 -0.3 0.3 0 0.001
+//@param17:hl4 'Blue brightness' 0 -0.3 0.3 0 0.001
+//@param18:hl5 'Magenta brightness' 0 -0.3 0.3 0 0.001
+//@param19:ls0 'Shadow saturation' 1 0 2 1 0.001
+//@param20:ls1 'Midtone saturation' 1 0 2 1 0.001
+//@param21:ls2 'Highlight saturation' 1 0 2 1 0.001
+//@param22:mix 'Mix' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// Periodic Catmull-Rom through 6 points at pts[0..5] spaced 60 degrees apart; deg in 0..360.
+function hue_interp(pts, deg) local(seg, t, p0, p1, p2, p3) (
+  seg = floor(deg/60) % 6; t = deg/60 - floor(deg/60);
+  p0 = pts[(seg + 5) % 6]; p1 = pts[seg]; p2 = pts[(seg + 1) % 6]; p3 = pts[(seg + 2) % 6];
+  0.5*((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t*t + (-p0 + 3*p1 - 3*p2 + p3)*t*t*t);
+);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  sprintf(#key, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", hh0, hh1, hh2, hh3, hh4, hh5, hs0, hs1, hs2, hs3, hs4, hs5, hl0, hl1, hl2, hl3, hl4, hl5);
+  strcmp(#key, #last_key) != 0 ? (
+    pts = 3000;
+    pts[0] = hh0; pts[1] = hh1; pts[2] = hh2; pts[3] = hh3; pts[4] = hh4; pts[5] = hh5;
+    pts[10] = hs0; pts[11] = hs1; pts[12] = hs2; pts[13] = hs3; pts[14] = hs4; pts[15] = hs5;
+    pts[20] = hl0; pts[21] = hl1; pts[22] = hl2; pts[23] = hl3; pts[24] = hl4; pts[25] = hl5;
+    // tables indexed by hue degree: cos/sin of shift, saturation factor, brightness offset
+    d = 0;
+    loop(361,
+      sh_ang = hue_interp(pts, d)*$pi/180;
+      tb = 4000 + d;
+      tb[0] = cos(sh_ang); tb[400] = sin(sh_ang);
+      tb[800] = max(hue_interp(pts + 10, d), 0);
+      tb[1200] = hue_interp(pts + 20, d)*255;
+      d += 1;
+    );
+    strcpy(#last_key, #key);
+  );
+  gfx_evalrect(0, 0, W, H, "
+    _1 = 2*r - g - b; _2 = 1.7320508*(g - b);
+    _3 = max(r, max(g, b)) - min(r, min(g, b));
+    _3 > 0.5 ? (
+      _4 = floor(atan2(_2, _1)*(180/$pi) + 360.5) % 360;
+      _5 = (r + g + b)*(1/3);
+      _6 = (0.2126*r + 0.7152*g + 0.0722*b)*(1/255);
+      _7 = (1 - _6)*(1 - _6); _8 = _6*_6;
+      _9 = _4[4800]*(ls0*_7 + ls2*_8 + ls1*max(1 - _7 - _8, 0));
+      _10 = (_1*_4[4000] - _2*_4[4400])*_9;
+      _11 = (_1*_4[4400] + _2*_4[4000])*_9;
+      _12 = _5 + _4[5200]*min(_3*(1/128), 1);
+      _13 = r; _14 = g; _15 = b;
+      _16 = _12 + _10*(1/3);
+      _17 = _12 + (-_10*(1/3) + _11*0.57735027)*0.5;
+      _18 = _12 + (-_10*(1/3) - _11*0.57735027)*0.5;
+      r = min(max(_13 + (_16 - _13)*mix, 0), 255); g = min(max(_14 + (_17 - _14)*mix, 0), 255); b = min(max(_15 + (_18 - _15)*mix, 0), 255);
+    );
+  ");
+);

@@ -1,0 +1,100 @@
+// LS Film Look
+//@ls category Look
+//@ls title Film Look
+//@ls where both
+//@ls about Film grain, gate weave, flicker, dust and scratches, faded blacks, warmth, vignette and optional widescreen bars.
+//@ls help grain Grain strength.
+//@ls help grainsize Grain size in pixels at 1080p.
+//@ls help weave Frame wobble like a film projector.
+//@ls help flicker Brightness flicker.
+//@ls help dust Dust specks and occasional scratches.
+//@ls help fade Lifts black to this level.
+//@ls help warmth Negative cooler, positive warmer.
+//@ls help vig Edge darkening.
+//@ls help bars Widescreen bars.
+//@ls example Vintage film :: grain=0.35 dust=0.5 fade=0.12 warmth=0.4
+//@ls example Clean cinematic :: grain=0.15 weave=0 flicker=0 dust=0 bars=1
+//@ls enum bars None|2.39:1|1.85:1
+//@ls section "Texture" grain grainsize dust
+//@ls section "Motion" weave flicker
+//@ls section "Tone" fade warmth vig bars
+//@param1:grain 'Grain' 0.25 0 1 0.25 0.001
+//@param2:grainsize 'Grain size' 1.5 1 4 1.5 0.01
+//@param3:weave 'Gate weave' 0.3 0 1 0.3 0.001
+//@param4:flicker 'Flicker' 0.2 0 1 0.2 0.001
+//@param5:dust 'Dust & scratches' 0.3 0 1 0.3 0.001
+//@param6:fade 'Faded blacks' 0.08 0 0.4 0.08 0.001
+//@param7:warmth 'Warmth' 0.2 -1 1 0.2 0.001
+//@param8:vig 'Vignette' 0.35 0 1 0.35 0.001
+//@param9:bars 'Bars' 0 0 2 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/noise.eel"
+
+own ? (
+  fr = floor(project_time*max(framerate, 1));
+  gfx_mode = 0x100; gfx_a = 1;
+  wx = hash1(fr*1.7)*weave*H*0.003; wy = hash1(fr*2.3 + 5)*weave*H*0.004;
+  zm = 1 + weave*0.012;
+  gfx_set(0); gfx_fillrect(0, 0, W, H);
+  gfx_blit(0, 1, (W - W*zm)*0.5 + wx, (H - H*zm)*0.5 + wy, W*zm, H*zm);
+  gfx_mode = 0;
+  sprintf(#fkey, "%.9g %.9g", fade, warmth);
+  strcmp(#fkey, #last_fkey) != 0 ? (
+    i = 0;
+    loop(256,
+      v = fade + (i/255)*(1 - fade);
+      i[0] = min(v*(1 + 0.08*warmth), 1); i[256] = v; i[512] = min(v*(1 - 0.12*warmth), 1);
+      i += 1;
+    );
+    strcpy(#last_fkey, #fkey);
+  );
+  gfx_procrect(0, 0, W, H, 0);
+  flicker > 0.001 ? (
+    fl = hash1(fr*3.1 + 11)*flicker*0.08;
+    fl > 0 ? ( gfx_set(1, 1, 1, fl, 0); gfx_fillrect(0, 0, W, H); ) : ( gfx_set(0, 0, 0, -fl, 0); gfx_fillrect(0, 0, W, H); );
+  );
+  dust > 0.001 ? (
+    n = floor(dust*14*(0.5 + 0.5*hash1(fr*0.77)));
+    k = 0;
+    loop(n,
+      dx = (hash1(fr*13.1 + k*7.7)*0.5 + 0.5)*W; dy = (hash1(fr*17.3 + k*3.9)*0.5 + 0.5)*H;
+      ds = (1.5 + (hash1(fr*5.5 + k)*0.5 + 0.5)*3)*H/1080;
+      hash1(fr + k*1.3) > 0 ? gfx_set(0.05, 0.05, 0.05, 0.7) : gfx_set(0.95, 0.95, 0.9, 0.6);
+      gfx_fillrect(dx, dy, ds, ds*(1 + (hash1(k*9.1 + fr) + 1)*1.5));
+      k += 1;
+    );
+    hash1(fr*0.31) > 0.55 - dust*0.4 ? (
+      sx = (hash1(floor(fr/6)*2.9) *0.5 + 0.5)*W;
+      gfx_set(0.85, 0.85, 0.8, 0.25*dust); gfx_fillrect(sx, 0, max(1, H/900), H);
+    );
+  );
+  add_grain(grain, grainsize*H/1080);
+  vig > 0.001 ? (
+    mw = 64; mh = 36;
+    sprintf(#vkey, "%.9g", vig);
+    strcmp(#vkey, #last_vkey) != 0 ? (
+      fvm = gfx_img_resize(fvm, mw, mh);
+      gfx_set(0, 0, 0, 1, 0, fvm, 1); gfx_fillrect(0, 0, mw, mh);
+      gfx_dest = fvm;
+      gfx_evalrect(0, 0, mw, mh, "
+        _2 = ((_1 % _span) + 0.5)/mw*2 - 1; _3 = (_slice*_slice_size + floor(_1/_span) + 0.5)/mh*2 - 1;
+        _4 = min(max((sqrt(_2*_2 + _3*_3)*0.8839 - 0.35)/0.9, 0), 1);
+        a = 255*vig*_4*_4*(3 - 2*_4);
+        _1 += 1;
+      ");
+      gfx_dest = -1; strcpy(#last_vkey, #vkey);
+    );
+    gfx_mode = 0x10100; gfx_a = 1; gfx_blit(fvm, 0, 0, 0, W, H, 0, 0, mw, mh);
+  );
+  bars > 0 ? (
+    ratio = bars == 1 ? 2.39 : 1.85;
+    bh = floor((H - W/ratio)*0.5);
+    bh > 0 ? ( gfx_mode = 0; gfx_set(0); gfx_fillrect(0, 0, W, bh); gfx_fillrect(0, H - bh, W, bh); );
+  );
+  gfx_mode = 0; gfx_a = 1;
+);

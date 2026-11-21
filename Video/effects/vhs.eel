@@ -1,0 +1,75 @@
+// LS VHS & Retro TV
+//@ls category Look
+//@ls title VHS & Retro TV
+//@ls where both
+//@ls about Worn videotape: color bleed, soft picture, scanlines, noise, rolling tracking glitches and an optional PLAY label.
+//@ls help bleed Color fringing.
+//@ls help soften Horizontal smear like tape.
+//@ls help scan Scanline darkness.
+//@ls help noise Noise.
+//@ls help track Rolling tracking glitch band.
+//@ls help desat Washed-out color.
+//@ls help label Shows a PLAY label in the corner.
+//@ls example Home video flashback :: bleed=0.6 track=0.5 label=1
+//@ls toggle label
+//@param1:bleed 'Color bleed' 0.5 0 1 0.5 0.001
+//@param2:soften 'Softness' 0.5 0 1 0.5 0.001
+//@param3:scan 'Scanlines' 0.3 0 1 0.3 0.001
+//@param4:noise 'Noise' 0.25 0 1 0.25 0.001
+//@param5:track 'Tracking' 0.4 0 1 0.4 0.001
+//@param6:desat 'Washed out' 0.25 0 1 0.25 0.001
+//@param7:label 'PLAY label' 1 0 1 1 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/noise.eel"
+// #include "lib/rgbsplit.eel"
+
+own ? (
+  fr = floor(project_time*max(framerate, 1));
+  gfx_mode = 0; gfx_a = 1;
+  soften > 0.001 ? (
+    sw2 = max(floor(W/(1 + soften*3)), 2);
+    vh_s = gfx_img_resize(vh_s, sw2, H); gfx_dest = vh_s; gfx_mode = 0x100; gfx_blit(0, 0, 0, 0, sw2, H);
+    gfx_dest = -1; gfx_blit(vh_s, 0, 0, 0, W, H, 0, 0, sw2, H);
+  ) : gfx_blit(0, 1);
+  gfx_mode = 0;
+  rgb_split(bleed*W*0.006, 0);
+  desat > 0.001 ? (
+    dsv = desat;
+    gfx_evalrect(0, 0, W, H, "
+      _1 = 0.3*r + 0.59*g + 0.11*b;
+      r = _1 + (r - _1)*(1 - dsv)*0.95 + 10*dsv; g = _1 + (g - _1)*(1 - dsv) + 6*dsv; b = _1 + (b - _1)*(1 - dsv) + 12*dsv;
+      r = min(r, 255); g = min(g, 255); b = min(b, 255);
+    ");
+  );
+  track > 0.001 ? (
+    bandh = floor(H*(0.04 + track*0.08));
+    by = ((project_time*0.18*H + hash1(floor(project_time*0.5))*H) % (H + bandh)) - bandh;
+    vh_c = gfx_img_resize(vh_c, W, bandh + 2); gfx_dest = vh_c; gfx_blit(-1, 0, 0, 0, W, bandh + 2, 0, by, W, bandh + 2);
+    gfx_dest = -1;
+    y = 0;
+    loop(bandh,
+      off = hash1(fr*3.3 + y*0.37)*track*W*0.02*sin(y/bandh*$pi);
+      gfx_blit(vh_c, 0, off, by + y, W, 1, 0, y, W, 1);
+      y += 1;
+    );
+    gfx_set(1, 1, 1, 0.12*track); gfx_fillrect(0, by + bandh*0.45, W, max(2, H/360));
+  );
+  add_grain(noise*0.6, 1.5*H/1080);
+  scan > 0.001 ? (
+    step = max(2, floor(H/360)); y = 0;
+    gfx_set(0, 0, 0, scan*0.35);
+    loop(ceil(H/step), gfx_fillrect(0, y, W, step*0.5); y += step; );
+  );
+  label > 0.5 ? (
+    gfx_setfont(H*0.05, "Courier New", 'B');
+    gfx_set(1, 1, 1, 0.9); gfx_str_draw("PLAY", W*0.06, H*0.07, 0, 0, 0);
+    tri = H*0.035; tx = W*0.06 + H*0.16; ty = H*0.077;
+    k = 0; loop(ceil(tri), gfx_fillrect(tx, ty + k, (tri*0.5 - abs(k - tri*0.5))*1.7, 1); k += 1;);
+  );
+  gfx_mode = 0; gfx_a = 1;
+);

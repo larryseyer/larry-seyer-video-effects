@@ -1,0 +1,107 @@
+// Anti-aliased shapes drawn straight into the current destination (RGBA) with signed distance fields.
+// Every function blends color (cr, cg, cb in 0..1) at opacity `op` over the pixels it covers.
+// Pixel coordinates inside the evalrect code: x = sp_x0 + column + 0.5, y = sp_y0 + row + 0.5.
+
+function sp_bbox(x0, y0, x1, y1) (
+  sp_x0 = max(floor(x0), 0); sp_y0 = max(floor(y0), 0);
+  sp_w = min(ceil(x1), W) - sp_x0; sp_h = min(ceil(y1), H) - sp_y0;
+  sp_w > 0 && sp_h > 0;
+);
+
+// Rounded rectangle; mode 0 fill, mode 1 stroke of width `thick`, mode 2 soft (feathered by `thick`).
+function sdf_rrect(x, y, rw, rh, rad, thick, mode, cr, cg, cb, op) local(pad) (
+  pad = mode == 2 ? thick*2 + 2 : thick + 2;
+  sp_cx = x + rw*0.5; sp_cy = y + rh*0.5; sp_hx = rw*0.5; sp_hy = rh*0.5;
+  sp_rad = min(max(rad, 0), min(sp_hx, sp_hy)); sp_t = max(thick, 0.5); sp_mode = mode;
+  sp_r = cr*255; sp_g = cg*255; sp_b = cb*255; sp_op = op;
+  sp_bbox(x - pad, y - pad, x + rw + pad, y + rh + pad) && op > 0.001 ? gfx_evalrect(sp_x0, sp_y0, sp_w, sp_h, "
+    _2 = abs(sp_x0 + (_1 % _span) + 0.5 - sp_cx) - (sp_hx - sp_rad);
+    _3 = abs(sp_y0 + _slice*_slice_size + floor(_1/_span) + 0.5 - sp_cy) - (sp_hy - sp_rad);
+    _4 = sqrt(sqr(max(_2, 0)) + sqr(max(_3, 0))) + min(max(_2, _3), 0) - sp_rad;
+    _5 = sp_mode == 0 ? min(max(0.5 - _4, 0), 1)
+       : sp_mode == 1 ? min(max(0.5 - (abs(_4) - sp_t*0.5), 0), 1)
+       : min(max(0.5 - _4/(2*sp_t), 0), 1);
+    _5 *= sp_op;
+    r += (sp_r - r)*_5; g += (sp_g - g)*_5; b += (sp_b - b)*_5;
+    _1 += 1;
+  ");
+);
+
+// Ellipse fill (mode 0) or stroke (mode 1), using a scaled circle distance (accurate for near-circles).
+function sdf_ellipse(cx, cy, rx, ry, thick, mode, cr, cg, cb, op) (
+  sp_cx = cx; sp_cy = cy; sp_hx = max(rx, 0.5); sp_hy = max(ry, 0.5); sp_t = max(thick, 0.5); sp_mode = mode;
+  sp_r = cr*255; sp_g = cg*255; sp_b = cb*255; sp_op = op;
+  sp_bbox(cx - rx - thick - 2, cy - ry - thick - 2, cx + rx + thick + 2, cy + ry + thick + 2) && op > 0.001 ?
+  gfx_evalrect(sp_x0, sp_y0, sp_w, sp_h, "
+    _2 = (sp_x0 + (_1 % _span) + 0.5 - sp_cx)/sp_hx; _3 = (sp_y0 + _slice*_slice_size + floor(_1/_span) + 0.5 - sp_cy)/sp_hy;
+    _4 = (sqrt(_2*_2 + _3*_3) - 1)*min(sp_hx, sp_hy);
+    _5 = sp_mode == 0 ? min(max(0.5 - _4, 0), 1) : min(max(0.5 - (abs(_4) - sp_t*0.5), 0), 1);
+    _5 *= sp_op;
+    r += (sp_r - r)*_5; g += (sp_g - g)*_5; b += (sp_b - b)*_5;
+    _1 += 1;
+  ");
+);
+
+// Line segment with round caps, width `thick`.
+function sdf_line(x1, y1, x2, y2, thick, cr, cg, cb, op) local(pad) (
+  pad = thick + 2;
+  sp_ax = x1; sp_ay = y1; sp_dx = x2 - x1; sp_dy = y2 - y1; sp_ll = max(sp_dx*sp_dx + sp_dy*sp_dy, 0.0001);
+  sp_t = max(thick, 0.5); sp_r = cr*255; sp_g = cg*255; sp_b = cb*255; sp_op = op;
+  sp_bbox(min(x1, x2) - pad, min(y1, y2) - pad, max(x1, x2) + pad, max(y1, y2) + pad) && op > 0.001 ?
+  gfx_evalrect(sp_x0, sp_y0, sp_w, sp_h, "
+    _2 = sp_x0 + (_1 % _span) + 0.5 - sp_ax; _3 = sp_y0 + _slice*_slice_size + floor(_1/_span) + 0.5 - sp_ay;
+    _4 = min(max((_2*sp_dx + _3*sp_dy)/sp_ll, 0), 1);
+    _5 = sqrt(sqr(_2 - sp_dx*_4) + sqr(_3 - sp_dy*_4)) - sp_t*0.5;
+    _6 = min(max(0.5 - _5, 0), 1)*sp_op;
+    r += (sp_r - r)*_6; g += (sp_g - g)*_6; b += (sp_b - b)*_6;
+    _1 += 1;
+  ");
+);
+
+// Filled triangle (any winding), anti-aliased by edge distance.
+function sdf_tri(x1, y1, x2, y2, x3, y3, cr, cg, cb, op) local(s) (
+  s = ((x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)) > 0 ? 1 : -1;
+  sp_ax = x1; sp_ay = y1; sp_bx = x2; sp_by = y2; sp_qx = x3; sp_qy = y3; sp_s = s;
+  sp_r = cr*255; sp_g = cg*255; sp_b = cb*255; sp_op = op;
+  sp_bbox(min(x1, min(x2, x3)) - 2, min(y1, min(y2, y3)) - 2, max(x1, max(x2, x3)) + 2, max(y1, max(y2, y3)) + 2) &&
+  op > 0.001 ? gfx_evalrect(sp_x0, sp_y0, sp_w, sp_h, "
+    _2 = sp_x0 + (_1 % _span) + 0.5; _3 = sp_y0 + _slice*_slice_size + floor(_1/_span) + 0.5;
+    _4 = sp_s*((sp_bx - sp_ax)*(_3 - sp_ay) - (sp_by - sp_ay)*(_2 - sp_ax))/sqrt(sqr(sp_bx - sp_ax) + sqr(sp_by - sp_ay));
+    _5 = sp_s*((sp_qx - sp_bx)*(_3 - sp_by) - (sp_qy - sp_by)*(_2 - sp_bx))/sqrt(sqr(sp_qx - sp_bx) + sqr(sp_qy - sp_by));
+    _6 = sp_s*((sp_ax - sp_qx)*(_3 - sp_qy) - (sp_ay - sp_qy)*(_2 - sp_qx))/sqrt(sqr(sp_ax - sp_qx) + sqr(sp_ay - sp_qy));
+    _7 = min(max(min(_4, min(_5, _6)) + 0.5, 0), 1)*sp_op;
+    r += (sp_r - r)*_7; g += (sp_g - g)*_7; b += (sp_b - b)*_7;
+    _1 += 1;
+  ");
+);
+
+// Font list shared by titles and callouts; flags as for gfx_setfont ('B' bold, 'S' shadow, 'BS' both, 0 none).
+function ls_font(idx, px, flags) (
+  idx == 1 ? gfx_setfont(px, "Avenir Next", flags)
+  : idx == 2 ? gfx_setfont(px, "Futura", flags)
+  : idx == 3 ? gfx_setfont(px, "Georgia", flags)
+  : idx == 4 ? gfx_setfont(px, "Gill Sans", flags)
+  : idx == 5 ? gfx_setfont(px, "Menlo", flags)
+  : idx == 6 ? gfx_setfont(px, "Impact", flags)
+  : gfx_setfont(px, "Helvetica Neue", flags);
+);
+
+// Split #ls_src at '|' into #ls_l1..#ls_l4 (trimmed); returns line count.
+function ls_split_lines() local(n, i, c, start, len, k_end) (
+  #ls_l1 = ""; #ls_l2 = ""; #ls_l3 = ""; #ls_l4 = "";
+  n = 0; start = 0; len = strlen(#ls_src); i = 0;
+  while (i <= len) (
+    c = i < len ? str_getchar(#ls_src, i) : '|';
+    c == '|' ? (
+      while (start < i && str_getchar(#ls_src, start) == ' ') ( start += 1; );
+      k_end = i; while (k_end > start && str_getchar(#ls_src, k_end - 1) == ' ') ( k_end -= 1; );
+      n == 0 ? strcpy_substr(#ls_l1, #ls_src, start, k_end - start)
+      : n == 1 ? strcpy_substr(#ls_l2, #ls_src, start, k_end - start)
+      : n == 2 ? strcpy_substr(#ls_l3, #ls_src, start, k_end - start)
+      : n == 3 ? strcpy_substr(#ls_l4, #ls_src, start, k_end - start);
+      n += 1; start = i + 1;
+    );
+    i += 1;
+  );
+  n;
+);

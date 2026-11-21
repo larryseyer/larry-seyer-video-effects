@@ -1,0 +1,66 @@
+// LS Reframe & Letterbox
+//@ls category Transform
+//@ls title Reframe & Letterbox
+//@ls where both
+//@ls about Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars.
+//@ls help mode Fill crops to cover the frame, Fit shows the whole picture, Stretch distorts to fill.
+//@ls help panx With Fill: which part stays visible, -1 left to 1 right.
+//@ls help pany With Fill: -1 top to 1 bottom.
+//@ls help zoom Extra zoom on top of the fit.
+//@ls help bgmode What fills the empty area in Fit mode.
+//@ls help bars Cinematic bars drawn over the picture.
+//@ls help baropacity Bar darkness.
+//@ls example Vertical Short from 16:9 footage :: mode=0 panx=0 :: Set the project video size to 1080x1920 first; keyframe Pan X to follow the action.
+//@ls example Fit with blurred background :: mode=1 bgmode=1
+//@ls example Cinemascope bars :: mode=0 bars=1
+//@ls enum mode Fill (crop)|Fit (show all)|Stretch
+//@ls enum bgmode Black|Blurred copy|Solid color
+//@ls enum bars None|2.39:1 Cinemascope|2:1|1.85:1|4:3|1:1
+//@ls point "Framing" panx pany
+//@ls color "Background color" bgr bgg bgb
+//@ls section "Framing" mode panx pany zoom
+//@ls section "Background" bgmode
+//@ls section "Bars" bars baropacity
+//@param1:mode 'Mode' 0 0 2 0 1
+//@param2:panx 'Pan X' 0 -1 1 0 0.001
+//@param3:pany 'Pan Y' 0 -1 1 0 0.001
+//@param4:zoom 'Zoom' 1 0.25 4 1 0.001
+//@param5:bgmode 'Fit background' 1 0 2 1 1
+//@param6:bgr 'Background red' 0 0 1 0 0.001
+//@param7:bgg 'Background green' 0 0 1 0 0.001
+//@param8:bgb 'Background blue' 0 0 1 0 0.001
+//@param9:bars 'Letterbox bars' 0 0 5 0 1
+//@param10:baropacity 'Bar opacity' 1 0 1 1 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/layer.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  scl = mode == 0 ? max(W/sw, H/sh) : min(W/sw, H/sh);
+  dw = mode == 2 ? W*zoom : sw*scl*zoom;
+  dh = mode == 2 ? H*zoom : sh*scl*zoom;
+  dw < W - 1 || dh < H - 1 ? (
+    bgmode == 1 ? blur_fill(0)
+    : bgmode == 2 ? ( gfx_set(bgr, bgg, bgb); gfx_fillrect(0, 0, W, H); )
+    : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
+  );
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 0, (W - dw)*0.5*(1 + panx), (H - dh)*0.5*(1 + pany), dw, dh);
+  gfx_mode = 0;
+  bars > 0 ? (
+    ratio = bars == 1 ? 2.39 : bars == 2 ? 2 : bars == 3 ? 1.85 : bars == 4 ? 4/3 : 1;
+    gfx_set(0, 0, 0, baropacity);
+    W/H < ratio ? (
+      bh = floor((H - W/ratio)*0.5);
+      bh > 0 ? ( gfx_fillrect(0, 0, W, bh); gfx_fillrect(0, H - bh, W, bh); );
+    ) : (
+      bwid = floor((W - H*ratio)*0.5);
+      bwid > 0 ? ( gfx_fillrect(0, 0, bwid, H); gfx_fillrect(W - bwid, 0, bwid, H); );
+    );
+  );
+);

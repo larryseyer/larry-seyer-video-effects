@@ -1,0 +1,149 @@
+// LS Color Grade
+//@ls category Color
+//@ls title Color Grade
+//@ls where both
+//@ls about Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.
+//@ls help liftr Lift wheel: color of the shadows. The wheel's red, green and blue values are offsets; pushing toward one color raises it and lowers the others.
+//@ls help liftm Raises (positive) or lowers the black level.
+//@ls help gamr Gamma wheel: color of the midtones.
+//@ls help gamm Brightens (positive) or darkens the midtones.
+//@ls help gainr Gain wheel: color of the highlights.
+//@ls help gainm Overall brightness multiplier (1 = unchanged).
+//@ls help offr Offset wheel: shifts all tones equally.
+//@ls help offm Shifts everything brighter or darker.
+//@ls help contrast 1 unchanged; above 1 more contrast.
+//@ls help pivot Tone that contrast pivots around (0.435 is video mid-gray).
+//@ls help sat Saturation; 0 is black and white.
+//@ls help vib Boosts muted colors more than strong ones, protecting skin tones.
+//@ls help temp Negative cooler (blue), positive warmer (orange).
+//@ls help tint Negative green, positive magenta.
+//@ls help hue Rotates every color around the color wheel, in degrees.
+//@ls help exposure Brightness in photographic stops.
+//@ls help shadows Lifts (positive) or deepens dark areas only.
+//@ls help highlights Recovers (negative) or boosts bright areas.
+//@ls help mix Blend with the original (1 = full effect).
+//@ls help split Shows the original on the left half for comparison. Turn off before rendering.
+//@ls example Warm stage look :: temp=0.25 sat=1.1 contrast=1.1
+//@ls example Teal shadows, warm highlights :: liftr=-0.02 liftb=0.04 gainr=0.06 gainb=-0.05 contrast=1.1
+//@ls example Rescue a dark recording :: exposure=0.5 shadows=0.3
+//@ls tip Temperature, tint, contrast, exposure and the wheels are very fast. Hue rotate and vibrance are slower at 4K.
+//@ls tip Subtle: temperature 0.1-0.2, saturation 1.05-1.15. Strong: temperature 0.4, saturation 1.3.
+//@ls wheel "Lift" liftr liftg liftb liftm
+//@ls wheel "Gamma" gamr gamg gamb gamm
+//@ls wheel "Gain" gainr gaing gainb gainm
+//@ls wheel "Offset" offr offg offb offm
+//@ls section "Primaries" exposure contrast pivot sat vib
+//@ls section "Balance" temp tint hue
+//@ls section "Tone" shadows highlights
+//@ls section "Output" mix split
+//@ls toggle split
+//@param1:liftr 'Lift red' 0 -0.5 0.5 0 0.001
+//@param2:liftg 'Lift green' 0 -0.5 0.5 0 0.001
+//@param3:liftb 'Lift blue' 0 -0.5 0.5 0 0.001
+//@param4:liftm 'Lift master' 0 -0.5 0.5 0 0.001
+//@param5:gamr 'Gamma red' 0 -1 1 0 0.001
+//@param6:gamg 'Gamma green' 0 -1 1 0 0.001
+//@param7:gamb 'Gamma blue' 0 -1 1 0 0.001
+//@param8:gamm 'Gamma master' 0 -1 1 0 0.001
+//@param9:gainr 'Gain red' 0 -0.5 0.5 0 0.001
+//@param10:gaing 'Gain green' 0 -0.5 0.5 0 0.001
+//@param11:gainb 'Gain blue' 0 -0.5 0.5 0 0.001
+//@param12:gainm 'Gain master' 1 0 2 1 0.001
+//@param13:offr 'Offset red' 0 -0.2 0.2 0 0.0005
+//@param14:offg 'Offset green' 0 -0.2 0.2 0 0.0005
+//@param15:offb 'Offset blue' 0 -0.2 0.2 0 0.0005
+//@param16:offm 'Offset master' 0 -0.2 0.2 0 0.0005
+//@param17:contrast 'Contrast' 1 0 2 1 0.001
+//@param18:pivot 'Pivot' 0.435 0 1 0.435 0.001
+//@param19:sat 'Saturation' 1 0 2 1 0.001
+//@param20:vib 'Vibrance' 0 -1 1 0 0.001
+//@param21:temp 'Temperature' 0 -1 1 0 0.001
+//@param22:tint 'Tint' 0 -1 1 0 0.001
+//@param23:hue 'Hue rotate' 0 -180 180 0 0.1
+//@param24:exposure 'Exposure (stops)' 0 -3 3 0 0.01
+//@param25:shadows 'Shadows' 0 -1 1 0 0.001
+//@param26:highlights 'Highlights' 0 -1 1 0 0.001
+//@param27:mix 'Mix' 1 0 1 1 0.001
+//@param28:split 'Before/after split' 0 0 1 0 1
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+function smoothstep01(e0, e1, v) local(q) ( q = min(max((v - e0)/(e1 - e0), 0), 1); q*q*(3 - 2*q); );
+
+// Per-channel transfer curve for channel index ch (0 r, 1 g, 2 b), input v in 0..1.
+function grade_channel(v, ch) local(lf, gm, gn, of, wb) (
+  lf = (ch == 0 ? liftr : ch == 1 ? liftg : liftb) + liftm;
+  gm = (ch == 0 ? gamr : ch == 1 ? gamg : gamb) + gamm;
+  gn = (1 + (ch == 0 ? gainr : ch == 1 ? gaing : gainb))*gainm;
+  of = (ch == 0 ? offr : ch == 1 ? offg : offb) + offm;
+  wb = ch == 0 ? (1 + 0.22*temp)*(1 + 0.08*tint) : ch == 1 ? 1 - 0.16*tint : (1 - 0.22*temp)*(1 + 0.08*tint);
+  v *= 2^exposure;
+  v *= wb;
+  v = v + lf*(1 - v);
+  v *= gn;
+  v = v > 0 ? v^(2^(-gm)) : v;
+  v += of;
+  v += shadows*0.45*(1 - smoothstep01(0, 0.55, v))*smoothstep01(0, 0.12, v);
+  v += highlights*0.35*smoothstep01(0.35, 1, v);
+  v = (v - pivot)*contrast + pivot;
+  min(max(v, 0), 1);
+);
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  sprintf(#key, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g", liftr, liftg, liftb, liftm, gamr, gamg, gamb, gamm, gainr, gaing, gainb, gainm, offr, offg, offb, offm, contrast, pivot, temp, tint, exposure, shadows, highlights);
+  strcmp(#key, #last_key) != 0 ? (
+    i = 0;
+    loop(256,
+      i[0] = grade_channel(i/255, 0);
+      i[256] = grade_channel(i/255, 1);
+      i[512] = grade_channel(i/255, 2);
+      i += 1;
+    );
+    strcpy(#last_key, #key);
+  );
+  x0 = split > 0.5 ? floor(W*0.5) : 0;
+  abs(hue) < 0.01 && abs(vib) < 0.0005 && mix > 0.9995 ? (
+    gfx_procrect(x0, 0, W - x0, H, 0);
+    abs(sat - 1) >= 0.0005 ? (
+      // saturation alone scales U and V around neutral, so it is a table pass in YUV
+      sat + 1000 != last_satkey ? (
+        i = 0;
+        loop(256, tb = 1000 + i; tb[0] = i/255; tb[256] = tb[512] = min(max(0.5 + (i/255 - 0.5)*sat, 0), 1); i += 1;);
+        last_satkey = sat + 1000;
+      );
+      colorspace = 'YV12';
+      gfx_procrect(x0, 0, W - x0, H, 1000);
+    );
+  ) : (
+    // saturation and hue rotation as one luma-preserving matrix
+    lr = 0.2126; lg = 0.7152; lb = 0.0722;
+    hc = cos(hue*$pi/180); hs = sin(hue*$pi/180);
+    h00 = lr + hc*(1 - lr) - hs*lr;    h01 = lg - hc*lg - hs*lg;          h02 = lb - hc*lb + hs*(1 - lb);
+    h10 = lr - hc*lr + hs*0.143;       h11 = lg + hc*(1 - lg) + hs*0.140; h12 = lb - hc*lb - hs*0.283;
+    h20 = lr - hc*lr - hs*(1 - lr);    h21 = lg - hc*lg + hs*lg;          h22 = lb + hc*(1 - lb) + hs*lb;
+    s0 = (1 - sat)*lr; s1 = (1 - sat)*lg; s2 = (1 - sat)*lb;
+    m00 = (s0 + sat)*h00 + s1*h10 + s2*h20; m01 = (s0 + sat)*h01 + s1*h11 + s2*h21; m02 = (s0 + sat)*h02 + s1*h12 + s2*h22;
+    m10 = s0*h00 + (s1 + sat)*h10 + s2*h20; m11 = s0*h01 + (s1 + sat)*h11 + s2*h21; m12 = s0*h02 + (s1 + sat)*h12 + s2*h22;
+    m20 = s0*h00 + s1*h10 + (s2 + sat)*h20; m21 = s0*h01 + s1*h11 + (s2 + sat)*h21; m22 = s0*h02 + s1*h12 + (s2 + sat)*h22;
+    gfx_evalrect(x0, 0, W - x0, H, "
+      _4 = r; _5 = g; _6 = b;
+      _7 = r[0]*255; _8 = g[256]*255; _9 = b[512]*255;
+      _1 = m00*_7 + m01*_8 + m02*_9;
+      _2 = m10*_7 + m11*_8 + m12*_9;
+      _3 = m20*_7 + m21*_8 + m22*_9;
+      vib != 0 ? (
+        _10 = 0.2126*_1 + 0.7152*_2 + 0.0722*_3;
+        _11 = (max(_1, max(_2, _3)) - min(_1, min(_2, _3)))*(1/255);
+        _12 = 1 + vib*(vib > 0 ? 1 - min(_11*2, 1) : 1);
+        _1 = _10 + (_1 - _10)*_12; _2 = _10 + (_2 - _10)*_12; _3 = _10 + (_3 - _10)*_12;
+      );
+      r = min(max(_4 + (_1 - _4)*mix, 0), 255); g = min(max(_5 + (_2 - _5)*mix, 0), 255); b = min(max(_6 + (_3 - _6)*mix, 0), 255);
+    ");
+  );
+  split > 0.5 ? ( gfx_set(1, 1, 1, 0.8); gfx_fillrect(x0 - 1, 0, 2, H); );
+);

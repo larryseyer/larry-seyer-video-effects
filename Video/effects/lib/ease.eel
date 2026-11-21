@@ -1,0 +1,9 @@
+// Easing: mode 0 linear, 1 smooth, 2 ease in, 3 ease out, 4 overshoot (back out).
+function ls_ease(p, mode) local(q) (
+  p = min(max(p, 0), 1);
+  mode == 1 ? p*p*(3 - 2*p)
+  : mode == 2 ? p*p*p
+  : mode == 3 ? (q = 1 - p; 1 - q*q*q)
+  : mode == 4 ? (q = p - 1; 1 + 2.70158*q*q*q + 1.70158*q*q)
+  : p;
+);

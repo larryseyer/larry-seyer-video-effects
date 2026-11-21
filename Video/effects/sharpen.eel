@@ -1,0 +1,38 @@
+// LS Sharpen & Soften
+//@ls category Look
+//@ls title Sharpen & Soften
+//@ls where both
+//@ls about Crisps up soft or upscaled footage, or softens it for a gentler, diffused look. Positive amounts sharpen, negative amounts soften.
+//@ls help amount Positive sharpens, negative softens.
+//@ls help radius Size of the detail affected (1 fine to 4 coarse).
+//@ls help thresh Ignores differences below this so noise is not sharpened.
+//@ls example Crisp up upscaled footage :: amount=0.8 radius=1
+//@ls example Soft dreamy :: amount=-0.6 radius=3
+//@param1:amount 'Amount' 0.5 -1 2 0 0.001
+//@param2:radius 'Radius' 1 1 4 1 1
+//@param3:thresh 'Threshold' 0.02 0 0.2 0.02 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/pyramid.eel"
+
+own ? (
+  gfx_mode = 0; gfx_a = 1;
+  gfx_blit(0, 1);
+  abs(amount) > 0.001 ? (
+    blurimg = gfx_img_resize(blurimg, W, H);
+    blur_copy(blurimg, radius);
+    shamt = amount; thr = thresh*255;
+    amount > 0 ? gfx_evalrect(0, 0, W, H, "
+      _1 = r - sr; _2 = g - sg; _3 = b - sb;
+      _4 = (abs(_1) + abs(_2) + abs(_3))*(1/3) > thr ? shamt : 0;
+      r = min(max(r + _4*_1, 0), 255); g = min(max(g + _4*_2, 0), 255); b = min(max(b + _4*_3, 0), 255);
+    ", 0, blurimg)
+    : gfx_evalrect(0, 0, W, H, "
+      r = min(max(r + shamt*(r - sr), 0), 255); g = min(max(g + shamt*(g - sg), 0), 255); b = min(max(b + shamt*(b - sb), 0), 255);
+    ", 0, blurimg);
+  );
+);

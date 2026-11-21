@@ -1,0 +1,51 @@
+// LS Ken Burns Pan & Zoom
+//@ls category Transform
+//@ls title Ken Burns Pan & Zoom
+//@ls where both
+//@ls about Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).
+//@ls help z1 Zoom at the start (1 = whole picture).
+//@ls help x1 Start framing: -1 left edge, 1 right edge.
+//@ls help y1 Start framing: -1 top, 1 bottom.
+//@ls help z2 Zoom at the end.
+//@ls help x2 End framing, -1..1.
+//@ls help y2 End framing, -1..1.
+//@ls help dur Length of the move in seconds; set it to the item length.
+//@ls help delay Track FX only: project time in seconds when the move starts. On an item the move starts at the item start.
+//@ls help ease How the move speeds up and slows down.
+//@ls example Slow push in on a photo :: z1=1 z2=1.25 x2=0 y2=0 dur=8 :: Put on the photo item; set Duration to the item length.
+//@ls example Pan across a wide screenshot :: z1=1.4 x1=-1 y1=0 z2=1.4 x2=1 y2=0 dur=6
+//@ls enum ease Linear|Smooth|Ease in|Ease out
+//@ls point "Start center" x1 y1
+//@ls point "End center" x2 y2
+//@ls section "Start" z1 x1 y1
+//@ls section "End" z2 x2 y2
+//@ls section "Timing" dur delay ease
+//@param1:z1 'Start zoom' 1 1 5 1 0.001
+//@param2:x1 'Start X' 0 -1 1 0 0.001
+//@param3:y1 'Start Y' 0 -1 1 0 0.001
+//@param4:z2 'End zoom' 1.35 1 5 1 0.001
+//@param5:x2 'End X' 0.3 -1 1 0 0.001
+//@param6:y2 'End Y' -0.2 -1 1 0 0.001
+//@param7:dur 'Duration (s)' 6 0.1 120 6 0.01
+//@param8:delay 'Start time (s)' 0 0 3600 0 0.01
+//@param9:ease 'Easing' 1 0 3 1 1
+
+own = input_info(0, sw, sh);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+
+own ? (
+  get_host_placement(chainpos, hostflags);
+  tnow = (hostflags & 1) ? time - delay : project_time - delay;
+  prog = ls_ease(tnow/max(dur, 0.01), ease);
+  zm = max(z1, 1)*((max(z2, 1)/max(z1, 1))^prog);
+  pxv = x1 + (x2 - x1)*prog; pyv = y1 + (y2 - y1)*prog;
+  fr = W/H;
+  sw/sh > fr ? ( winw = sh*fr; winh = sh; ) : ( winw = sw; winh = sw/fr; );
+  winw /= zm; winh /= zm;
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_blit(0, 0, 0, 0, W, H, (sw - winw)*0.5*(1 + pxv), (sh - winh)*0.5*(1 + pyv), winw, winh);
+  gfx_mode = 0;
+);

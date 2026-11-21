@@ -1,0 +1,6627 @@
+{
+  "effects": [
+    {
+      "about": "Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0.85,
+          "help": "1 makes picture plus border fill the frame; smaller insets it.",
+          "index": 0,
+          "label": "Picture size",
+          "max": 1,
+          "min": 0.1,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0,
+          "help": "Offset, -1 left to 1 right (half-frame units).",
+          "index": 1,
+          "label": "Position X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "posx"
+        },
+        {
+          "default": 0,
+          "help": "Offset, -1 up to 1 down.",
+          "index": 2,
+          "label": "Position Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "posy"
+        },
+        {
+          "default": 0.03,
+          "help": "Corner rounding, fraction of the shorter side.",
+          "index": 3,
+          "label": "Corner radius",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 1,
+          "help": "Border look. Options: 0 None, 1 Solid, 2 Double line, 3 Glow, 4 Gradient.",
+          "index": 4,
+          "label": "Border style",
+          "max": 4,
+          "min": 0,
+          "options": [
+            "None",
+            "Solid",
+            "Double line",
+            "Glow",
+            "Gradient"
+          ],
+          "toggle": false,
+          "var": "bstyle"
+        },
+        {
+          "default": 0.008,
+          "help": "Border width, fraction of frame height (glow spreads three times wider).",
+          "index": 5,
+          "label": "Border width",
+          "max": 0.06,
+          "min": 0,
+          "toggle": false,
+          "var": "bwidth"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Border color (0..1).",
+          "index": 6,
+          "label": "Border red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Border color (0..1).",
+          "index": 7,
+          "label": "Border green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Border color (0..1).",
+          "index": 8,
+          "label": "Border blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcb"
+        },
+        {
+          "default": 0.24,
+          "help": "Red part of Second border color (0..1).",
+          "index": 9,
+          "label": "Second red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "b2r"
+        },
+        {
+          "default": 0.87,
+          "help": "Green part of Second border color (0..1).",
+          "index": 10,
+          "label": "Second green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "b2g"
+        },
+        {
+          "default": 0.66,
+          "help": "Blue part of Second border color (0..1).",
+          "index": 11,
+          "label": "Second blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "b2b"
+        },
+        {
+          "default": 1,
+          "help": "Border opacity.",
+          "index": 12,
+          "label": "Border opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bopacity"
+        },
+        {
+          "default": 0.6,
+          "help": "Drop shadow strength.",
+          "index": 13,
+          "label": "Shadow opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "shadow"
+        },
+        {
+          "default": 0.015,
+          "help": "Shadow offset, fraction of frame height.",
+          "index": 14,
+          "label": "Shadow distance",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "shdist"
+        },
+        {
+          "default": 120,
+          "help": "Direction the shadow falls in degrees (90 = down).",
+          "index": 15,
+          "label": "Shadow angle",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "shang"
+        },
+        {
+          "default": 0.03,
+          "help": "Shadow blur, fraction of frame height.",
+          "index": 16,
+          "label": "Shadow softness",
+          "max": 0.15,
+          "min": 0,
+          "toggle": false,
+          "var": "shsoft"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Shadow color (0..1).",
+          "index": 17,
+          "label": "Shadow red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Shadow color (0..1).",
+          "index": 18,
+          "label": "Shadow green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Shadow color (0..1).",
+          "index": 19,
+          "label": "Shadow blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scb"
+        },
+        {
+          "default": 0.25,
+          "help": "Darkens the picture toward its edges.",
+          "index": 20,
+          "label": "Inner shading",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "inner"
+        },
+        {
+          "default": 0.06,
+          "help": "How far the inner shading reaches.",
+          "index": 21,
+          "label": "Shading size",
+          "max": 0.3,
+          "min": 0.005,
+          "toggle": false,
+          "var": "innersize"
+        },
+        {
+          "default": 0,
+          "help": "What shows around the framed picture. Options: 0 Tracks below, 1 Blurred copy, 2 Solid color, 3 Black.",
+          "index": 22,
+          "label": "Background",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Tracks below",
+            "Blurred copy",
+            "Solid color",
+            "Black"
+          ],
+          "toggle": false,
+          "var": "bgmode"
+        },
+        {
+          "default": 0.1,
+          "help": "Red part of Background color (0..1).",
+          "index": 23,
+          "label": "Background red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgr"
+        },
+        {
+          "default": 0.1,
+          "help": "Green part of Background color (0..1).",
+          "index": 24,
+          "label": "Background green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgg"
+        },
+        {
+          "default": 0.12,
+          "help": "Blue part of Background color (0..1).",
+          "index": 25,
+          "label": "Background blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "bgmode": 1,
+            "bstyle": 1,
+            "bwidth": 0.008,
+            "radius": 0.03,
+            "shadow": 0.6,
+            "size": 0.85
+          },
+          "title": "Framed clip over blurred background"
+        },
+        {
+          "notes": "",
+          "set": {
+            "bcb": 0.66,
+            "bcg": 0.87,
+            "bcr": 0.24,
+            "bstyle": 3,
+            "bwidth": 0.008,
+            "size": 1
+          },
+          "title": "Mint glow frame"
+        }
+      ],
+      "file": "border.eel",
+      "name": "LS Transform: Border & Shadow",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Border & Shadow"
+    },
+    {
+      "about": "Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0.015,
+          "help": "Movement in frame widths (0.015 gentle, 0.05 violent).",
+          "index": 0,
+          "label": "Amount",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 1,
+          "help": "Rotation wobble in degrees.",
+          "index": 1,
+          "label": "Rotation (deg)",
+          "max": 10,
+          "min": 0,
+          "toggle": false,
+          "var": "rotamt"
+        },
+        {
+          "default": 1.5,
+          "help": "Wobbles per second.",
+          "index": 2,
+          "label": "Speed",
+          "max": 20,
+          "min": 0.05,
+          "toggle": false,
+          "var": "speed"
+        },
+        {
+          "default": 0,
+          "help": "Smooth handheld drift, nervous jitter, or a mix (earthquake). Options: 0 Handheld, 1 Jitter, 2 Earthquake.",
+          "index": 3,
+          "label": "Style",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Handheld",
+            "Jitter",
+            "Earthquake"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 1,
+          "help": "Changes the random pattern.",
+          "index": 4,
+          "label": "Seed",
+          "max": 100,
+          "min": 0,
+          "toggle": false,
+          "var": "seed"
+        },
+        {
+          "default": 1,
+          "help": "Zooms in slightly so moving edges stay hidden. 0 off, 1 on.",
+          "index": 5,
+          "label": "Zoom to hide edges",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "zoomcomp"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "amount": 0.01,
+            "rotamt": 0.6,
+            "speed": 1,
+            "style": 0
+          },
+          "title": "Handheld feel"
+        },
+        {
+          "notes": "Keyframe Amount from 0.04 down to 0 over half a second.",
+          "set": {
+            "amount": 0.04,
+            "style": 2
+          },
+          "title": "Impact hit"
+        }
+      ],
+      "file": "shake.eel",
+      "name": "LS Transform: Camera Shake",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Camera Shake"
+    },
+    {
+      "about": "Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0.15,
+          "help": "Corner positions are fractions of the frame (0..1, may go off screen).",
+          "index": 0,
+          "label": "Top left X",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "tlx"
+        },
+        {
+          "default": 0.15,
+          "help": "Top left Y.",
+          "index": 1,
+          "label": "Top left Y",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "tly"
+        },
+        {
+          "default": 0.85,
+          "help": "Top right X.",
+          "index": 2,
+          "label": "Top right X",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "trx"
+        },
+        {
+          "default": 0.1,
+          "help": "Top right Y.",
+          "index": 3,
+          "label": "Top right Y",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "try"
+        },
+        {
+          "default": 0.8,
+          "help": "Bottom right X.",
+          "index": 4,
+          "label": "Bottom right X",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "brx"
+        },
+        {
+          "default": 0.9,
+          "help": "Bottom right Y.",
+          "index": 5,
+          "label": "Bottom right Y",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "bry"
+        },
+        {
+          "default": 0.2,
+          "help": "Bottom left X.",
+          "index": 6,
+          "label": "Bottom left X",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "blx"
+        },
+        {
+          "default": 0.85,
+          "help": "Bottom left Y.",
+          "index": 7,
+          "label": "Bottom left Y",
+          "max": 1.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "bly"
+        },
+        {
+          "default": 1,
+          "help": "Opacity.",
+          "index": 8,
+          "label": "Opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "opacity"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.",
+          "set": {
+            "blx": 0.3,
+            "bly": 0.56,
+            "brx": 0.63,
+            "bry": 0.55,
+            "tlx": 0.31,
+            "tly": 0.22,
+            "trx": 0.62,
+            "try": 0.2
+          },
+          "title": "Screen recording on a monitor in the shot"
+        }
+      ],
+      "file": "corner_pin.eel",
+      "name": "LS Transform: Corner Pin",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Drag the four corner points on the panel's frame pad."
+      ],
+      "title": "Corner Pin"
+    },
+    {
+      "about": "Flips the picture or mirrors one half onto the other, including a four-way kaleidoscope.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "What to flip or mirror. Options: 0 Off, 1 Flip horizontal, 2 Flip vertical, 3 Rotate 180, 4 Mirror left half, 5 Mirror right half, 6 Mirror top half, 7 Mirror bottom half, 8 Kaleidoscope.",
+          "index": 0,
+          "label": "Mode",
+          "max": 8,
+          "min": 0,
+          "options": [
+            "Off",
+            "Flip horizontal",
+            "Flip vertical",
+            "Rotate 180",
+            "Mirror left half",
+            "Mirror right half",
+            "Mirror top half",
+            "Mirror bottom half",
+            "Kaleidoscope"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0,
+          "help": "Moves the mirror line away from the center, -0.5..0.5.",
+          "index": 1,
+          "label": "Mirror line",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "center"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "mode": 8
+          },
+          "title": "Kaleidoscope"
+        }
+      ],
+      "file": "mirror.eel",
+      "name": "LS Transform: Flip & Mirror",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Flip & Mirror"
+    },
+    {
+      "about": "Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "Zoom at the start (1 = whole picture).",
+          "index": 0,
+          "label": "Start zoom",
+          "max": 5,
+          "min": 1,
+          "toggle": false,
+          "var": "z1"
+        },
+        {
+          "default": 0,
+          "help": "Start framing: -1 left edge, 1 right edge.",
+          "index": 1,
+          "label": "Start X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "x1"
+        },
+        {
+          "default": 0,
+          "help": "Start framing: -1 top, 1 bottom.",
+          "index": 2,
+          "label": "Start Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "y1"
+        },
+        {
+          "default": 1.35,
+          "help": "Zoom at the end.",
+          "index": 3,
+          "label": "End zoom",
+          "max": 5,
+          "min": 1,
+          "toggle": false,
+          "var": "z2"
+        },
+        {
+          "default": 0.3,
+          "help": "End framing, -1..1.",
+          "index": 4,
+          "label": "End X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "x2"
+        },
+        {
+          "default": -0.2,
+          "help": "End framing, -1..1.",
+          "index": 5,
+          "label": "End Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "y2"
+        },
+        {
+          "default": 6,
+          "help": "Length of the move in seconds; set it to the item length.",
+          "index": 6,
+          "label": "Duration (s)",
+          "max": 120,
+          "min": 0.1,
+          "toggle": false,
+          "var": "dur"
+        },
+        {
+          "default": 0,
+          "help": "Track FX only: project time in seconds when the move starts. On an item the move starts at the item start.",
+          "index": 7,
+          "label": "Start time (s)",
+          "max": 3600,
+          "min": 0,
+          "toggle": false,
+          "var": "delay"
+        },
+        {
+          "default": 1,
+          "help": "How the move speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 8,
+          "label": "Easing",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the photo item; set Duration to the item length.",
+          "set": {
+            "dur": 8,
+            "x2": 0,
+            "y2": 0,
+            "z1": 1,
+            "z2": 1.25
+          },
+          "title": "Slow push in on a photo"
+        },
+        {
+          "notes": "",
+          "set": {
+            "dur": 6,
+            "x1": -1,
+            "x2": 1,
+            "y1": 0,
+            "y2": 0,
+            "z1": 1.4,
+            "z2": 1.4
+          },
+          "title": "Pan across a wide screenshot"
+        }
+      ],
+      "file": "ken_burns.eel",
+      "name": "LS Transform: Ken Burns Pan & Zoom",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Ken Burns Pan & Zoom"
+    },
+    {
+      "about": "Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "Camera to show. 2x2: 1 top-left, 2 top-right, 3 bottom-left, 4 bottom-right. 0 shows the whole multiview.",
+          "index": 0,
+          "label": "Camera",
+          "max": 9,
+          "min": 0,
+          "toggle": false,
+          "var": "cam"
+        },
+        {
+          "default": 0,
+          "help": "Layout of the multiview recording. Options: 0 2x2 (4 cameras), 1 3x3 (9 cameras), 2 Side by side (2), 3 Stacked (2).",
+          "index": 1,
+          "label": "Multiview grid",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "2x2 (4 cameras)",
+            "3x3 (9 cameras)",
+            "Side by side (2)",
+            "Stacked (2)"
+          ],
+          "toggle": false,
+          "var": "grid"
+        },
+        {
+          "default": 1,
+          "help": "Punch in on the chosen camera.",
+          "index": 2,
+          "label": "Punch in",
+          "max": 3,
+          "min": 1,
+          "toggle": false,
+          "var": "zoom"
+        },
+        {
+          "default": 0,
+          "help": "With punch-in: which part of that camera shows, -1 left to 1 right.",
+          "index": 3,
+          "label": "Pan X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "panx"
+        },
+        {
+          "default": 0,
+          "help": "-1 top to 1 bottom.",
+          "index": 4,
+          "label": "Pan Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pany"
+        },
+        {
+          "default": 0.004,
+          "help": "Cuts this fraction off each camera's edges to hide multiview dividers.",
+          "index": 5,
+          "label": "Edge trim",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "trim"
+        },
+        {
+          "default": 0,
+          "help": "Restores crispness when a quarter is enlarged (costs speed at 4K).",
+          "index": 6,
+          "label": "Sharpen",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "sharpen"
+        },
+        {
+          "default": 0,
+          "help": "One camera, two side by side, or one inset over another. Options: 0 Single camera, 1 Two-up, 2 Picture-in-picture.",
+          "index": 7,
+          "label": "Layout",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Single camera",
+            "Two-up",
+            "Picture-in-picture"
+          ],
+          "toggle": false,
+          "var": "layout"
+        },
+        {
+          "default": 2,
+          "help": "Second camera for Two-up and Picture-in-picture.",
+          "index": 8,
+          "label": "Second camera",
+          "max": 9,
+          "min": 1,
+          "toggle": false,
+          "var": "camb"
+        },
+        {
+          "default": 0.5,
+          "help": "Where the two-up divides the frame.",
+          "index": 9,
+          "label": "Two-up split",
+          "max": 0.8,
+          "min": 0.2,
+          "toggle": false,
+          "var": "split"
+        },
+        {
+          "default": 0.006,
+          "help": "Gap between two-up panels, fraction of frame width.",
+          "index": 10,
+          "label": "Gap",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "gap"
+        },
+        {
+          "default": 3,
+          "help": "Corner for the inset camera. Options: 0 Top left, 1 Top right, 2 Bottom left, 3 Bottom right.",
+          "index": 11,
+          "label": "Inset corner",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Top left",
+            "Top right",
+            "Bottom left",
+            "Bottom right"
+          ],
+          "toggle": false,
+          "var": "pipcorner"
+        },
+        {
+          "default": 0.32,
+          "help": "Inset width, fraction of frame width.",
+          "index": 12,
+          "label": "Inset size",
+          "max": 0.6,
+          "min": 0.1,
+          "toggle": false,
+          "var": "pipsize"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "cam": 2
+          },
+          "title": "Camera 2 full screen"
+        },
+        {
+          "notes": "",
+          "set": {
+            "cam": 1,
+            "panx": 0.4,
+            "pany": 0.3,
+            "sharpen": 0.4,
+            "zoom": 1.8
+          },
+          "title": "Guitar close-up from camera 1"
+        },
+        {
+          "notes": "",
+          "set": {
+            "cam": 1,
+            "camb": 4,
+            "layout": 1
+          },
+          "title": "Cameras 1 and 4 side by side"
+        }
+      ],
+      "file": "multicam.eel",
+      "name": "LS Transform: Multiview Camera Select",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Split the recording at every cut and set the camera on each item.",
+        "Crossfade neighbouring items and put a Transition effect on the track for dissolves or pushes between cameras."
+      ],
+      "title": "Multiview Camera Select"
+    },
+    {
+      "about": "Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 8,
+          "help": "Where the box sits on screen. Options: 0 Top left, 1 Top, 2 Top right, 3 Left, 4 Center, 5 Right, 6 Bottom left, 7 Bottom, 8 Bottom right.",
+          "index": 0,
+          "label": "Corner",
+          "max": 8,
+          "min": 0,
+          "options": [
+            "Top left",
+            "Top",
+            "Top right",
+            "Left",
+            "Center",
+            "Right",
+            "Bottom left",
+            "Bottom",
+            "Bottom right"
+          ],
+          "toggle": false,
+          "var": "corner"
+        },
+        {
+          "default": 0.3,
+          "help": "Box width as a fraction of frame width.",
+          "index": 1,
+          "label": "Size",
+          "max": 1,
+          "min": 0.02,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0.04,
+          "help": "Gap from the frame edges, fraction of frame height.",
+          "index": 2,
+          "label": "Margin",
+          "max": 0.3,
+          "min": 0,
+          "toggle": false,
+          "var": "margin"
+        },
+        {
+          "default": 0,
+          "help": "Fine nudge in frame widths.",
+          "index": 3,
+          "label": "Nudge X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "offx"
+        },
+        {
+          "default": 0,
+          "help": "Fine nudge in frame heights.",
+          "index": 4,
+          "label": "Nudge Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "offy"
+        },
+        {
+          "default": 0,
+          "help": "Box shape. Source keeps the clip's own shape; Circle shape always uses 1:1. Options: 0 Source, 1 16:9, 2 4:3, 3 1:1, 4 9:16, 5 4:5.",
+          "index": 5,
+          "label": "Aspect",
+          "max": 5,
+          "min": 0,
+          "options": [
+            "Source",
+            "16:9",
+            "4:3",
+            "1:1",
+            "9:16",
+            "4:5"
+          ],
+          "toggle": false,
+          "var": "aspect"
+        },
+        {
+          "default": 1,
+          "help": "Zoom into the clip inside the box.",
+          "index": 6,
+          "label": "Zoom inside",
+          "max": 4,
+          "min": 1,
+          "toggle": false,
+          "var": "zoom"
+        },
+        {
+          "default": 0,
+          "help": "Which part of the clip shows when zoomed or cut to another shape: -1 left, 1 right.",
+          "index": 7,
+          "label": "Pan inside X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "panx"
+        },
+        {
+          "default": 0,
+          "help": "-1 top, 1 bottom.",
+          "index": 8,
+          "label": "Pan inside Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pany"
+        },
+        {
+          "default": 1,
+          "help": "Rectangle, rounded rectangle or circle. Options: 0 Rectangle, 1 Rounded, 2 Circle.",
+          "index": 9,
+          "label": "Shape",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Rectangle",
+            "Rounded",
+            "Circle"
+          ],
+          "toggle": false,
+          "var": "shape"
+        },
+        {
+          "default": 0.12,
+          "help": "Rounding for the Rounded shape, fraction of the shorter side.",
+          "index": 10,
+          "label": "Corner radius",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0.003,
+          "help": "Border width, fraction of frame height (0 = none).",
+          "index": 11,
+          "label": "Border width",
+          "max": 0.03,
+          "min": 0,
+          "toggle": false,
+          "var": "border"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Border color (0..1).",
+          "index": 12,
+          "label": "Border red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Border color (0..1).",
+          "index": 13,
+          "label": "Border green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Border color (0..1).",
+          "index": 14,
+          "label": "Border blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdb"
+        },
+        {
+          "default": 0.5,
+          "help": "Shadow strength; the shadow follows the shape and any PNG transparency.",
+          "index": 15,
+          "label": "Shadow opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "shadow"
+        },
+        {
+          "default": 0.008,
+          "help": "Shadow distance.",
+          "index": 16,
+          "label": "Shadow distance",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "shdist"
+        },
+        {
+          "default": 120,
+          "help": "Shadow angle.",
+          "index": 17,
+          "label": "Shadow angle",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "shang"
+        },
+        {
+          "default": 0.02,
+          "help": "Shadow softness.",
+          "index": 18,
+          "label": "Shadow softness",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "shsoft"
+        },
+        {
+          "default": 1,
+          "help": "Opacity.",
+          "index": 19,
+          "label": "Opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "opacity"
+        },
+        {
+          "default": 1,
+          "help": "Keep PNG transparency (logos). Turn off to show the image's transparent areas as black. 0 off, 1 on.",
+          "index": 20,
+          "label": "Use image transparency",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "usealpha"
+        },
+        {
+          "default": 1,
+          "help": "Entrance animation. It plays during the item fade-in and runs backwards during the fade-out. Options: 0 None, 1 Fade, 2 Slide in, 3 Pop, 4 Zoom, 5 Rise.",
+          "index": 21,
+          "label": "Entrance",
+          "max": 5,
+          "min": 0,
+          "options": [
+            "None",
+            "Fade",
+            "Slide in",
+            "Pop",
+            "Zoom",
+            "Rise"
+          ],
+          "toggle": false,
+          "var": "anim"
+        },
+        {
+          "default": 0,
+          "help": "Item fades: the item's fade handles drive the animation. Manual: Manual amount does (0 hidden, 1 shown). Options: 0 Item fades, 1 Manual.",
+          "index": 22,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Used when Animate with is Manual: 0 hidden, 1 fully shown. Keyframe it for custom timing.",
+          "index": 23,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.",
+          "set": {
+            "anim": 1,
+            "border": 0,
+            "corner": 8,
+            "shadow": 0.4,
+            "shape": 0,
+            "size": 0.12,
+            "usealpha": 1
+          },
+          "title": "Logo bug, bottom right"
+        },
+        {
+          "notes": "Put on the webcam item; use Zoom inside and Pan to frame the face.",
+          "set": {
+            "anim": 3,
+            "border": 0.004,
+            "corner": 6,
+            "shape": 2,
+            "size": 0.22
+          },
+          "title": "Round webcam bubble"
+        },
+        {
+          "notes": "",
+          "set": {
+            "anim": 2,
+            "corner": 4,
+            "radius": 0.04,
+            "shape": 1,
+            "size": 0.6
+          },
+          "title": "Screenshot card sliding in"
+        }
+      ],
+      "file": "place.eel",
+      "name": "LS Transform: Picture-in-Picture & Logo",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Use this instead of REAPER's stock Image overlay preset.",
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Picture-in-Picture & Logo"
+    },
+    {
+      "about": "Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Fill crops to cover the frame, Fit shows the whole picture, Stretch distorts to fill. Options: 0 Fill (crop), 1 Fit (show all), 2 Stretch.",
+          "index": 0,
+          "label": "Mode",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Fill (crop)",
+            "Fit (show all)",
+            "Stretch"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0,
+          "help": "With Fill: which part stays visible, -1 left to 1 right.",
+          "index": 1,
+          "label": "Pan X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "panx"
+        },
+        {
+          "default": 0,
+          "help": "With Fill: -1 top to 1 bottom.",
+          "index": 2,
+          "label": "Pan Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pany"
+        },
+        {
+          "default": 1,
+          "help": "Extra zoom on top of the fit.",
+          "index": 3,
+          "label": "Zoom",
+          "max": 4,
+          "min": 0.25,
+          "toggle": false,
+          "var": "zoom"
+        },
+        {
+          "default": 1,
+          "help": "What fills the empty area in Fit mode. Options: 0 Black, 1 Blurred copy, 2 Solid color.",
+          "index": 4,
+          "label": "Fit background",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Black",
+            "Blurred copy",
+            "Solid color"
+          ],
+          "toggle": false,
+          "var": "bgmode"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Background color (0..1).",
+          "index": 5,
+          "label": "Background red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Background color (0..1).",
+          "index": 6,
+          "label": "Background green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Background color (0..1).",
+          "index": 7,
+          "label": "Background blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgb"
+        },
+        {
+          "default": 0,
+          "help": "Cinematic bars drawn over the picture. Options: 0 None, 1 2.39:1 Cinemascope, 2 2:1, 3 1.85:1, 4 4:3, 5 1:1.",
+          "index": 8,
+          "label": "Letterbox bars",
+          "max": 5,
+          "min": 0,
+          "options": [
+            "None",
+            "2.39:1 Cinemascope",
+            "2:1",
+            "1.85:1",
+            "4:3",
+            "1:1"
+          ],
+          "toggle": false,
+          "var": "bars"
+        },
+        {
+          "default": 1,
+          "help": "Bar darkness.",
+          "index": 9,
+          "label": "Bar opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "baropacity"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Set the project video size to 1080x1920 first; keyframe Pan X to follow the action.",
+          "set": {
+            "mode": 0,
+            "panx": 0
+          },
+          "title": "Vertical Short from 16:9 footage"
+        },
+        {
+          "notes": "",
+          "set": {
+            "bgmode": 1,
+            "mode": 1
+          },
+          "title": "Fit with blurred background"
+        },
+        {
+          "notes": "",
+          "set": {
+            "bars": 1,
+            "mode": 0
+          },
+          "title": "Cinemascope bars"
+        }
+      ],
+      "file": "reframe.eel",
+      "name": "LS Transform: Reframe & Letterbox",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Reframe & Letterbox"
+    },
+    {
+      "about": "Position, scale, rotate, crop, round corners, border and drop shadow in one pass. Keyframe any control with envelopes.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Horizontal offset in frame widths: 0 centered, 0.5 moves it half a frame right.",
+          "index": 0,
+          "label": "Position X",
+          "max": 1.5,
+          "min": -1.5,
+          "toggle": false,
+          "var": "posx"
+        },
+        {
+          "default": 0,
+          "help": "Vertical offset in frame heights: positive moves down.",
+          "index": 1,
+          "label": "Position Y",
+          "max": 1.5,
+          "min": -1.5,
+          "toggle": false,
+          "var": "posy"
+        },
+        {
+          "default": 1,
+          "help": "Size relative to the whole picture fitting the frame: 1 fits, 0.5 is half size.",
+          "index": 2,
+          "label": "Scale",
+          "max": 5,
+          "min": 0,
+          "toggle": false,
+          "var": "scale"
+        },
+        {
+          "default": 1,
+          "help": "Extra horizontal stretch (1 = none).",
+          "index": 3,
+          "label": "Stretch X",
+          "max": 4,
+          "min": 0.1,
+          "toggle": false,
+          "var": "stx"
+        },
+        {
+          "default": 1,
+          "help": "Extra vertical stretch (1 = none).",
+          "index": 4,
+          "label": "Stretch Y",
+          "max": 4,
+          "min": 0.1,
+          "toggle": false,
+          "var": "sty"
+        },
+        {
+          "default": 0,
+          "help": "Rotation in degrees, clockwise.",
+          "index": 5,
+          "label": "Rotation",
+          "max": 720,
+          "min": -720,
+          "toggle": false,
+          "var": "rot"
+        },
+        {
+          "default": 0,
+          "help": "Pivot for rotate and scale: -1 left edge, 0 center, 1 right edge of the picture.",
+          "index": 6,
+          "label": "Anchor X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "ancx"
+        },
+        {
+          "default": 0,
+          "help": "Pivot for rotate and scale: -1 top edge, 0 center, 1 bottom edge of the picture.",
+          "index": 7,
+          "label": "Anchor Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "ancy"
+        },
+        {
+          "default": 0,
+          "help": "Fraction of the picture cut off the left. Cropping does not re-center the picture.",
+          "index": 8,
+          "label": "Crop left",
+          "max": 0.95,
+          "min": 0,
+          "toggle": false,
+          "var": "cl"
+        },
+        {
+          "default": 0,
+          "help": "Fraction cut off the right.",
+          "index": 9,
+          "label": "Crop right",
+          "max": 0.95,
+          "min": 0,
+          "toggle": false,
+          "var": "cr"
+        },
+        {
+          "default": 0,
+          "help": "Fraction cut off the top.",
+          "index": 10,
+          "label": "Crop top",
+          "max": 0.95,
+          "min": 0,
+          "toggle": false,
+          "var": "ct"
+        },
+        {
+          "default": 0,
+          "help": "Fraction cut off the bottom.",
+          "index": 11,
+          "label": "Crop bottom",
+          "max": 0.95,
+          "min": 0,
+          "toggle": false,
+          "var": "cb"
+        },
+        {
+          "default": 1,
+          "help": "0 invisible, 1 solid.",
+          "index": 12,
+          "label": "Opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "opacity"
+        },
+        {
+          "default": 0,
+          "help": "0 off, 1 on.",
+          "index": 13,
+          "label": "Flip horizontal",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "fliph"
+        },
+        {
+          "default": 0,
+          "help": "0 off, 1 on.",
+          "index": 14,
+          "label": "Flip vertical",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "flipv"
+        },
+        {
+          "default": 0,
+          "help": "Corner rounding as a fraction of the shorter side; 0.5 makes a pill or circle.",
+          "index": 15,
+          "label": "Corner radius",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0,
+          "help": "Border width as a fraction of frame height (0.005 is a thin line at any resolution).",
+          "index": 16,
+          "label": "Border width",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "border"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Border color (0..1).",
+          "index": 17,
+          "label": "Border red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Border color (0..1).",
+          "index": 18,
+          "label": "Border green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Border color (0..1).",
+          "index": 19,
+          "label": "Border blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bdb"
+        },
+        {
+          "default": 0,
+          "help": "Drop shadow strength (0 = off).",
+          "index": 20,
+          "label": "Shadow opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "shadow"
+        },
+        {
+          "default": 0.012,
+          "help": "Shadow offset, fraction of frame height.",
+          "index": 21,
+          "label": "Shadow distance",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "shdist"
+        },
+        {
+          "default": 135,
+          "help": "Direction the shadow falls in degrees: 90 straight down, 135 down-left, 45 down-right.",
+          "index": 22,
+          "label": "Shadow angle",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "shang"
+        },
+        {
+          "default": 0.02,
+          "help": "Blur of the shadow edge, fraction of frame height.",
+          "index": 23,
+          "label": "Shadow softness",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "shsoft"
+        },
+        {
+          "default": 0,
+          "help": "What shows around the picture when it is smaller than the frame. Options: 0 Tracks below, 1 Black, 2 Blurred copy, 3 Solid color.",
+          "index": 24,
+          "label": "Background",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Tracks below",
+            "Black",
+            "Blurred copy",
+            "Solid color"
+          ],
+          "toggle": false,
+          "var": "bgmode"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Background color (0..1).",
+          "index": 25,
+          "label": "Background red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Background color (0..1).",
+          "index": 26,
+          "label": "Background green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Background color (0..1).",
+          "index": 27,
+          "label": "Background blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bgb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the inset clip's item, on a track above the main video.",
+          "set": {
+            "border": 0.004,
+            "posx": 0.3,
+            "posy": -0.28,
+            "radius": 0.06,
+            "scale": 0.35,
+            "shadow": 0.6
+          },
+          "title": "Picture-in-picture, top right"
+        },
+        {
+          "notes": "",
+          "set": {
+            "border": 0.006,
+            "radius": 0.05,
+            "rot": -6,
+            "scale": 0.6,
+            "shadow": 0.7
+          },
+          "title": "Tilted card"
+        },
+        {
+          "notes": "Keyframe Scale at 1.5 at the item start and 1 two seconds later.",
+          "set": {
+            "scale": 1.5
+          },
+          "title": "Animated zoom-out"
+        }
+      ],
+      "file": "transform.eel",
+      "name": "LS Transform: Transform",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "On an item it changes only that clip; on a track it changes everything on the track.",
+        "For moves, keyframe Position, Scale and Rotation; the keyframes are ordinary REAPER envelopes."
+      ],
+      "title": "Transform"
+    },
+    {
+      "about": "Smoothly zooms into a chosen rectangle, ideal for showing a control in a screen recording. Drag the item fade-in and fade-out to set how long the zoom in and out take, or automate the amount.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 0.3,
+          "help": "Left edge of the zoom region, fraction of the picture width.",
+          "index": 0,
+          "label": "Region left",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rx"
+        },
+        {
+          "default": 0.3,
+          "help": "Top edge, fraction of picture height.",
+          "index": 1,
+          "label": "Region top",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ry"
+        },
+        {
+          "default": 0.4,
+          "help": "Region width, fraction of picture width.",
+          "index": 2,
+          "label": "Region width",
+          "max": 1,
+          "min": 0.02,
+          "toggle": false,
+          "var": "rw"
+        },
+        {
+          "default": 0.4,
+          "help": "Region height, fraction of picture height.",
+          "index": 3,
+          "label": "Region height",
+          "max": 1,
+          "min": 0.02,
+          "toggle": false,
+          "var": "rh"
+        },
+        {
+          "default": 0,
+          "help": "Item fades: zooms in over the fade-in and out over the fade-out. Manual: Manual amount controls it. Options: 0 Item fades, 1 Manual.",
+          "index": 4,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 whole picture, 1 zoomed into the region.",
+          "index": 5,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 1,
+          "help": "Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 6,
+          "label": "Easing",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        },
+        {
+          "default": 0,
+          "help": "Draws the region outline while you set it up. Turn it off before rendering. 0 off, 1 on.",
+          "index": 7,
+          "label": "Show region outline",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "showbox"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Split the screen recording so one item covers the zoom; its fade-in is the zoom-in time, its fade-out the zoom-out time.",
+          "set": {
+            "animsrc": 0,
+            "rh": 0.2,
+            "rw": 0.3,
+            "rx": 0.05,
+            "ry": 0.1
+          },
+          "title": "Zoom into a control"
+        }
+      ],
+      "file": "zoom_region.eel",
+      "name": "LS Transform: Zoom to Region",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "The region is grown to the frame shape so the picture never stretches.",
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Zoom to Region"
+    },
+    {
+      "about": "Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Red offset of the Lift wheel. Lift wheel: color of the shadows. The wheel's red, green and blue values are offsets; pushing toward one color raises it and lowers the others.",
+          "index": 0,
+          "label": "Lift red",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "liftr"
+        },
+        {
+          "default": 0,
+          "help": "Green offset of the Lift wheel. Lift wheel: color of the shadows. The wheel's red, green and blue values are offsets; pushing toward one color raises it and lowers the others.",
+          "index": 1,
+          "label": "Lift green",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "liftg"
+        },
+        {
+          "default": 0,
+          "help": "Blue offset of the Lift wheel. Lift wheel: color of the shadows. The wheel's red, green and blue values are offsets; pushing toward one color raises it and lowers the others.",
+          "index": 2,
+          "label": "Lift blue",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "liftb"
+        },
+        {
+          "default": 0,
+          "help": "Raises (positive) or lowers the black level.",
+          "index": 3,
+          "label": "Lift master",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "liftm"
+        },
+        {
+          "default": 0,
+          "help": "Red offset of the Gamma wheel. Gamma wheel: color of the midtones.",
+          "index": 4,
+          "label": "Gamma red",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "gamr"
+        },
+        {
+          "default": 0,
+          "help": "Green offset of the Gamma wheel. Gamma wheel: color of the midtones.",
+          "index": 5,
+          "label": "Gamma green",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "gamg"
+        },
+        {
+          "default": 0,
+          "help": "Blue offset of the Gamma wheel. Gamma wheel: color of the midtones.",
+          "index": 6,
+          "label": "Gamma blue",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "gamb"
+        },
+        {
+          "default": 0,
+          "help": "Brightens (positive) or darkens the midtones.",
+          "index": 7,
+          "label": "Gamma master",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "gamm"
+        },
+        {
+          "default": 0,
+          "help": "Red offset of the Gain wheel. Gain wheel: color of the highlights.",
+          "index": 8,
+          "label": "Gain red",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "gainr"
+        },
+        {
+          "default": 0,
+          "help": "Green offset of the Gain wheel. Gain wheel: color of the highlights.",
+          "index": 9,
+          "label": "Gain green",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "gaing"
+        },
+        {
+          "default": 0,
+          "help": "Blue offset of the Gain wheel. Gain wheel: color of the highlights.",
+          "index": 10,
+          "label": "Gain blue",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "gainb"
+        },
+        {
+          "default": 1,
+          "help": "Overall brightness multiplier (1 = unchanged).",
+          "index": 11,
+          "label": "Gain master",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "gainm"
+        },
+        {
+          "default": 0,
+          "help": "Red offset of the Offset wheel. Offset wheel: shifts all tones equally.",
+          "index": 12,
+          "label": "Offset red",
+          "max": 0.2,
+          "min": -0.2,
+          "toggle": false,
+          "var": "offr"
+        },
+        {
+          "default": 0,
+          "help": "Green offset of the Offset wheel. Offset wheel: shifts all tones equally.",
+          "index": 13,
+          "label": "Offset green",
+          "max": 0.2,
+          "min": -0.2,
+          "toggle": false,
+          "var": "offg"
+        },
+        {
+          "default": 0,
+          "help": "Blue offset of the Offset wheel. Offset wheel: shifts all tones equally.",
+          "index": 14,
+          "label": "Offset blue",
+          "max": 0.2,
+          "min": -0.2,
+          "toggle": false,
+          "var": "offb"
+        },
+        {
+          "default": 0,
+          "help": "Shifts everything brighter or darker.",
+          "index": 15,
+          "label": "Offset master",
+          "max": 0.2,
+          "min": -0.2,
+          "toggle": false,
+          "var": "offm"
+        },
+        {
+          "default": 1,
+          "help": "1 unchanged; above 1 more contrast.",
+          "index": 16,
+          "label": "Contrast",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "contrast"
+        },
+        {
+          "default": 0.435,
+          "help": "Tone that contrast pivots around (0.435 is video mid-gray).",
+          "index": 17,
+          "label": "Pivot",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "pivot"
+        },
+        {
+          "default": 1,
+          "help": "Saturation; 0 is black and white.",
+          "index": 18,
+          "label": "Saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "sat"
+        },
+        {
+          "default": 0,
+          "help": "Boosts muted colors more than strong ones, protecting skin tones.",
+          "index": 19,
+          "label": "Vibrance",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "vib"
+        },
+        {
+          "default": 0,
+          "help": "Negative cooler (blue), positive warmer (orange).",
+          "index": 20,
+          "label": "Temperature",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "temp"
+        },
+        {
+          "default": 0,
+          "help": "Negative green, positive magenta.",
+          "index": 21,
+          "label": "Tint",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "tint"
+        },
+        {
+          "default": 0,
+          "help": "Rotates every color around the color wheel, in degrees.",
+          "index": 22,
+          "label": "Hue rotate",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "hue"
+        },
+        {
+          "default": 0,
+          "help": "Brightness in photographic stops.",
+          "index": 23,
+          "label": "Exposure (stops)",
+          "max": 3,
+          "min": -3,
+          "toggle": false,
+          "var": "exposure"
+        },
+        {
+          "default": 0,
+          "help": "Lifts (positive) or deepens dark areas only.",
+          "index": 24,
+          "label": "Shadows",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "shadows"
+        },
+        {
+          "default": 0,
+          "help": "Recovers (negative) or boosts bright areas.",
+          "index": 25,
+          "label": "Highlights",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "highlights"
+        },
+        {
+          "default": 1,
+          "help": "Blend with the original (1 = full effect).",
+          "index": 26,
+          "label": "Mix",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "mix"
+        },
+        {
+          "default": 0,
+          "help": "Shows the original on the left half for comparison. Turn off before rendering. 0 off, 1 on.",
+          "index": 27,
+          "label": "Before/after split",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "split"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "contrast": 1.1,
+            "sat": 1.1,
+            "temp": 0.25
+          },
+          "title": "Warm stage look"
+        },
+        {
+          "notes": "",
+          "set": {
+            "contrast": 1.1,
+            "gainb": -0.05,
+            "gainr": 0.06,
+            "liftb": 0.04,
+            "liftr": -0.02
+          },
+          "title": "Teal shadows, warm highlights"
+        },
+        {
+          "notes": "",
+          "set": {
+            "exposure": 0.5,
+            "shadows": 0.3
+          },
+          "title": "Rescue a dark recording"
+        }
+      ],
+      "file": "color_grade.eel",
+      "name": "LS Color: Color Grade",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Temperature, tint, contrast, exposure and the wheels are very fast. Hue rotate and vibrance are slower at 4K.",
+        "Subtle: temperature 0.1-0.2, saturation 1.05-1.15. Strong: temperature 0.4, saturation 1.3."
+      ],
+      "title": "Color Grade"
+    },
+    {
+      "about": "Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Master curve output at input 0%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 0,
+          "label": "Master 0%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm0"
+        },
+        {
+          "default": 0.1667,
+          "help": "Master curve output at input 17%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 1,
+          "label": "Master 17%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm1"
+        },
+        {
+          "default": 0.3333,
+          "help": "Master curve output at input 33%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 2,
+          "label": "Master 33%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm2"
+        },
+        {
+          "default": 0.5,
+          "help": "Master curve output at input 50%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 3,
+          "label": "Master 50%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm3"
+        },
+        {
+          "default": 0.6667,
+          "help": "Master curve output at input 67%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 4,
+          "label": "Master 67%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm4"
+        },
+        {
+          "default": 0.8333,
+          "help": "Master curve output at input 83%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 5,
+          "label": "Master 83%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm5"
+        },
+        {
+          "default": 1,
+          "help": "Master curve output at input 100%. Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.",
+          "index": 6,
+          "label": "Master 100%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cm6"
+        },
+        {
+          "default": 0,
+          "help": "Red curve output at input 0%.",
+          "index": 7,
+          "label": "Red 0%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr0"
+        },
+        {
+          "default": 0.1667,
+          "help": "Red curve output at input 17%.",
+          "index": 8,
+          "label": "Red 17%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr1"
+        },
+        {
+          "default": 0.3333,
+          "help": "Red curve output at input 33%.",
+          "index": 9,
+          "label": "Red 33%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr2"
+        },
+        {
+          "default": 0.5,
+          "help": "Red curve output at input 50%.",
+          "index": 10,
+          "label": "Red 50%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr3"
+        },
+        {
+          "default": 0.6667,
+          "help": "Red curve output at input 67%.",
+          "index": 11,
+          "label": "Red 67%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr4"
+        },
+        {
+          "default": 0.8333,
+          "help": "Red curve output at input 83%.",
+          "index": 12,
+          "label": "Red 83%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr5"
+        },
+        {
+          "default": 1,
+          "help": "Red curve output at input 100%.",
+          "index": 13,
+          "label": "Red 100%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cr6"
+        },
+        {
+          "default": 0,
+          "help": "Green curve output at input 0%.",
+          "index": 14,
+          "label": "Green 0%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg0"
+        },
+        {
+          "default": 0.1667,
+          "help": "Green curve output at input 17%.",
+          "index": 15,
+          "label": "Green 17%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg1"
+        },
+        {
+          "default": 0.3333,
+          "help": "Green curve output at input 33%.",
+          "index": 16,
+          "label": "Green 33%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg2"
+        },
+        {
+          "default": 0.5,
+          "help": "Green curve output at input 50%.",
+          "index": 17,
+          "label": "Green 50%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg3"
+        },
+        {
+          "default": 0.6667,
+          "help": "Green curve output at input 67%.",
+          "index": 18,
+          "label": "Green 67%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg4"
+        },
+        {
+          "default": 0.8333,
+          "help": "Green curve output at input 83%.",
+          "index": 19,
+          "label": "Green 83%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg5"
+        },
+        {
+          "default": 1,
+          "help": "Green curve output at input 100%.",
+          "index": 20,
+          "label": "Green 100%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cg6"
+        },
+        {
+          "default": 0,
+          "help": "Blue curve output at input 0%.",
+          "index": 21,
+          "label": "Blue 0%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb0"
+        },
+        {
+          "default": 0.1667,
+          "help": "Blue curve output at input 17%.",
+          "index": 22,
+          "label": "Blue 17%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb1"
+        },
+        {
+          "default": 0.3333,
+          "help": "Blue curve output at input 33%.",
+          "index": 23,
+          "label": "Blue 33%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb2"
+        },
+        {
+          "default": 0.5,
+          "help": "Blue curve output at input 50%.",
+          "index": 24,
+          "label": "Blue 50%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb3"
+        },
+        {
+          "default": 0.6667,
+          "help": "Blue curve output at input 67%.",
+          "index": 25,
+          "label": "Blue 67%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb4"
+        },
+        {
+          "default": 0.8333,
+          "help": "Blue curve output at input 83%.",
+          "index": 26,
+          "label": "Blue 83%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb5"
+        },
+        {
+          "default": 1,
+          "help": "Blue curve output at input 100%.",
+          "index": 27,
+          "label": "Blue 100%",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "cb6"
+        },
+        {
+          "default": 1,
+          "help": "Blend with the original.",
+          "index": 28,
+          "label": "Mix",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "mix"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "cm1": 0.12,
+            "cm2": 0.29,
+            "cm4": 0.71,
+            "cm5": 0.88
+          },
+          "title": "Gentle S-curve"
+        },
+        {
+          "notes": "",
+          "set": {
+            "cm0": 0.08
+          },
+          "title": "Faded blacks"
+        },
+        {
+          "notes": "",
+          "set": {
+            "cb5": 0.8,
+            "cb6": 0.95,
+            "cr5": 0.86,
+            "cr6": 1
+          },
+          "title": "Warmer highlights"
+        }
+      ],
+      "file": "curves.eel",
+      "name": "LS Color: Curves",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "The channel curves (red, green, blue) are applied first, then the master curve."
+      ],
+      "title": "Curves"
+    },
+    {
+      "about": "Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for red. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 0,
+          "label": "Red hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh0"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for yellow. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 1,
+          "label": "Yellow hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh1"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for green. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 2,
+          "label": "Green hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh2"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for cyan. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 3,
+          "label": "Cyan hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh3"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for blue. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 4,
+          "label": "Blue hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh4"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Hue shift for magenta. Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.",
+          "index": 5,
+          "label": "Magenta hue shift",
+          "max": 60,
+          "min": -60,
+          "toggle": false,
+          "var": "hh5"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for red. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 6,
+          "label": "Red saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs0"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for yellow. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 7,
+          "label": "Yellow saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs1"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for green. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 8,
+          "label": "Green saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs2"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for cyan. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 9,
+          "label": "Cyan saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs3"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for blue. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 10,
+          "label": "Blue saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs4"
+        },
+        {
+          "default": 1,
+          "help": "Hue vs Saturation for magenta. Saturation multiplier per color range (same order; 1 unchanged).",
+          "index": 11,
+          "label": "Magenta saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "hs5"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for red. Brightness offset per color range (same order).",
+          "index": 12,
+          "label": "Red brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl0"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for yellow. Brightness offset per color range (same order).",
+          "index": 13,
+          "label": "Yellow brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl1"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for green. Brightness offset per color range (same order).",
+          "index": 14,
+          "label": "Green brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl2"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for cyan. Brightness offset per color range (same order).",
+          "index": 15,
+          "label": "Cyan brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl3"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for blue. Brightness offset per color range (same order).",
+          "index": 16,
+          "label": "Blue brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl4"
+        },
+        {
+          "default": 0,
+          "help": "Hue vs Brightness for magenta. Brightness offset per color range (same order).",
+          "index": 17,
+          "label": "Magenta brightness",
+          "max": 0.3,
+          "min": -0.3,
+          "toggle": false,
+          "var": "hl5"
+        },
+        {
+          "default": 1,
+          "help": "Saturation of dark areas.",
+          "index": 18,
+          "label": "Shadow saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "ls0"
+        },
+        {
+          "default": 1,
+          "help": "Saturation of midtones.",
+          "index": 19,
+          "label": "Midtone saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "ls1"
+        },
+        {
+          "default": 1,
+          "help": "Saturation of bright areas.",
+          "index": 20,
+          "label": "Highlight saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "ls2"
+        },
+        {
+          "default": 1,
+          "help": "Blend with the original.",
+          "index": 21,
+          "label": "Mix",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "mix"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "hs2": 0.4
+          },
+          "title": "Calm down greens"
+        },
+        {
+          "notes": "",
+          "set": {
+            "hh1": -10
+          },
+          "title": "Push oranges toward red"
+        },
+        {
+          "notes": "",
+          "set": {
+            "ls0": 0.4
+          },
+          "title": "Desaturate the shadows"
+        }
+      ],
+      "file": "hue_curves.eel",
+      "name": "LS Color: Hue Curves",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Hue Curves"
+    },
+    {
+      "about": "Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Color to select in degrees: 0 red, 30 orange, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta.",
+          "index": 0,
+          "label": "Hue",
+          "max": 360,
+          "min": 0,
+          "toggle": false,
+          "var": "selhue"
+        },
+        {
+          "default": 30,
+          "help": "How wide a range of hues counts as selected.",
+          "index": 1,
+          "label": "Hue width",
+          "max": 180,
+          "min": 2,
+          "toggle": false,
+          "var": "width"
+        },
+        {
+          "default": 20,
+          "help": "Softness of the selection edge in degrees.",
+          "index": 2,
+          "label": "Softness",
+          "max": 90,
+          "min": 0,
+          "toggle": false,
+          "var": "soft"
+        },
+        {
+          "default": 0.2,
+          "help": "Ignore pale colors below this saturation.",
+          "index": 3,
+          "label": "Min saturation",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "satmin"
+        },
+        {
+          "default": 0,
+          "help": "Ignore pixels darker than this.",
+          "index": 4,
+          "label": "Min brightness",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lummin"
+        },
+        {
+          "default": 1,
+          "help": "Ignore pixels brighter than this.",
+          "index": 5,
+          "label": "Max brightness",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lummax"
+        },
+        {
+          "default": 0,
+          "help": "Hue shift for the selected color.",
+          "index": 6,
+          "label": "Inside hue shift",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "ihue"
+        },
+        {
+          "default": 1.2,
+          "help": "Saturation of the selected color.",
+          "index": 7,
+          "label": "Inside saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "isat"
+        },
+        {
+          "default": 0,
+          "help": "Brightness change for the selected color.",
+          "index": 8,
+          "label": "Inside brightness",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "ilum"
+        },
+        {
+          "default": 0,
+          "help": "Saturation of everything else: 0 makes it black and white (color pop).",
+          "index": 9,
+          "label": "Outside saturation",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "osat"
+        },
+        {
+          "default": 0,
+          "help": "Brightness change for everything else.",
+          "index": 10,
+          "label": "Outside brightness",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "olum"
+        },
+        {
+          "default": 0,
+          "help": "Swap selected and unselected. 0 off, 1 on.",
+          "index": 11,
+          "label": "Invert selection",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "invert"
+        },
+        {
+          "default": 0,
+          "help": "Shows the selection in white. Turn off before rendering. 0 off, 1 on.",
+          "index": 12,
+          "label": "Show selection",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "showmask"
+        },
+        {
+          "default": 1,
+          "help": "Blend with the original.",
+          "index": 13,
+          "label": "Mix",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "mix"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "osat": 0,
+            "selhue": 0,
+            "width": 30
+          },
+          "title": "Color pop: keep only reds"
+        },
+        {
+          "notes": "",
+          "set": {
+            "ihue": -120,
+            "osat": 1,
+            "selhue": 0,
+            "width": 40
+          },
+          "title": "Turn a red guitar blue"
+        }
+      ],
+      "file": "isolate.eel",
+      "name": "LS Color: Isolate Color",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Turn on Show selection while adjusting Hue, Hue width and Min saturation."
+      ],
+      "title": "Isolate Color"
+    },
+    {
+      "about": "One-knob film and music-video looks: black and white, sepia, teal and orange, warm film, cool night, bleach bypass, faded vintage, cross process, punch, golden hour, noir and duotone.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 2,
+          "help": "The look. Options: 0 Black & White, 1 Sepia, 2 Teal & Orange, 3 Warm Film, 4 Cool Night, 5 Bleach Bypass, 6 Faded Vintage, 7 Cross Process, 8 Punch, 9 Golden Hour, 10 Noir, 11 Duotone.",
+          "index": 0,
+          "label": "Look",
+          "max": 11,
+          "min": 0,
+          "options": [
+            "Black & White",
+            "Sepia",
+            "Teal & Orange",
+            "Warm Film",
+            "Cool Night",
+            "Bleach Bypass",
+            "Faded Vintage",
+            "Cross Process",
+            "Punch",
+            "Golden Hour",
+            "Noir",
+            "Duotone"
+          ],
+          "toggle": false,
+          "var": "look"
+        },
+        {
+          "default": 1,
+          "help": "Blend with the original.",
+          "index": 1,
+          "label": "Amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 1,
+          "help": "Contrast multiplier for the look.",
+          "index": 2,
+          "label": "Contrast",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "strength"
+        },
+        {
+          "default": 0.3,
+          "help": "Black and white mix: how much red contributes (used by Black & White, Sepia and Noir).",
+          "index": 3,
+          "label": "B&W red weight",
+          "max": 2,
+          "min": -1,
+          "toggle": false,
+          "var": "bwr"
+        },
+        {
+          "default": 0.59,
+          "help": "How much green contributes.",
+          "index": 4,
+          "label": "B&W green weight",
+          "max": 2,
+          "min": -1,
+          "toggle": false,
+          "var": "bwg"
+        },
+        {
+          "default": 0.11,
+          "help": "How much blue contributes.",
+          "index": 5,
+          "label": "B&W blue weight",
+          "max": 2,
+          "min": -1,
+          "toggle": false,
+          "var": "bwb"
+        },
+        {
+          "default": 0.08,
+          "help": "Red part of Duotone shadows (0..1).",
+          "index": 6,
+          "label": "Duotone shadow red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dsr"
+        },
+        {
+          "default": 0.07,
+          "help": "Green part of Duotone shadows (0..1).",
+          "index": 7,
+          "label": "Duotone shadow green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dsg"
+        },
+        {
+          "default": 0.3,
+          "help": "Blue part of Duotone shadows (0..1).",
+          "index": 8,
+          "label": "Duotone shadow blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dsb"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Duotone highlights (0..1).",
+          "index": 9,
+          "label": "Duotone highlight red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dhr"
+        },
+        {
+          "default": 0.78,
+          "help": "Green part of Duotone highlights (0..1).",
+          "index": 10,
+          "label": "Duotone highlight green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dhg"
+        },
+        {
+          "default": 0.45,
+          "help": "Blue part of Duotone highlights (0..1).",
+          "index": 11,
+          "label": "Duotone highlight blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dhb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "look": 2
+          },
+          "title": "Teal and orange"
+        },
+        {
+          "notes": "",
+          "set": {
+            "look": 0
+          },
+          "title": "Black and white"
+        },
+        {
+          "notes": "",
+          "set": {
+            "dhb": 0.66,
+            "dhg": 0.87,
+            "dhr": 0.24,
+            "dsb": 0.12,
+            "dsg": 0.1,
+            "dsr": 0.05,
+            "look": 11
+          },
+          "title": "Duotone in brand colors"
+        }
+      ],
+      "file": "looks.eel",
+      "name": "LS Color: Looks",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Looks"
+    },
+    {
+      "about": "Darkens (or tints) the edges of the frame to pull the eye to the center, with adjustable size, softness, shape and center.",
+      "category": "Color",
+      "controls": [
+        {
+          "default": 0.5,
+          "help": "Strength at the edges.",
+          "index": 0,
+          "label": "Amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 1,
+          "help": "Where the darkening is complete; 1 reaches the edges.",
+          "index": 1,
+          "label": "Size",
+          "max": 2,
+          "min": 0.1,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0.7,
+          "help": "Width of the transition.",
+          "index": 2,
+          "label": "Softness",
+          "max": 1,
+          "min": 0.01,
+          "toggle": false,
+          "var": "soft"
+        },
+        {
+          "default": 0.5,
+          "help": "0 follows the frame shape, 1 is circular.",
+          "index": 3,
+          "label": "Roundness",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "round"
+        },
+        {
+          "default": 0,
+          "help": "Center, -1 left to 1 right.",
+          "index": 4,
+          "label": "Center X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cx"
+        },
+        {
+          "default": 0,
+          "help": "Center, -1 top to 1 bottom.",
+          "index": 5,
+          "label": "Center Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cy"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Color (0..1).",
+          "index": 6,
+          "label": "Color red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "vr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Color (0..1).",
+          "index": 7,
+          "label": "Color green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "vg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Color (0..1).",
+          "index": 8,
+          "label": "Color blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "vb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "amount": 0.35
+          },
+          "title": "Subtle"
+        },
+        {
+          "notes": "",
+          "set": {
+            "amount": 0.5,
+            "vb": 1,
+            "vg": 1,
+            "vr": 1
+          },
+          "title": "White dreamy edges"
+        }
+      ],
+      "file": "vignette.eel",
+      "name": "LS Color: Vignette",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Vignette"
+    },
+    {
+      "about": "Punches the picture in time with the music using the project tempo: zoom kicks, light flashes, color split and shake on every beat, half beat or bar.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 2,
+          "help": "How often it pulses, using the project tempo. Options: 0 Every bar, 1 Every 2 beats, 2 Every beat, 3 Every 1/2 beat, 4 Every 1/4 beat.",
+          "index": 0,
+          "label": "Pulse on",
+          "max": 4,
+          "min": 0,
+          "options": [
+            "Every bar",
+            "Every 2 beats",
+            "Every beat",
+            "Every 1/2 beat",
+            "Every 1/4 beat"
+          ],
+          "toggle": false,
+          "var": "division"
+        },
+        {
+          "default": 0.35,
+          "help": "How fast each pulse fades, as a fraction of the interval.",
+          "index": 1,
+          "label": "Decay",
+          "max": 1,
+          "min": 0.02,
+          "toggle": false,
+          "var": "decay"
+        },
+        {
+          "default": 0,
+          "help": "Moves pulses earlier or later, in beats.",
+          "index": 2,
+          "label": "Offset (beats)",
+          "max": 0.5,
+          "min": -0.5,
+          "toggle": false,
+          "var": "offset"
+        },
+        {
+          "default": 0.05,
+          "help": "Zoom kick size.",
+          "index": 3,
+          "label": "Zoom kick",
+          "max": 0.3,
+          "min": 0,
+          "toggle": false,
+          "var": "zoom"
+        },
+        {
+          "default": 0.25,
+          "help": "Light flash strength.",
+          "index": 4,
+          "label": "Flash",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "flash"
+        },
+        {
+          "default": 0,
+          "help": "Color split on the hit.",
+          "index": 5,
+          "label": "Color split",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rgb"
+        },
+        {
+          "default": 0,
+          "help": "Shake on the hit.",
+          "index": 6,
+          "label": "Shake",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "shake"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Flash color (0..1).",
+          "index": 7,
+          "label": "Flash red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Flash color (0..1).",
+          "index": 8,
+          "label": "Flash green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Flash color (0..1).",
+          "index": 9,
+          "label": "Flash blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "division": 2,
+            "flash": 0.2,
+            "zoom": 0.05
+          },
+          "title": "Kick on every beat"
+        },
+        {
+          "notes": "",
+          "set": {
+            "division": 0,
+            "flash": 0.5,
+            "rgb": 0.5,
+            "zoom": 0.1
+          },
+          "title": "Bar accents"
+        }
+      ],
+      "file": "beat_pulse.eel",
+      "name": "LS Look: Beat Pulse",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Uses the project tempo and time signature: set them to match the song."
+      ],
+      "title": "Beat Pulse"
+    },
+    {
+      "about": "Moving subjects leave fading echoes behind them, with optional zoom or spin drift for psychedelic tunnels.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0.8,
+          "help": "Trail length (0 none, 0.95 very long).",
+          "index": 0,
+          "label": "Trail length",
+          "max": 0.98,
+          "min": 0,
+          "toggle": false,
+          "var": "persist"
+        },
+        {
+          "default": 0,
+          "help": "Blend smears; Additive glow brightens overlapping trails. Options: 0 Blend, 1 Additive glow.",
+          "index": 1,
+          "label": "Mode",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Blend",
+            "Additive glow"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0,
+          "help": "Trails zoom in or out over time.",
+          "index": 2,
+          "label": "Zoom drift",
+          "max": 0.05,
+          "min": -0.05,
+          "toggle": false,
+          "var": "drift"
+        },
+        {
+          "default": 0,
+          "help": "Trails rotate over time, degrees per frame.",
+          "index": 3,
+          "label": "Spin drift",
+          "max": 5,
+          "min": -5,
+          "toggle": false,
+          "var": "spin"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "persist": 0.85
+          },
+          "title": "Dreamy echoes"
+        },
+        {
+          "notes": "",
+          "set": {
+            "drift": 0.01,
+            "mode": 1,
+            "persist": 0.9,
+            "spin": 1
+          },
+          "title": "Psychedelic tunnel"
+        }
+      ],
+      "file": "trails.eel",
+      "name": "LS Look: Echo Trails",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Echo Trails"
+    },
+    {
+      "about": "Film grain, gate weave, flicker, dust and scratches, faded blacks, warmth, vignette and optional widescreen bars.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0.25,
+          "help": "Grain strength.",
+          "index": 0,
+          "label": "Grain",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "grain"
+        },
+        {
+          "default": 1.5,
+          "help": "Grain size in pixels at 1080p.",
+          "index": 1,
+          "label": "Grain size",
+          "max": 4,
+          "min": 1,
+          "toggle": false,
+          "var": "grainsize"
+        },
+        {
+          "default": 0.3,
+          "help": "Frame wobble like a film projector.",
+          "index": 2,
+          "label": "Gate weave",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "weave"
+        },
+        {
+          "default": 0.2,
+          "help": "Brightness flicker.",
+          "index": 3,
+          "label": "Flicker",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "flicker"
+        },
+        {
+          "default": 0.3,
+          "help": "Dust specks and occasional scratches.",
+          "index": 4,
+          "label": "Dust & scratches",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dust"
+        },
+        {
+          "default": 0.08,
+          "help": "Lifts black to this level.",
+          "index": 5,
+          "label": "Faded blacks",
+          "max": 0.4,
+          "min": 0,
+          "toggle": false,
+          "var": "fade"
+        },
+        {
+          "default": 0.2,
+          "help": "Negative cooler, positive warmer.",
+          "index": 6,
+          "label": "Warmth",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "warmth"
+        },
+        {
+          "default": 0.35,
+          "help": "Edge darkening.",
+          "index": 7,
+          "label": "Vignette",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "vig"
+        },
+        {
+          "default": 0,
+          "help": "Widescreen bars. Options: 0 None, 1 2.39:1, 2 1.85:1.",
+          "index": 8,
+          "label": "Bars",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "None",
+            "2.39:1",
+            "1.85:1"
+          ],
+          "toggle": false,
+          "var": "bars"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "dust": 0.5,
+            "fade": 0.12,
+            "grain": 0.35,
+            "warmth": 0.4
+          },
+          "title": "Vintage film"
+        },
+        {
+          "notes": "",
+          "set": {
+            "bars": 1,
+            "dust": 0,
+            "flicker": 0,
+            "grain": 0.15,
+            "weave": 0
+          },
+          "title": "Clean cinematic"
+        }
+      ],
+      "file": "film.eel",
+      "name": "LS Look: Film Look",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Film Look"
+    },
+    {
+      "about": "Digital breakup: torn slices, displaced blocks and color splitting. Automate the amount for hits, or lock bursts to the beat.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0.5,
+          "help": "Overall strength; keyframe it for hits.",
+          "index": 0,
+          "label": "Amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 0.6,
+          "help": "Torn horizontal slices.",
+          "index": 1,
+          "label": "Slice tearing",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "slices"
+        },
+        {
+          "default": 0.5,
+          "help": "Displaced rectangles.",
+          "index": 2,
+          "label": "Block displacement",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "blocks"
+        },
+        {
+          "default": 0.6,
+          "help": "Color channel splitting.",
+          "index": 3,
+          "label": "Color split",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rgb"
+        },
+        {
+          "default": 12,
+          "help": "How often the glitch pattern changes per second.",
+          "index": 4,
+          "label": "Changes per second",
+          "max": 30,
+          "min": 1,
+          "toggle": false,
+          "var": "speed"
+        },
+        {
+          "default": 0,
+          "help": "Bursts on every beat of the project tempo. 0 off, 1 on.",
+          "index": 5,
+          "label": "Burst on each beat",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "beatsync"
+        },
+        {
+          "default": 1,
+          "help": "Changes the random pattern.",
+          "index": 6,
+          "label": "Seed",
+          "max": 100,
+          "min": 0,
+          "toggle": false,
+          "var": "seed"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Set the project tempo to the song first.",
+          "set": {
+            "amount": 0.7,
+            "beatsync": 1
+          },
+          "title": "Glitch on the beat"
+        }
+      ],
+      "file": "glitch.eel",
+      "name": "LS Look: Glitch",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Glitch"
+    },
+    {
+      "about": "Bright parts bloom into a soft glow, or the whole image gets a dreamy diffusion like a mist filter.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Bloom glows only bright areas; Soft diffusion blends a soft copy over everything (mist filter). Options: 0 Bloom, 1 Soft diffusion.",
+          "index": 0,
+          "label": "Mode",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Bloom",
+            "Soft diffusion"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0.6,
+          "help": "Glow strength.",
+          "index": 1,
+          "label": "Intensity",
+          "max": 2,
+          "min": 0,
+          "toggle": false,
+          "var": "intensity"
+        },
+        {
+          "default": 0.65,
+          "help": "Bloom: only parts brighter than this glow.",
+          "index": 2,
+          "label": "Threshold",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "thresh"
+        },
+        {
+          "default": 0.5,
+          "help": "Glow size.",
+          "index": 3,
+          "label": "Size",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Tint (0..1).",
+          "index": 4,
+          "label": "Tint red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Tint (0..1).",
+          "index": 5,
+          "label": "Tint green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Tint (0..1).",
+          "index": 6,
+          "label": "Tint blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "intensity": 0.8,
+            "mode": 0,
+            "thresh": 0.6
+          },
+          "title": "Stage light bloom"
+        },
+        {
+          "notes": "",
+          "set": {
+            "intensity": 0.6,
+            "mode": 1
+          },
+          "title": "Mist filter"
+        }
+      ],
+      "file": "glow.eel",
+      "name": "LS Look: Glow & Bloom",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Glow & Bloom"
+    },
+    {
+      "about": "Crisps up soft or upscaled footage, or softens it for a gentler, diffused look. Positive amounts sharpen, negative amounts soften.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0.5,
+          "help": "Positive sharpens, negative softens.",
+          "index": 0,
+          "label": "Amount",
+          "max": 2,
+          "min": -1,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 1,
+          "help": "Size of the detail affected (1 fine to 4 coarse).",
+          "index": 1,
+          "label": "Radius",
+          "max": 4,
+          "min": 1,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0.02,
+          "help": "Ignores differences below this so noise is not sharpened.",
+          "index": 2,
+          "label": "Threshold",
+          "max": 0.2,
+          "min": 0,
+          "toggle": false,
+          "var": "thresh"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "amount": 0.8,
+            "radius": 1
+          },
+          "title": "Crisp up upscaled footage"
+        },
+        {
+          "notes": "",
+          "set": {
+            "amount": -0.6,
+            "radius": 3
+          },
+          "title": "Soft dreamy"
+        }
+      ],
+      "file": "sharpen.eel",
+      "name": "LS Look: Sharpen & Soften",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Sharpen & Soften"
+    },
+    {
+      "about": "Worn videotape: color bleed, soft picture, scanlines, noise, rolling tracking glitches and an optional PLAY label.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0.5,
+          "help": "Color fringing.",
+          "index": 0,
+          "label": "Color bleed",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bleed"
+        },
+        {
+          "default": 0.5,
+          "help": "Horizontal smear like tape.",
+          "index": 1,
+          "label": "Softness",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "soften"
+        },
+        {
+          "default": 0.3,
+          "help": "Scanline darkness.",
+          "index": 2,
+          "label": "Scanlines",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scan"
+        },
+        {
+          "default": 0.25,
+          "help": "Noise.",
+          "index": 3,
+          "label": "Noise",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "noise"
+        },
+        {
+          "default": 0.4,
+          "help": "Rolling tracking glitch band.",
+          "index": 4,
+          "label": "Tracking",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "track"
+        },
+        {
+          "default": 0.25,
+          "help": "Washed-out color.",
+          "index": 5,
+          "label": "Washed out",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "desat"
+        },
+        {
+          "default": 1,
+          "help": "Shows a PLAY label in the corner. 0 off, 1 on.",
+          "index": 6,
+          "label": "PLAY label",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "label"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "bleed": 0.6,
+            "label": 1,
+            "track": 0.5
+          },
+          "title": "Home video flashback"
+        }
+      ],
+      "file": "vhs.eel",
+      "name": "LS Look: VHS & Retro TV",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "VHS & Retro TV"
+    },
+    {
+      "about": "Radial zoom blur bursting from a point, or directional blur that streaks the picture at any angle.",
+      "category": "Look",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Zoom blurs outward from a point; Directional streaks along an angle. Options: 0 Zoom, 1 Directional.",
+          "index": 0,
+          "label": "Mode",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Zoom",
+            "Directional"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0.3,
+          "help": "Blur strength.",
+          "index": 1,
+          "label": "Amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        },
+        {
+          "default": 0,
+          "help": "Zoom center, -1 left to 1 right.",
+          "index": 2,
+          "label": "Center X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cx"
+        },
+        {
+          "default": 0,
+          "help": "Zoom center, -1 top to 1 bottom.",
+          "index": 3,
+          "label": "Center Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cy"
+        },
+        {
+          "default": 0,
+          "help": "Directional angle in degrees.",
+          "index": 4,
+          "label": "Angle",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "angle"
+        },
+        {
+          "default": 16,
+          "help": "More samples look smoother but are slower.",
+          "index": 5,
+          "label": "Quality",
+          "max": 32,
+          "min": 4,
+          "toggle": false,
+          "var": "quality"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "amount": 0.5,
+            "mode": 0
+          },
+          "title": "Burst from center"
+        }
+      ],
+      "file": "motion_blur.eel",
+      "name": "LS Look: Zoom & Motion Blur",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Zoom & Motion Blur"
+    },
+    {
+      "about": "Put on a track: every crossfade between items on that track becomes this transition, lasting as long as the crossfade. Cross dissolve, dip to black, white or a color, additive, blur and luma dissolves.",
+      "category": "Transition",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Kind of dissolve. Options: 0 Cross dissolve, 1 Dip to black, 2 Dip to white, 3 Dip to color, 4 Additive dissolve, 5 Blur dissolve, 6 Luma dissolve.",
+          "index": 0,
+          "label": "Style",
+          "max": 6,
+          "min": 0,
+          "options": [
+            "Cross dissolve",
+            "Dip to black",
+            "Dip to white",
+            "Dip to color",
+            "Additive dissolve",
+            "Blur dissolve",
+            "Luma dissolve"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 1,
+          "help": "How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 1,
+          "label": "Smoothness",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        },
+        {
+          "default": 0.2,
+          "help": "Red part of Dip color (0..1).",
+          "index": 2,
+          "label": "Dip red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dcr"
+        },
+        {
+          "default": 0.6,
+          "help": "Green part of Dip color (0..1).",
+          "index": 3,
+          "label": "Dip green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dcg"
+        },
+        {
+          "default": 0.9,
+          "help": "Blue part of Dip color (0..1).",
+          "index": 4,
+          "label": "Dip blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dcb"
+        },
+        {
+          "default": 0,
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "index": 5,
+          "label": "Source",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item crossfades",
+            "Manual (this track to the one below)"
+          ],
+          "toggle": false,
+          "var": "srcmode"
+        },
+        {
+          "default": 0,
+          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "index": 6,
+          "label": "Manual progress",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "progress"
+        },
+        {
+          "default": 0,
+          "help": "Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on.",
+          "index": 7,
+          "label": "Reverse",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "reverse"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "style": 0
+          },
+          "title": "Cross dissolve"
+        },
+        {
+          "notes": "",
+          "set": {
+            "style": 1
+          },
+          "title": "Dip to black"
+        }
+      ],
+      "file": "tr_dissolve.eel",
+      "name": "LS Transition: Dissolve & Dip",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.",
+        "One instance handles every crossfade on the track. Use separate tracks for different transition styles."
+      ],
+      "title": "Dissolve & Dip"
+    },
+    {
+      "about": "Put on a track: crossfades cut through a white flash, a digital glitch, a warm light leak or a film burn.",
+      "category": "Transition",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Flash cuts through white; Glitch cuts with digital breakup; Light leak and Film burn add warm light. Options: 0 Flash, 1 Glitch, 2 Light leak, 3 Film burn.",
+          "index": 0,
+          "label": "Style",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Flash",
+            "Glitch",
+            "Light leak",
+            "Film burn"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 0.8,
+          "help": "Strength of the flash or light.",
+          "index": 1,
+          "label": "Strength",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "strength"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Light color (0..1).",
+          "index": 2,
+          "label": "Light red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lcr"
+        },
+        {
+          "default": 0.62,
+          "help": "Green part of Light color (0..1).",
+          "index": 3,
+          "label": "Light green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lcg"
+        },
+        {
+          "default": 0.25,
+          "help": "Blue part of Light color (0..1).",
+          "index": 4,
+          "label": "Light blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lcb"
+        },
+        {
+          "default": 0,
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "index": 5,
+          "label": "Source",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item crossfades",
+            "Manual (this track to the one below)"
+          ],
+          "toggle": false,
+          "var": "srcmode"
+        },
+        {
+          "default": 0,
+          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "index": 6,
+          "label": "Manual progress",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "progress"
+        },
+        {
+          "default": 0,
+          "help": "Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on.",
+          "index": 7,
+          "label": "Reverse",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "reverse"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "style": 0
+          },
+          "title": "White flash"
+        },
+        {
+          "notes": "",
+          "set": {
+            "style": 2
+          },
+          "title": "Light leak"
+        }
+      ],
+      "file": "tr_flash.eel",
+      "name": "LS Transition: Flash, Glitch & Light Leak",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.",
+        "One instance handles every crossfade on the track. Use separate tracks for different transition styles."
+      ],
+      "title": "Flash, Glitch & Light Leak"
+    },
+    {
+      "about": "Put on a track: crossfades become a push, slide, reveal, split or squeeze in any direction, with optional motion blur.",
+      "category": "Transition",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Push moves both shots; Slide in covers; Slide out uncovers; Split opens like doors; Squeeze compresses. Options: 0 Push, 1 Slide in, 2 Slide out, 3 Split open, 4 Squeeze.",
+          "index": 0,
+          "label": "Style",
+          "max": 4,
+          "min": 0,
+          "options": [
+            "Push",
+            "Slide in",
+            "Slide out",
+            "Split open",
+            "Squeeze"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 0,
+          "help": "Direction of motion. Options: 0 Left, 1 Right, 2 Up, 3 Down.",
+          "index": 1,
+          "label": "Direction",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Left",
+            "Right",
+            "Up",
+            "Down"
+          ],
+          "toggle": false,
+          "var": "dir"
+        },
+        {
+          "default": 0.5,
+          "help": "Motion blur during the move.",
+          "index": 2,
+          "label": "Motion blur",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "blur"
+        },
+        {
+          "default": 1,
+          "help": "How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 3,
+          "label": "Smoothness",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        },
+        {
+          "default": 0,
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "index": 4,
+          "label": "Source",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item crossfades",
+            "Manual (this track to the one below)"
+          ],
+          "toggle": false,
+          "var": "srcmode"
+        },
+        {
+          "default": 0,
+          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "index": 5,
+          "label": "Manual progress",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "progress"
+        },
+        {
+          "default": 0,
+          "help": "Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on.",
+          "index": 6,
+          "label": "Reverse",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "reverse"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "dir": 0,
+            "style": 0
+          },
+          "title": "Push left"
+        },
+        {
+          "notes": "",
+          "set": {
+            "dir": 2,
+            "style": 1
+          },
+          "title": "Slide up"
+        }
+      ],
+      "file": "tr_push.eel",
+      "name": "LS Transition: Push & Slide",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.",
+        "One instance handles every crossfade on the track. Use separate tracks for different transition styles."
+      ],
+      "title": "Push & Slide"
+    },
+    {
+      "about": "Put on a track: crossfades reveal the next shot through a growing circle, box, diamond, clock sweep, barn doors, angled wipe or blinds, with soft edges and an optional glowing border.",
+      "category": "Transition",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Shape of the reveal. Options: 0 Circle, 1 Box, 2 Diamond, 3 Clock, 4 Barn doors (vertical), 5 Barn doors (horizontal), 6 Angled wipe, 7 Blinds.",
+          "index": 0,
+          "label": "Shape",
+          "max": 7,
+          "min": 0,
+          "options": [
+            "Circle",
+            "Box",
+            "Diamond",
+            "Clock",
+            "Barn doors (vertical)",
+            "Barn doors (horizontal)",
+            "Angled wipe",
+            "Blinds"
+          ],
+          "toggle": false,
+          "var": "shape"
+        },
+        {
+          "default": 0.08,
+          "help": "Edge softness.",
+          "index": 1,
+          "label": "Softness",
+          "max": 0.5,
+          "min": 0.002,
+          "toggle": false,
+          "var": "soft"
+        },
+        {
+          "default": 0,
+          "help": "Center, -1 left to 1 right.",
+          "index": 2,
+          "label": "Center X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cx"
+        },
+        {
+          "default": 0,
+          "help": "Center, -1 top to 1 bottom.",
+          "index": 3,
+          "label": "Center Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "cy"
+        },
+        {
+          "default": 0,
+          "help": "Angle for Angled wipe and Blinds, degrees.",
+          "index": 4,
+          "label": "Angle",
+          "max": 180,
+          "min": -180,
+          "toggle": false,
+          "var": "angle"
+        },
+        {
+          "default": 8,
+          "help": "Number of blinds.",
+          "index": 5,
+          "label": "Blinds count",
+          "max": 40,
+          "min": 2,
+          "toggle": false,
+          "var": "count"
+        },
+        {
+          "default": 0,
+          "help": "Glowing edge width (0 = none).",
+          "index": 6,
+          "label": "Border",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "border"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Border color (0..1).",
+          "index": 7,
+          "label": "Border red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcr"
+        },
+        {
+          "default": 0.85,
+          "help": "Green part of Border color (0..1).",
+          "index": 8,
+          "label": "Border green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcg"
+        },
+        {
+          "default": 0.5,
+          "help": "Blue part of Border color (0..1).",
+          "index": 9,
+          "label": "Border blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcb"
+        },
+        {
+          "default": 0,
+          "help": "Shrink from the edges instead of growing from the center. 0 off, 1 on.",
+          "index": 10,
+          "label": "Shrink instead of grow",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "shrink"
+        },
+        {
+          "default": 0,
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "index": 11,
+          "label": "Source",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item crossfades",
+            "Manual (this track to the one below)"
+          ],
+          "toggle": false,
+          "var": "srcmode"
+        },
+        {
+          "default": 0,
+          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "index": 12,
+          "label": "Manual progress",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "progress"
+        },
+        {
+          "default": 0,
+          "help": "Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on.",
+          "index": 13,
+          "label": "Reverse",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "reverse"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "shape": 0,
+            "soft": 0.05
+          },
+          "title": "Iris open"
+        },
+        {
+          "notes": "",
+          "set": {
+            "shape": 3
+          },
+          "title": "Clock wipe"
+        },
+        {
+          "notes": "",
+          "set": {
+            "angle": 30,
+            "border": 0.01,
+            "shape": 6
+          },
+          "title": "Angled wipe with glowing edge"
+        }
+      ],
+      "file": "tr_shape.eel",
+      "name": "LS Transition: Shape Wipe",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.",
+        "One instance handles every crossfade on the track. Use separate tracks for different transition styles."
+      ],
+      "title": "Shape Wipe"
+    },
+    {
+      "about": "Put on a track: crossfades punch through with a zoom in, zoom out or spinning zoom, blurred at the peak for speed.",
+      "category": "Transition",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Zoom in through, zoom out, or spinning zoom. Options: 0 Zoom in, 1 Zoom out, 2 Spin.",
+          "index": 0,
+          "label": "Style",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Zoom in",
+            "Zoom out",
+            "Spin"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 0.6,
+          "help": "How far it zooms.",
+          "index": 1,
+          "label": "Strength",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "strength"
+        },
+        {
+          "default": 0.6,
+          "help": "Zoom blur at the peak.",
+          "index": 2,
+          "label": "Zoom blur",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "blur"
+        },
+        {
+          "default": 0,
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "index": 3,
+          "label": "Source",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item crossfades",
+            "Manual (this track to the one below)"
+          ],
+          "toggle": false,
+          "var": "srcmode"
+        },
+        {
+          "default": 0,
+          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "index": 4,
+          "label": "Manual progress",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "progress"
+        },
+        {
+          "default": 0,
+          "help": "Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on.",
+          "index": 5,
+          "label": "Reverse",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "reverse"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "strength": 0.6,
+            "style": 0
+          },
+          "title": "Punchy zoom-in"
+        }
+      ],
+      "file": "tr_zoom.eel",
+      "name": "LS Transition: Zoom & Spin",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.",
+        "One instance handles every crossfade on the track. Use separate tracks for different transition styles."
+      ],
+      "title": "Zoom & Spin"
+    },
+    {
+      "about": "Name and subtitle bar for the lower part of the screen. Name the item \"Name | Subtitle\". Drag the item fade-in and fade-out to set how long it animates on and off.",
+      "category": "Title",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Look of the bar. Options: 0 Bar with accent, 1 Pill, 2 Minimal line, 3 Accent block.",
+          "index": 0,
+          "label": "Style",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Bar with accent",
+            "Pill",
+            "Minimal line",
+            "Accent block"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 0,
+          "help": "Left, center or right. Options: 0 Left, 1 Center, 2 Right.",
+          "index": 1,
+          "label": "Align",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Left",
+            "Center",
+            "Right"
+          ],
+          "toggle": false,
+          "var": "align"
+        },
+        {
+          "default": 0.06,
+          "help": "Distance from the side, fraction of frame width.",
+          "index": 2,
+          "label": "Side margin",
+          "max": 0.4,
+          "min": 0,
+          "toggle": false,
+          "var": "margin"
+        },
+        {
+          "default": 0.8,
+          "help": "Vertical center of the bar, fraction of frame height (0.8 is low on screen).",
+          "index": 3,
+          "label": "Height on screen",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ypos"
+        },
+        {
+          "default": 0.05,
+          "help": "Name text height, fraction of frame height.",
+          "index": 4,
+          "label": "Text size",
+          "max": 0.15,
+          "min": 0.015,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0.6,
+          "help": "Subtitle size relative to the name.",
+          "index": 5,
+          "label": "Subtitle size",
+          "max": 1,
+          "min": 0.3,
+          "toggle": false,
+          "var": "subsize"
+        },
+        {
+          "default": 0.07,
+          "help": "Red part of Bar (0..1).",
+          "index": 6,
+          "label": "Bar red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "brr"
+        },
+        {
+          "default": 0.08,
+          "help": "Green part of Bar (0..1).",
+          "index": 7,
+          "label": "Bar green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "brg"
+        },
+        {
+          "default": 0.1,
+          "help": "Blue part of Bar (0..1).",
+          "index": 8,
+          "label": "Bar blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "brb"
+        },
+        {
+          "default": 0.85,
+          "help": "Bar opacity.",
+          "index": 9,
+          "label": "Bar opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "baropacity"
+        },
+        {
+          "default": 0.24,
+          "help": "Red part of Accent (0..1).",
+          "index": 10,
+          "label": "Accent red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acr"
+        },
+        {
+          "default": 0.87,
+          "help": "Green part of Accent (0..1).",
+          "index": 11,
+          "label": "Accent green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acg"
+        },
+        {
+          "default": 0.66,
+          "help": "Blue part of Accent (0..1).",
+          "index": 12,
+          "label": "Accent blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acb"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Text (0..1).",
+          "index": 13,
+          "label": "Text red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Text (0..1).",
+          "index": 14,
+          "label": "Text green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Text (0..1).",
+          "index": 15,
+          "label": "Text blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcb"
+        },
+        {
+          "default": 0,
+          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "index": 16,
+          "label": "Font",
+          "max": 6,
+          "min": 0,
+          "options": [
+            "Helvetica Neue",
+            "Avenir Next",
+            "Futura",
+            "Georgia",
+            "Gill Sans",
+            "Menlo",
+            "Impact"
+          ],
+          "toggle": false,
+          "var": "font"
+        },
+        {
+          "default": 1,
+          "help": "Bold name. 0 off, 1 on.",
+          "index": 17,
+          "label": "Bold name",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "bold"
+        },
+        {
+          "default": 0,
+          "help": "Animation; plays over the item fade-in and reverses over the fade-out. Options: 0 Slide, 1 Wipe, 2 Fade, 3 Pop.",
+          "index": 18,
+          "label": "Animation",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Slide",
+            "Wipe",
+            "Fade",
+            "Pop"
+          ],
+          "toggle": false,
+          "var": "anim"
+        },
+        {
+          "default": 0,
+          "help": "Item fades or Manual amount. Options: 0 Item fades, 1 Manual.",
+          "index": 19,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 hidden, 1 shown.",
+          "index": 20,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Item name: \"Jane Doe | Drums\". Item fades 0.5 s.",
+          "set": {
+            "align": 0,
+            "style": 0
+          },
+          "title": "Guest name"
+        },
+        {
+          "notes": "",
+          "set": {
+            "align": 1,
+            "font": 1,
+            "style": 1
+          },
+          "title": "Centered pill"
+        }
+      ],
+      "file": "lower_third.eel",
+      "name": "LS Title: Lower Third",
+      "placement": "item",
+      "text": "Name | Subtitle (item name)",
+      "tips": [
+        "Use the panel's + Lower third button, or put it on a transparent title item. The text is the item name; | starts the subtitle.",
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Lower Third"
+    },
+    {
+      "about": "Rolling end credits or a sideways news-style crawl. Name the item with lines separated by \"|\"; a line like \"Drums: Larry Seyer\" becomes two columns. Set the duration to the item length.",
+      "category": "Title",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Roll up the screen, or crawl sideways along the bottom. Options: 0 Roll up, 1 Crawl left.",
+          "index": 0,
+          "label": "Mode",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Roll up",
+            "Crawl left"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 10,
+          "help": "Seconds for the whole roll; set it to the item length.",
+          "index": 1,
+          "label": "Duration (s)",
+          "max": 600,
+          "min": 1,
+          "toggle": false,
+          "var": "dur"
+        },
+        {
+          "default": 0.045,
+          "help": "Text height, fraction of frame height.",
+          "index": 2,
+          "label": "Text size",
+          "max": 0.15,
+          "min": 0.015,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 1.6,
+          "help": "Line spacing.",
+          "index": 3,
+          "label": "Line spacing",
+          "max": 3,
+          "min": 1,
+          "toggle": false,
+          "var": "spacing"
+        },
+        {
+          "default": 1,
+          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "index": 4,
+          "label": "Font",
+          "max": 6,
+          "min": 0,
+          "options": [
+            "Helvetica Neue",
+            "Avenir Next",
+            "Futura",
+            "Georgia",
+            "Gill Sans",
+            "Menlo",
+            "Impact"
+          ],
+          "toggle": false,
+          "var": "font"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Text (0..1).",
+          "index": 5,
+          "label": "Text red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Text (0..1).",
+          "index": 6,
+          "label": "Text green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Text (0..1).",
+          "index": 7,
+          "label": "Text blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcb"
+        },
+        {
+          "default": 0.7,
+          "help": "Red part of Role text (0..1).",
+          "index": 8,
+          "label": "Role red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rcr"
+        },
+        {
+          "default": 0.7,
+          "help": "Green part of Role text (0..1).",
+          "index": 9,
+          "label": "Role green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rcg"
+        },
+        {
+          "default": 0.7,
+          "help": "Blue part of Role text (0..1).",
+          "index": 10,
+          "label": "Role blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rcb"
+        },
+        {
+          "default": 1,
+          "help": "Darkening or color behind the text. Options: 0 None, 1 Dim picture, 2 Solid color.",
+          "index": 11,
+          "label": "Backdrop",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "None",
+            "Dim picture",
+            "Solid color"
+          ],
+          "toggle": false,
+          "var": "backdrop"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Backdrop color (0..1).",
+          "index": 12,
+          "label": "Backdrop red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Backdrop color (0..1).",
+          "index": 13,
+          "label": "Backdrop green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Backdrop color (0..1).",
+          "index": 14,
+          "label": "Backdrop blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkb"
+        },
+        {
+          "default": 0.6,
+          "help": "Backdrop opacity.",
+          "index": 15,
+          "label": "Backdrop opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkop"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Item name: \"The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching\".",
+          "set": {
+            "dur": 12,
+            "mode": 0
+          },
+          "title": "End credits"
+        }
+      ],
+      "file": "credits.eel",
+      "name": "LS Title: Scrolling Credits",
+      "placement": "item",
+      "text": "Line one | Role: Name | ... (item name)",
+      "tips": [
+        "Separate lines with |. A line with a colon, like \"Drums: Larry\", becomes two columns."
+      ],
+      "title": "Scrolling Credits"
+    },
+    {
+      "about": "Large centered title with an optional subtitle and backdrop. Name the item \"Title | Subtitle\". Item fades animate it in and out.",
+      "category": "Title",
+      "controls": [
+        {
+          "default": 0.5,
+          "help": "Vertical position, fraction of frame height.",
+          "index": 0,
+          "label": "Height on screen",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ypos"
+        },
+        {
+          "default": 0.1,
+          "help": "Title text height, fraction of frame height.",
+          "index": 1,
+          "label": "Title size",
+          "max": 0.3,
+          "min": 0.02,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0.4,
+          "help": "Subtitle size relative to the title.",
+          "index": 2,
+          "label": "Subtitle size",
+          "max": 1,
+          "min": 0.15,
+          "toggle": false,
+          "var": "subsize"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Title color (0..1).",
+          "index": 3,
+          "label": "Title red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Title color (0..1).",
+          "index": 4,
+          "label": "Title green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Title color (0..1).",
+          "index": 5,
+          "label": "Title blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcb"
+        },
+        {
+          "default": 0.85,
+          "help": "Red part of Subtitle color (0..1).",
+          "index": 6,
+          "label": "Subtitle red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scr"
+        },
+        {
+          "default": 0.85,
+          "help": "Green part of Subtitle color (0..1).",
+          "index": 7,
+          "label": "Subtitle green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scg"
+        },
+        {
+          "default": 0.85,
+          "help": "Blue part of Subtitle color (0..1).",
+          "index": 8,
+          "label": "Subtitle blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "scb"
+        },
+        {
+          "default": 1,
+          "help": "Darkening, color or gradient behind the text. Options: 0 None, 1 Dim picture, 2 Solid color, 3 Bottom gradient.",
+          "index": 9,
+          "label": "Backdrop",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "None",
+            "Dim picture",
+            "Solid color",
+            "Bottom gradient"
+          ],
+          "toggle": false,
+          "var": "backdrop"
+        },
+        {
+          "default": 0,
+          "help": "Red part of Backdrop color (0..1).",
+          "index": 10,
+          "label": "Backdrop red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkr"
+        },
+        {
+          "default": 0,
+          "help": "Green part of Backdrop color (0..1).",
+          "index": 11,
+          "label": "Backdrop green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkg"
+        },
+        {
+          "default": 0,
+          "help": "Blue part of Backdrop color (0..1).",
+          "index": 12,
+          "label": "Backdrop blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkb"
+        },
+        {
+          "default": 0.45,
+          "help": "Backdrop opacity.",
+          "index": 13,
+          "label": "Backdrop opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bkop"
+        },
+        {
+          "default": 1,
+          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "index": 14,
+          "label": "Font",
+          "max": 6,
+          "min": 0,
+          "options": [
+            "Helvetica Neue",
+            "Avenir Next",
+            "Futura",
+            "Georgia",
+            "Gill Sans",
+            "Menlo",
+            "Impact"
+          ],
+          "toggle": false,
+          "var": "font"
+        },
+        {
+          "default": 1,
+          "help": "Bold title. 0 off, 1 on.",
+          "index": 15,
+          "label": "Bold",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "bold"
+        },
+        {
+          "default": 1,
+          "help": "Soft text shadow. 0 off, 1 on.",
+          "index": 16,
+          "label": "Text shadow",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "shadow"
+        },
+        {
+          "default": 1,
+          "help": "Fade, rise, zoom or typewriter (types the text over the fade-in). Options: 0 Fade, 1 Rise, 2 Zoom, 3 Typewriter.",
+          "index": 17,
+          "label": "Animation",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Fade",
+            "Rise",
+            "Zoom",
+            "Typewriter"
+          ],
+          "toggle": false,
+          "var": "anim"
+        },
+        {
+          "default": 0,
+          "help": "Item fades or Manual amount. Options: 0 Item fades, 1 Manual.",
+          "index": 18,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 hidden, 1 shown.",
+          "index": 19,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Item name: \"The Spice of Life | The Larry Seyer Show\".",
+          "set": {
+            "anim": 1,
+            "backdrop": 1,
+            "font": 1
+          },
+          "title": "Episode title"
+        },
+        {
+          "notes": "",
+          "set": {
+            "anim": 3,
+            "backdrop": 0,
+            "font": 5
+          },
+          "title": "Typewriter"
+        }
+      ],
+      "file": "title_card.eel",
+      "name": "LS Title: Title & Subtitle",
+      "placement": "item",
+      "text": "Title | Subtitle (item name)",
+      "tips": [
+        "Use the panel's + Title button. The text is the item name; | starts the subtitle.",
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Title & Subtitle"
+    },
+    {
+      "about": "Hides part of the picture, such as an email address, serial number or face, with blur, pixelation or a solid box. Stack several to hide several things.",
+      "category": "Tutorial",
+      "controls": [
+        {
+          "default": 0.4,
+          "help": "Hidden area, fractions of the frame (left, top, width, height).",
+          "index": 0,
+          "label": "Area left",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "rx"
+        },
+        {
+          "default": 0.4,
+          "help": "Area top.",
+          "index": 1,
+          "label": "Area top",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ry"
+        },
+        {
+          "default": 0.2,
+          "help": "Area width.",
+          "index": 2,
+          "label": "Area width",
+          "max": 1,
+          "min": 0.005,
+          "toggle": false,
+          "var": "rw"
+        },
+        {
+          "default": 0.1,
+          "help": "Area height.",
+          "index": 3,
+          "label": "Area height",
+          "max": 1,
+          "min": 0.005,
+          "toggle": false,
+          "var": "rh"
+        },
+        {
+          "default": 0,
+          "help": "Blur, pixelate or a solid box. Options: 0 Blur, 1 Pixelate, 2 Solid box.",
+          "index": 4,
+          "label": "Mode",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Blur",
+            "Pixelate",
+            "Solid box"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 0.6,
+          "help": "Blur or pixel size.",
+          "index": 5,
+          "label": "Strength",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "strength"
+        },
+        {
+          "default": 1,
+          "help": "Rectangle, rounded or ellipse. Options: 0 Rectangle, 1 Rounded, 2 Ellipse.",
+          "index": 6,
+          "label": "Shape",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Rectangle",
+            "Rounded",
+            "Ellipse"
+          ],
+          "toggle": false,
+          "var": "shape"
+        },
+        {
+          "default": 0.004,
+          "help": "Edge softness, fraction of frame height.",
+          "index": 7,
+          "label": "Edge softness",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "feather"
+        },
+        {
+          "default": 0.1,
+          "help": "Red part of Box color (0..1).",
+          "index": 8,
+          "label": "Box red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcr"
+        },
+        {
+          "default": 0.1,
+          "help": "Green part of Box color (0..1).",
+          "index": 9,
+          "label": "Box green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcg"
+        },
+        {
+          "default": 0.1,
+          "help": "Blue part of Box color (0..1).",
+          "index": 10,
+          "label": "Box blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcb"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "mode": 0,
+            "rh": 0.05,
+            "rw": 0.3,
+            "rx": 0.6,
+            "ry": 0.05,
+            "strength": 0.8
+          },
+          "title": "Hide an email address"
+        }
+      ],
+      "file": "region_blur.eel",
+      "name": "LS Tutorial: Blur or Pixelate Region",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Stack several instances to hide several things."
+      ],
+      "title": "Blur or Pixelate Region"
+    },
+    {
+      "about": "Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out.",
+      "category": "Tutorial",
+      "controls": [
+        {
+          "default": 0.08,
+          "help": "Highlight box rectangle, fractions of the frame (left, top, width, height).",
+          "index": 0,
+          "label": "Box left",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bx"
+        },
+        {
+          "default": 0.1,
+          "help": "Box top.",
+          "index": 1,
+          "label": "Box top",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "by"
+        },
+        {
+          "default": 0.18,
+          "help": "Box width.",
+          "index": 2,
+          "label": "Box width",
+          "max": 1,
+          "min": 0.005,
+          "toggle": false,
+          "var": "bw"
+        },
+        {
+          "default": 0.05,
+          "help": "Box height.",
+          "index": 3,
+          "label": "Box height",
+          "max": 1,
+          "min": 0.005,
+          "toggle": false,
+          "var": "bh"
+        },
+        {
+          "default": 0.45,
+          "help": "Label pill center X, fraction of frame width.",
+          "index": 4,
+          "label": "Label X",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lx"
+        },
+        {
+          "default": 0.125,
+          "help": "Label pill center Y, fraction of frame height.",
+          "index": 5,
+          "label": "Label Y",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ly"
+        },
+        {
+          "default": 0,
+          "help": "Which parts to draw. Numbered badge is a pill sized for a short number. Options: 0 Box + arrow + label, 1 Arrow + label, 2 Label only, 3 Box only, 4 Numbered badge.",
+          "index": 6,
+          "label": "Style",
+          "max": 4,
+          "min": 0,
+          "options": [
+            "Box + arrow + label",
+            "Arrow + label",
+            "Label only",
+            "Box only",
+            "Numbered badge"
+          ],
+          "toggle": false,
+          "var": "style"
+        },
+        {
+          "default": 0.032,
+          "help": "Label text height, fraction of frame height.",
+          "index": 7,
+          "label": "Text size",
+          "max": 0.12,
+          "min": 0.01,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 0.0028,
+          "help": "Line width of the box, arrow and pill outline, fraction of frame height.",
+          "index": 8,
+          "label": "Line width",
+          "max": 0.01,
+          "min": 0.0005,
+          "toggle": false,
+          "var": "thick"
+        },
+        {
+          "default": 0.25,
+          "help": "Box corner rounding (0 square to 1 fully round).",
+          "index": 9,
+          "label": "Box rounding",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0.24,
+          "help": "Red part of Accent (0..1).",
+          "index": 10,
+          "label": "Accent red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acr"
+        },
+        {
+          "default": 0.87,
+          "help": "Green part of Accent (0..1).",
+          "index": 11,
+          "label": "Accent green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acg"
+        },
+        {
+          "default": 0.66,
+          "help": "Blue part of Accent (0..1).",
+          "index": 12,
+          "label": "Accent blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "acb"
+        },
+        {
+          "default": 0.06,
+          "help": "Red part of Label fill (0..1).",
+          "index": 13,
+          "label": "Label fill red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fcr"
+        },
+        {
+          "default": 0.09,
+          "help": "Green part of Label fill (0..1).",
+          "index": 14,
+          "label": "Label fill green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fcg"
+        },
+        {
+          "default": 0.09,
+          "help": "Blue part of Label fill (0..1).",
+          "index": 15,
+          "label": "Label fill blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "fcb"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Text (0..1).",
+          "index": 16,
+          "label": "Text red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Text (0..1).",
+          "index": 17,
+          "label": "Text green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Text (0..1).",
+          "index": 18,
+          "label": "Text blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tcb"
+        },
+        {
+          "default": 0,
+          "help": "Darkens everything outside the box.",
+          "index": 19,
+          "label": "Dim outside box",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dim"
+        },
+        {
+          "default": 0,
+          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "index": 20,
+          "label": "Font",
+          "max": 6,
+          "min": 0,
+          "options": [
+            "Helvetica Neue",
+            "Avenir Next",
+            "Futura",
+            "Georgia",
+            "Gill Sans",
+            "Menlo",
+            "Impact"
+          ],
+          "toggle": false,
+          "var": "font"
+        },
+        {
+          "default": 2,
+          "help": "Fade, Draw on (the arrow grows toward the target) or Pop. Options: 0 None, 1 Fade, 2 Draw on, 3 Pop.",
+          "index": 21,
+          "label": "Animation",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "None",
+            "Fade",
+            "Draw on",
+            "Pop"
+          ],
+          "toggle": false,
+          "var": "anim"
+        },
+        {
+          "default": 0,
+          "help": "Item fades or Manual amount. Options: 0 Item fades, 1 Manual.",
+          "index": 22,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 hidden, 1 shown.",
+          "index": 23,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Item name: \"Energy Levels\". Place the box over the control and the label beside it.",
+          "set": {
+            "bh": 0.05,
+            "bw": 0.18,
+            "bx": 0.08,
+            "by": 0.1,
+            "lx": 0.45,
+            "ly": 0.125
+          },
+          "title": "Point at a control"
+        }
+      ],
+      "file": "callout.eel",
+      "name": "LS Tutorial: Callout",
+      "placement": "item",
+      "text": "Label text (item name)",
+      "tips": [
+        "Use the panel's + Callout button. The label text is the item name.",
+        "The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).",
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.",
+        "The arrow runs from the label toward the box from any direction, so the label can sit on any side."
+      ],
+      "title": "Callout"
+    },
+    {
+      "about": "A zoom lens that shows a small detail enlarged somewhere else on screen, with a marker on the original spot and an optional connecting line. Item fades animate it.",
+      "category": "Tutorial",
+      "controls": [
+        {
+          "default": 0.3,
+          "help": "Spot to magnify X, fraction of frame width.",
+          "index": 0,
+          "label": "Detail X",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dx"
+        },
+        {
+          "default": 0.3,
+          "help": "Spot to magnify Y, fraction of frame height.",
+          "index": 1,
+          "label": "Detail Y",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dy"
+        },
+        {
+          "default": 0.7,
+          "help": "Where the lens appears X.",
+          "index": 2,
+          "label": "Lens X",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "lx"
+        },
+        {
+          "default": 0.5,
+          "help": "Where the lens appears Y.",
+          "index": 3,
+          "label": "Lens Y",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ly"
+        },
+        {
+          "default": 0.35,
+          "help": "Lens diameter, fraction of frame height.",
+          "index": 4,
+          "label": "Lens size",
+          "max": 1,
+          "min": 0.05,
+          "toggle": false,
+          "var": "size"
+        },
+        {
+          "default": 2.5,
+          "help": "Magnification.",
+          "index": 5,
+          "label": "Zoom",
+          "max": 8,
+          "min": 1,
+          "toggle": false,
+          "var": "zoom"
+        },
+        {
+          "default": 0,
+          "help": "Circle or rounded square. Options: 0 Circle, 1 Rounded square.",
+          "index": 6,
+          "label": "Shape",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Circle",
+            "Rounded square"
+          ],
+          "toggle": false,
+          "var": "shape"
+        },
+        {
+          "default": 0.004,
+          "help": "Border width, fraction of frame height.",
+          "index": 7,
+          "label": "Border width",
+          "max": 0.03,
+          "min": 0,
+          "toggle": false,
+          "var": "border"
+        },
+        {
+          "default": 1,
+          "help": "Red part of Border color (0..1).",
+          "index": 8,
+          "label": "Border red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcr"
+        },
+        {
+          "default": 1,
+          "help": "Green part of Border color (0..1).",
+          "index": 9,
+          "label": "Border green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcg"
+        },
+        {
+          "default": 1,
+          "help": "Blue part of Border color (0..1).",
+          "index": 10,
+          "label": "Border blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "bcb"
+        },
+        {
+          "default": 0.5,
+          "help": "Lens shadow.",
+          "index": 11,
+          "label": "Shadow",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "shadow"
+        },
+        {
+          "default": 1,
+          "help": "Circles the original spot and draws a line to the lens. 0 off, 1 on.",
+          "index": 12,
+          "label": "Mark the detail",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "marker"
+        },
+        {
+          "default": 0,
+          "help": "Item fades or Manual amount. Options: 0 Item fades, 1 Manual.",
+          "index": 13,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 hidden, 1 shown.",
+          "index": 14,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "dx": 0.3,
+            "dy": 0.4,
+            "lx": 0.7,
+            "ly": 0.5,
+            "size": 0.35,
+            "zoom": 3
+          },
+          "title": "Enlarge a small knob"
+        }
+      ],
+      "file": "magnifier.eel",
+      "name": "LS Tutorial: Magnifier",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Magnifier"
+    },
+    {
+      "about": "Dims and optionally blurs everything except one area, with an outline around it, to pull attention to a control or part of the screen. Item fades animate it.",
+      "category": "Tutorial",
+      "controls": [
+        {
+          "default": 0.3,
+          "help": "Spotlight area, fractions of the frame (left, top, width, height).",
+          "index": 0,
+          "label": "Area left",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "sx"
+        },
+        {
+          "default": 0.3,
+          "help": "Area top.",
+          "index": 1,
+          "label": "Area top",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "sy"
+        },
+        {
+          "default": 0.4,
+          "help": "Area width.",
+          "index": 2,
+          "label": "Area width",
+          "max": 1,
+          "min": 0.01,
+          "toggle": false,
+          "var": "sw2"
+        },
+        {
+          "default": 0.3,
+          "help": "Area height.",
+          "index": 3,
+          "label": "Area height",
+          "max": 1,
+          "min": 0.01,
+          "toggle": false,
+          "var": "sh2"
+        },
+        {
+          "default": 1,
+          "help": "Rectangle, rounded or ellipse. Options: 0 Rectangle, 1 Rounded, 2 Ellipse.",
+          "index": 4,
+          "label": "Shape",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Rectangle",
+            "Rounded",
+            "Ellipse"
+          ],
+          "toggle": false,
+          "var": "shape"
+        },
+        {
+          "default": 0.15,
+          "help": "Rounding for the Rounded shape.",
+          "index": 5,
+          "label": "Rounding",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0.01,
+          "help": "Edge softness, fraction of frame height.",
+          "index": 6,
+          "label": "Edge softness",
+          "max": 0.2,
+          "min": 0,
+          "toggle": false,
+          "var": "feather"
+        },
+        {
+          "default": 0.6,
+          "help": "Darkness outside the area.",
+          "index": 7,
+          "label": "Dim outside",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "dim"
+        },
+        {
+          "default": 0,
+          "help": "Blur outside the area (slower at 4K).",
+          "index": 8,
+          "label": "Blur outside",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "blur"
+        },
+        {
+          "default": 0.003,
+          "help": "Outline width, fraction of frame height (0 = none).",
+          "index": 9,
+          "label": "Outline width",
+          "max": 0.02,
+          "min": 0,
+          "toggle": false,
+          "var": "outline"
+        },
+        {
+          "default": 0.24,
+          "help": "Red part of Outline color (0..1).",
+          "index": 10,
+          "label": "Outline red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ocr"
+        },
+        {
+          "default": 0.87,
+          "help": "Green part of Outline color (0..1).",
+          "index": 11,
+          "label": "Outline green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ocg"
+        },
+        {
+          "default": 0.66,
+          "help": "Blue part of Outline color (0..1).",
+          "index": 12,
+          "label": "Outline blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "ocb"
+        },
+        {
+          "default": 0,
+          "help": "Item fades or Manual amount. Options: 0 Item fades, 1 Manual.",
+          "index": 13,
+          "label": "Animate with",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Item fades",
+            "Manual"
+          ],
+          "toggle": false,
+          "var": "animsrc"
+        },
+        {
+          "default": 1,
+          "help": "Manual mode: 0 off, 1 full.",
+          "index": 14,
+          "label": "Manual amount",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "amount"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "dim": 0.6,
+            "sh2": 0.4,
+            "shape": 1,
+            "sw2": 0.35,
+            "sx": 0.1,
+            "sy": 0.15
+          },
+          "title": "Focus on one panel"
+        }
+      ],
+      "file": "spotlight.eel",
+      "name": "LS Tutorial: Spotlight",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+      ],
+      "title": "Spotlight"
+    },
+    {
+      "about": "Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.",
+      "category": "Compose",
+      "controls": [
+        {
+          "default": 2,
+          "help": "How this layer combines with the tracks below. Options: 0 Normal, 1 Multiply, 2 Screen, 3 Overlay, 4 Soft light, 5 Add, 6 Subtract, 7 Difference, 8 Lighten, 9 Darken, 10 Color dodge.",
+          "index": 0,
+          "label": "Blend mode",
+          "max": 10,
+          "min": 0,
+          "options": [
+            "Normal",
+            "Multiply",
+            "Screen",
+            "Overlay",
+            "Soft light",
+            "Add",
+            "Subtract",
+            "Difference",
+            "Lighten",
+            "Darken",
+            "Color dodge"
+          ],
+          "toggle": false,
+          "var": "mode"
+        },
+        {
+          "default": 1,
+          "help": "Layer opacity.",
+          "index": 1,
+          "label": "Opacity",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "opacity"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on a track holding a light-leak clip, above the footage.",
+          "set": {
+            "mode": 2,
+            "opacity": 0.8
+          },
+          "title": "Light leak overlay"
+        }
+      ],
+      "file": "blend.eel",
+      "name": "LS Compose: Blend Modes",
+      "placement": "both",
+      "text": false,
+      "tips": [
+        "Put this on the upper track; it blends that track's video over everything below."
+      ],
+      "title": "Blend Modes"
+    },
+    {
+      "about": "Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop.",
+      "category": "Compose",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Backdrop color to remove. Options: 0 Green, 1 Blue, 2 Custom hue.",
+          "index": 0,
+          "label": "Key color",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Green",
+            "Blue",
+            "Custom hue"
+          ],
+          "toggle": false,
+          "var": "keycolor"
+        },
+        {
+          "default": 120,
+          "help": "Custom hue in degrees (used with Custom hue).",
+          "index": 1,
+          "label": "Custom hue",
+          "max": 360,
+          "min": 0,
+          "toggle": false,
+          "var": "keyhue"
+        },
+        {
+          "default": 0.12,
+          "help": "Raise if backdrop color remains; lower if the subject gets holes.",
+          "index": 2,
+          "label": "Tolerance",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "tolerance"
+        },
+        {
+          "default": 0.12,
+          "help": "Edge softness of the key.",
+          "index": 3,
+          "label": "Softness",
+          "max": 1,
+          "min": 0.005,
+          "toggle": false,
+          "var": "softness"
+        },
+        {
+          "default": 1,
+          "help": "Above 1 tightens edges.",
+          "index": 4,
+          "label": "Edge choke",
+          "max": 4,
+          "min": 0.25,
+          "toggle": false,
+          "var": "choke"
+        },
+        {
+          "default": 0.7,
+          "help": "Removes backdrop color reflected on the subject.",
+          "index": 5,
+          "label": "Spill removal",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "spill"
+        },
+        {
+          "default": 0,
+          "help": "Garbage matte: crop away parts outside the backdrop.",
+          "index": 6,
+          "label": "Crop left",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "cropl"
+        },
+        {
+          "default": 0,
+          "help": "Crop right.",
+          "index": 7,
+          "label": "Crop right",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "cropr"
+        },
+        {
+          "default": 0,
+          "help": "Crop top.",
+          "index": 8,
+          "label": "Crop top",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "cropt"
+        },
+        {
+          "default": 0,
+          "help": "Crop bottom.",
+          "index": 9,
+          "label": "Crop bottom",
+          "max": 0.5,
+          "min": 0,
+          "toggle": false,
+          "var": "cropb"
+        },
+        {
+          "default": 0,
+          "help": "Shows the key as black and white. Turn off before rendering. 0 off, 1 on.",
+          "index": 10,
+          "label": "Show matte",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "showmatte"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the green-screen clip on a track above the new background.",
+          "set": {
+            "keycolor": 0
+          },
+          "title": "Standard green screen"
+        }
+      ],
+      "file": "green_screen.eel",
+      "name": "LS Compose: Green Screen Key",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Green Screen Key"
+    },
+    {
+      "about": "Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.",
+      "category": "Compose",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Panel arrangement. Options: 0 Side by side, 1 Stacked, 2 One large + two small, 3 2x2 grid, 4 Three columns.",
+          "index": 0,
+          "label": "Layout",
+          "max": 4,
+          "min": 0,
+          "options": [
+            "Side by side",
+            "Stacked",
+            "One large + two small",
+            "2x2 grid",
+            "Three columns"
+          ],
+          "toggle": false,
+          "var": "layout"
+        },
+        {
+          "default": 0.5,
+          "help": "Where two-panel layouts divide.",
+          "index": 1,
+          "label": "Split position",
+          "max": 0.8,
+          "min": 0.2,
+          "toggle": false,
+          "var": "split"
+        },
+        {
+          "default": 0.008,
+          "help": "Gap between panels, fraction of frame height.",
+          "index": 2,
+          "label": "Gap",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "gap"
+        },
+        {
+          "default": 0,
+          "help": "Outer margin, fraction of frame height.",
+          "index": 3,
+          "label": "Outer margin",
+          "max": 0.1,
+          "min": 0,
+          "toggle": false,
+          "var": "margin"
+        },
+        {
+          "default": 0,
+          "help": "Panel corner rounding.",
+          "index": 4,
+          "label": "Corner radius",
+          "max": 0.2,
+          "min": 0,
+          "toggle": false,
+          "var": "radius"
+        },
+        {
+          "default": 0.05,
+          "help": "Red part of Gap color (0..1).",
+          "index": 5,
+          "label": "Gap red",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "gcr"
+        },
+        {
+          "default": 0.05,
+          "help": "Green part of Gap color (0..1).",
+          "index": 6,
+          "label": "Gap green",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "gcg"
+        },
+        {
+          "default": 0.06,
+          "help": "Blue part of Gap color (0..1).",
+          "index": 7,
+          "label": "Gap blue",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "gcb"
+        },
+        {
+          "default": 0,
+          "help": "Which part of the source shows in its panel, -1..1 (along the cropped direction).",
+          "index": 8,
+          "label": "Panel 1 pan",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pan1"
+        },
+        {
+          "default": 0,
+          "help": "Panel 2 pan.",
+          "index": 9,
+          "label": "Panel 2 pan",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pan2"
+        },
+        {
+          "default": 0,
+          "help": "Panel 3 pan.",
+          "index": 10,
+          "label": "Panel 3 pan",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pan3"
+        },
+        {
+          "default": 0,
+          "help": "Panel 4 pan.",
+          "index": 11,
+          "label": "Panel 4 pan",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "pan4"
+        },
+        {
+          "default": 1,
+          "help": "Zoom inside every panel.",
+          "index": 12,
+          "label": "Zoom",
+          "max": 3,
+          "min": 1,
+          "toggle": false,
+          "var": "zoomall"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the top video track; the track directly below supplies panel 2.",
+          "set": {
+            "gap": 0.008,
+            "layout": 0
+          },
+          "title": "Two cameras side by side"
+        }
+      ],
+      "file": "split_screen.eel",
+      "name": "LS Compose: Split Screen",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Panel 1 is this track; panels 2-4 are the next tracks below that have video."
+      ],
+      "title": "Split Screen"
+    },
+    {
+      "about": "Freeze holds the picture from the moment it switches on (automate it for freeze frames). Stutter holds every frame for several frames for a choppy, stop-motion feel.",
+      "category": "Time",
+      "controls": [
+        {
+          "default": 0,
+          "help": "Turn on (keyframe it) to hold the current picture. 0 off, 1 on.",
+          "index": 0,
+          "label": "Freeze",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "freeze"
+        },
+        {
+          "default": 1,
+          "help": "Holds each frame for this many frames (1 = off).",
+          "index": 1,
+          "label": "Stutter (hold frames)",
+          "max": 30,
+          "min": 1,
+          "toggle": false,
+          "var": "stutter"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Keyframe Freeze from 0 to 1 at the moment to hold, and back to 0 to release.",
+          "set": {
+            "freeze": 1
+          },
+          "title": "Freeze frame"
+        }
+      ],
+      "file": "freeze.eel",
+      "name": "LS Time: Freeze & Stutter",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Freeze & Stutter"
+    }
+  ],
+  "version": "1.0.0"
+}

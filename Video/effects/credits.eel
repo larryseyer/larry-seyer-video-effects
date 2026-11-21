@@ -1,0 +1,106 @@
+// LS Scrolling Credits
+//@ls category Title
+//@ls title Scrolling Credits
+//@ls where item
+//@ls about Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Drums: Larry Seyer" becomes two columns. Set the duration to the item length.
+//@ls help mode Roll up the screen, or crawl sideways along the bottom.
+//@ls help dur Seconds for the whole roll; set it to the item length.
+//@ls help size Text height, fraction of frame height.
+//@ls help spacing Line spacing.
+//@ls help font Font.
+//@ls help backdrop Darkening or color behind the text.
+//@ls help bkop Backdrop opacity.
+//@ls example End credits :: mode=0 dur=12 :: Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
+//@ls tip Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+//@ls text "Line one | Role: Name | ... (item name)"
+//@ls enum mode Roll up|Crawl left
+//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls enum backdrop None|Dim picture|Solid color
+//@ls color "Text" tcr tcg tcb
+//@ls color "Role text" rcr rcg rcb
+//@ls color "Backdrop color" bkr bkg bkb
+//@param1:mode 'Mode' 0 0 1 0 1
+//@param2:dur 'Duration (s)' 10 1 600 10 0.01
+//@param3:size 'Text size' 0.045 0.015 0.15 0.045 0.0005
+//@param4:spacing 'Line spacing' 1.6 1 3 1.6 0.01
+//@param5:font 'Font' 1 0 6 1 1
+//@param6:tcr 'Text red' 1 0 1 1 0.001
+//@param7:tcg 'Text green' 1 0 1 1 0.001
+//@param8:tcb 'Text blue' 1 0 1 1 0.001
+//@param9:rcr 'Role red' 0.7 0 1 0.7 0.001
+//@param10:rcg 'Role green' 0.7 0 1 0.7 0.001
+//@param11:rcb 'Role blue' 0.7 0 1 0.7 0.001
+//@param12:backdrop 'Backdrop' 1 0 2 1 1
+//@param13:bkr 'Backdrop red' 0 0 1 0 0.001
+//@param14:bkg 'Backdrop green' 0 0 1 0 0.001
+//@param15:bkb 'Backdrop blue' 0 0 1 0 0.001
+//@param16:bkop 'Backdrop opacity' 0.6 0 1 0.6 0.001
+
+colorspace = 'RGBA';
+own = input_info(0, sw, sh, srct, fadev);
+!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+W = project_w; H = project_h;
+
+// #include "lib/shapes.eel"
+// #include "lib/overlay.eel"
+
+// Copies segment `idx` (0-based, split at '|') of #ls_src into #seg; returns 0 when past the end.
+function get_seg(idx) local(n, i, c, start, len, e2) (
+  n = 0; start = 0; len = strlen(#ls_src); i = 0; #seg = "";
+  while (i <= len && n <= idx) (
+    c = i < len ? str_getchar(#ls_src, i) : '|';
+    c == '|' ? (
+      n == idx ? (
+        while (start < i && str_getchar(#ls_src, start) == ' ') ( start += 1; );
+        e2 = i; while (e2 > start && str_getchar(#ls_src, e2 - 1) == ' ') ( e2 -= 1; );
+        strcpy_substr(#seg, #ls_src, start, e2 - start);
+      );
+      n += 1; start = i + 1;
+    );
+    i += 1;
+  );
+  n > idx;
+);
+
+ls_draw_base();
+backdrop == 1 ? ( gfx_set(0, 0, 0, bkop); gfx_fillrect(0, 0, W, H); )
+: backdrop == 2 ? ( gfx_set(bkr, bkg, bkb, bkop); gfx_fillrect(0, 0, W, H); );
+#ls_src = ""; input_get_name(-1, #ls_src);
+strlen(#ls_src) == 0 ? #ls_src = "The Larry Seyer Show | Music: Larry Seyer | Video: Larry Seyer | Thanks for watching";
+get_host_placement(chainpos, hostflags);
+tnow = (hostflags & 1) ? time : project_time;
+px = size*H; lh = px*spacing;
+ls_font(font, px, 0);
+nseg = 0; while (get_seg(nseg) && nseg < 200) ( nseg += 1; );
+mode == 0 ? (
+  total = nseg*lh;
+  y0 = H - (tnow/max(dur, 0.01))*(H + total);
+  k = 0;
+  loop(nseg,
+    yy = y0 + k*lh;
+    yy > -lh && yy < H ? (
+      get_seg(k);
+      colon = -1; i = 0; while (i < strlen(#seg) && colon < 0) ( str_getchar(#seg, i) == ':' ? colon = i; i += 1; );
+      colon > 0 ? (
+        strcpy_substr(#role, #seg, 0, colon); strcpy_substr(#who, #seg, colon + 1, strlen(#seg) - colon - 1);
+        while (strlen(#who) && str_getchar(#who, 0) == ' ') ( strcpy_substr(#who, #who, 1, strlen(#who) - 1); );
+        gfx_str_measure(#role, rw, rh);
+        gfx_set(rcr, rcg, rcb, 1); gfx_str_draw(#role, W*0.5 - px*0.5 - rw, yy);
+        gfx_set(tcr, tcg, tcb, 1); gfx_str_draw(#who, W*0.5 + px*0.5, yy);
+      ) : (
+        gfx_str_measure(#seg, sw3, sh3);
+        gfx_set(tcr, tcg, tcb, 1); gfx_str_draw(#seg, (W - sw3)*0.5, yy);
+      );
+    );
+    k += 1;
+  );
+) : (
+  bandh = lh*1.2; by = H - bandh - H*0.04;
+  gfx_set(bkr, bkg, bkb, max(bkop, 0.5)); gfx_fillrect(0, by, W, bandh);
+  #line = ""; k = 0;
+  loop(nseg, get_seg(k); k > 0 ? strcat(#line, "      -      "); strcat(#line, #seg); k += 1; );
+  gfx_str_measure(#line, lw2, lh2);
+  xx = W - (tnow/max(dur, 0.01))*(W + lw2);
+  gfx_set(tcr, tcg, tcb, 1); gfx_str_draw(#line, xx, by + (bandh - lh2)*0.5);
+);
+gfx_mode = 0; gfx_a = 1;
