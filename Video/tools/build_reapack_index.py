@@ -76,6 +76,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--commit")
     ap.add_argument("--changelog", default="")
+    ap.add_argument("--metadata-only", action="store_true", help="only refresh the package description")
     a = ap.parse_args()
     c = conf()
     repo, author = c["repo"], c["author"]
@@ -109,14 +110,21 @@ def main():
     about = ("Larry Seyer Video Effects: video effects for REAPER's Video Processor with a control panel.\n\n"
              "Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, "
              "spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and multicam "
-             "from a multiview recording.\n\nAfter installing, run 'Larry Seyer Video Effects' from the Actions list. "
+             "from a multiview recording.\n\n"
+             "IMPORTANT: after installing, open Actions > Show action list, search 'Larry Seyer Video Effects' and run "
+             "it once. That adds the 40 LS presets to the Video Processor preset list; until then they are not there.\n\n"
              "Requires ReaImGui. Manual: " + f"https://github.com/{repo}/blob/main/{CATEGORY}/docs/MANUAL.md")
     desc = ET.SubElement(meta, "description")
     desc.text = rtf(about)
     ET.SubElement(meta, "link", rel="website").text = f"https://github.com/{repo}"
     ET.SubElement(meta, "link", rel="screenshot").text = f"https://raw.githubusercontent.com/{repo}/main/{CATEGORY}/docs/images/color_grade.jpg"
     if pkg.find(f"version[@name='{version}']") is not None:
-        sys.exit(f"version {version} is already in index.xml: bump @version in {MAIN}")
+        if a.metadata_only:
+            ET.indent(tree, space="  ")
+            tree.write(INDEX, encoding="utf-8", xml_declaration=True)
+            print(f"index.xml: updated the package description ({version} unchanged)")
+            return
+        sys.exit(f"version {version} is already in index.xml: bump @version in {MAIN} (or use --metadata-only)")
     ver = ET.SubElement(pkg, "version", name=version, author=author,
                         time=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
     if a.changelog:

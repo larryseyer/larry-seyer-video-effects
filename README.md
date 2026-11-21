@@ -10,7 +10,11 @@ Tools for [REAPER](https://www.reaper.fm) by Larry Seyer, installable with [ReaP
 https://raw.githubusercontent.com/larryseyer/Reaper/main/index.xml
 ```
 
-then *Extensions > ReaPack > Browse packages* and install what you want.
+then *Extensions > ReaPack > Browse packages*, right-click what you want, *Install*, *Apply*.
+Importing the repository does not install anything by itself.
+
+**Larry Seyer Video Effects:** after installing, run **Larry Seyer Video Effects** once from
+*Actions > Show action list*. That adds its presets to the Video Processor; ReaPack cannot do that part.
 
 ## Packages
 

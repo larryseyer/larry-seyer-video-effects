@@ -16,8 +16,10 @@ presets, with or without the panel open.
    "ReaImGui", install).
 2. *Extensions > ReaPack > Import repositories*, paste:
    `https://raw.githubusercontent.com/larryseyer/Reaper/main/index.xml`
-3. *Extensions > ReaPack > Browse packages*, find **Larry Seyer Video Effects**, install, apply.
-4. Run **Larry Seyer Video Effects** from the Actions list. The panel opens and installs the presets.
+3. *Extensions > ReaPack > Browse packages*, type **Larry Seyer** in the filter, right-click
+   **Larry Seyer Video Effects**, choose *Install*, then click *Apply*. (Importing the repository in step 2 does not
+   install anything by itself.)
+4. **Important - run it once after installing:** ReaPack copies the files but cannot add presets by itself. Open *Actions > Show action list*, search **Larry Seyer Video Effects** and run it. The panel opens and adds the 40 **LS** presets to the Video Processor preset list. Until you do this, the presets are not there.
 
 ## Quick start
 
