@@ -51,4 +51,4 @@ python3 tools/build_reapack_index.py           # index.xml for a release (see th
 
 ## License
 
-See [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

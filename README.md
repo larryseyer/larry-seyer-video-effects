@@ -17,3 +17,7 @@ then *Extensions > ReaPack > Browse packages* and install what you want.
 | Folder | Package | What it is |
 |---|---|---|
 | [Video](Video) | Larry Seyer Video Effects for Reaper | 40 video effects for REAPER's Video Processor with a control panel: color grading, titles, tutorial callouts and zooms, transitions, picture-in-picture, borders and shadows, looks, multicam. [Manual](Video/docs/MANUAL.md) |
+
+## License
+
+MIT - see [LICENSE](LICENSE).
