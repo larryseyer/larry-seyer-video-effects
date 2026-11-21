@@ -2,7 +2,7 @@
 //@ls category Color
 //@ls title Color Grade
 //@ls where both
-//@ls about Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.
+//@ls about Primary color grading: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.
 //@ls help liftr Lift wheel: color of the shadows. The wheel's red, green and blue values are offsets; pushing toward one color raises it and lowers the others.
 //@ls help liftm Raises (positive) or lowers the black level.
 //@ls help gamr Gamma wheel: color of the midtones.

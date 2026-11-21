@@ -1,7 +1,7 @@
 # Larry Seyer Video Effects for Reaper
 
-Video effects for REAPER's Video Processor, with a control panel: color grading with DaVinci Resolve-style
-wheels and curves, titles and lower thirds, tutorial callouts and zooms, transitions that run on crossfades,
+Video effects for REAPER's Video Processor, with a control panel: color grading with lift, gamma and
+gain wheels and curves, titles and lower thirds, tutorial callouts and zooms, transitions that run on crossfades,
 picture-in-picture, borders and shadows, film and music-video looks, and multicam editing from a multiview
 recording. 40 effects in all.
 

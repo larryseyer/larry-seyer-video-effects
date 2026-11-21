@@ -2,7 +2,7 @@
 //@ls category Color
 //@ls title Curves
 //@ls where both
-//@ls about Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel.
+//@ls about Custom curves: a master curve plus red, green and blue curves, each with seven points you drag in the panel.
 //@ls help cm0 Each curve has seven points at input 0%, 17%, 33%, 50%, 67%, 83%, 100%; a point's value is the output (0..1). Equal values mean no change.
 //@ls help mix Blend with the original.
 //@ls example Gentle S-curve :: cm1=0.12 cm2=0.29 cm4=0.71 cm5=0.88

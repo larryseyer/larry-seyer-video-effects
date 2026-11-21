@@ -2,7 +2,7 @@
 //@ls category Color
 //@ls title Isolate Color
 //@ls where both
-//@ls about Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.
+//@ls about Picks one color range and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.
 //@ls help selhue Color to select in degrees: 0 red, 30 orange, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta.
 //@ls help width How wide a range of hues counts as selected.
 //@ls help soft Softness of the selection edge in degrees.

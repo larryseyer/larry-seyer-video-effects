@@ -2,7 +2,7 @@
 //@ls category Color
 //@ls title Hue Curves
 //@ls where both
-//@ls about Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.
+//@ls about Hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.
 //@ls help hh0 Hue shift in degrees for each color range: index 0 red, 1 yellow, 2 green, 3 cyan, 4 blue, 5 magenta.
 //@ls help hs0 Saturation multiplier per color range (same order; 1 unchanged).
 //@ls help hl0 Brightness offset per color range (same order).

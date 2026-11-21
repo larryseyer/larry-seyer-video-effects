@@ -2,7 +2,7 @@
 //@ls category Transform
 //@ls title Reframe & Letterbox
 //@ls where both
-//@ls about Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars.
+//@ls about Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars.
 //@ls help mode Fill crops to cover the frame, Fit shows the whole picture, Stretch distorts to fill.
 //@ls help panx With Fill: which part stays visible, -1 left to 1 right.
 //@ls help pany With Fill: -1 top to 1 bottom.

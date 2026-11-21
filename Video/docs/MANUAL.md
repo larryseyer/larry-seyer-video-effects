@@ -1,9 +1,9 @@
 # Larry Seyer Video Effects manual
 
-Version 1.0.2 - 40 video effects for REAPER.
+Version 1.0.3 - 40 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
-DaVinci Resolve-style wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
+lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
 picture-in-picture, borders and shadows, looks, and multicam editing from a multiview recording.
 Every effect is an ordinary Video Processor preset, so projects render the same on any computer that has
 the presets, with or without the control panel open.
@@ -253,7 +253,7 @@ Places this clip, screenshot or logo in a corner or anywhere on screen, with rou
 
 ![Reframe & Letterbox](images/reframe.jpg)
 
-Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars. **Goes on:** item or track. Preset name: `LS Transform: Reframe & Letterbox`.
+Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars. **Goes on:** item or track. Preset name: `LS Transform: Reframe & Letterbox`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -345,7 +345,7 @@ Smoothly zooms into a chosen rectangle, ideal for showing a control in a screen 
 
 ![Color Grade](images/color_grade.jpg)
 
-Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split. **Goes on:** item or track. Preset name: `LS Color: Color Grade`.
+Primary color grading: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split. **Goes on:** item or track. Preset name: `LS Color: Color Grade`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -383,7 +383,7 @@ Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wh
 
 ![Curves](images/curves.jpg)
 
-Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel. **Goes on:** item or track. Preset name: `LS Color: Curves`.
+Custom curves: a master curve plus red, green and blue curves, each with seven points you drag in the panel. **Goes on:** item or track. Preset name: `LS Color: Curves`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -405,7 +405,7 @@ Custom curves like Resolve: a master curve plus red, green and blue curves, each
 
 ![Hue Curves](images/hue_curves.jpg)
 
-Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness. **Goes on:** item or track. Preset name: `LS Color: Hue Curves`.
+Hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness. **Goes on:** item or track. Preset name: `LS Color: Hue Curves`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -427,7 +427,7 @@ Resolve-style hue curves: shift the hue, saturation or brightness of each color 
 
 ![Isolate Color](images/isolate.jpg)
 
-Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look. **Goes on:** item or track. Preset name: `LS Color: Isolate Color`.
+Picks one color range and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look. **Goes on:** item or track. Preset name: `LS Color: Isolate Color`.
 
 | Control | What it does | Range (default) |
 |---|---|---|

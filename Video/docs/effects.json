@@ -1234,7 +1234,7 @@
       "title": "Picture-in-Picture & Logo"
     },
     {
-      "about": "Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars.",
+      "about": "Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars.",
       "category": "Transform",
       "controls": [
         {
@@ -1842,7 +1842,7 @@
       "title": "Zoom to Region"
     },
     {
-      "about": "Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.",
+      "about": "Primary color grading: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.",
       "category": "Color",
       "controls": [
         {
@@ -2167,7 +2167,7 @@
       "title": "Color Grade"
     },
     {
-      "about": "Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel.",
+      "about": "Custom curves: a master curve plus red, green and blue curves, each with seven points you drag in the panel.",
       "category": "Color",
       "controls": [
         {
@@ -2500,7 +2500,7 @@
       "title": "Curves"
     },
     {
-      "about": "Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.",
+      "about": "Hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.",
       "category": "Color",
       "controls": [
         {
@@ -2755,7 +2755,7 @@
       "title": "Hue Curves"
     },
     {
-      "about": "Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.",
+      "about": "Picks one color range and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.",
       "category": "Color",
       "controls": [
         {
@@ -6625,5 +6625,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

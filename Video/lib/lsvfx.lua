@@ -239,7 +239,7 @@ function M.needs_install(ini_path, effects)
 end
 
 -- Install or update all effects as presets. Existing presets named "LS <Category>: ..." are replaced;
--- everything else (GiraFX, your own presets) is kept byte for byte. Returns count and backup path.
+-- everything else (other packs' presets, your own presets) is kept byte for byte. Returns count and backup path.
 function M.install(ini_path, effects)
   local text = read_file(ini_path)
   local backup

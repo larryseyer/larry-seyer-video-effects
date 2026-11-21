@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.0.2. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.0.3. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 40 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
@@ -162,13 +162,13 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 | `LS Transform: Ken Burns Pan & Zoom` | Item or track | Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). |
 | `LS Transform: Multiview Camera Select` | Item or track | Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions. |
 | `LS Transform: Picture-in-Picture & Logo` | Item or track | Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles. |
-| `LS Transform: Reframe & Letterbox` | Item or track | Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars. |
+| `LS Transform: Reframe & Letterbox` | Item or track | Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars. |
 | `LS Transform: Transform` | Item or track | Position, scale, rotate, crop, round corners, border and drop shadow in one pass. Keyframe any control with envelopes. |
 | `LS Transform: Zoom to Region` | Item or track | Smoothly zooms into a chosen rectangle, ideal for showing a control in a screen recording. Drag the item fade-in and fade-out to set how long the zoom in and out take, or automate the amount. |
-| `LS Color: Color Grade` | Item or track | Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split. |
-| `LS Color: Curves` | Item or track | Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel. |
-| `LS Color: Hue Curves` | Item or track | Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness. |
-| `LS Color: Isolate Color` | Item or track | Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look. |
+| `LS Color: Color Grade` | Item or track | Primary color grading: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split. |
+| `LS Color: Curves` | Item or track | Custom curves: a master curve plus red, green and blue curves, each with seven points you drag in the panel. |
+| `LS Color: Hue Curves` | Item or track | Hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness. |
+| `LS Color: Isolate Color` | Item or track | Picks one color range and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look. |
 | `LS Color: Looks` | Item or track | One-knob film and music-video looks: black and white, sepia, teal and orange, warm film, cool night, bleach bypass, faded vintage, cross process, punch, golden hour, noir and duotone. |
 | `LS Color: Vignette` | Item or track | Darkens (or tints) the edges of the frame to pull the eye to the center, with adjustable size, softness, shape and center. |
 | `LS Look: Beat Pulse` | Item or track | Punches the picture in time with the music using the project tempo: zoom kicks, light flashes, color split and shake on every beat, half beat or bar. |
@@ -395,7 +395,7 @@ Examples:
 
 *Placement:* an item or a track.
 
-Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical Shorts from widescreen footage, blurred-background fills, and cinematic letterbox bars.
+Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -491,7 +491,7 @@ Examples:
 
 *Placement:* an item or a track.
 
-Primary grading in the style of DaVinci Resolve: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.
+Primary color grading: lift, gamma, gain and offset wheels, temperature and tint, contrast with pivot, saturation, vibrance, exposure, shadows and highlights, with a before/after split.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -537,7 +537,7 @@ Examples:
 
 *Placement:* an item or a track.
 
-Custom curves like Resolve: a master curve plus red, green and blue curves, each with seven points you drag in the panel.
+Custom curves: a master curve plus red, green and blue curves, each with seven points you drag in the panel.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -583,7 +583,7 @@ Examples:
 
 *Placement:* an item or a track.
 
-Resolve-style hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.
+Hue curves: shift the hue, saturation or brightness of each color range separately, plus saturation by brightness.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -620,7 +620,7 @@ Examples:
 
 *Placement:* an item or a track.
 
-Picks one color range (like a Resolve qualifier) and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.
+Picks one color range and changes it on its own, or keeps it while the rest of the picture goes black and white for a color-pop look.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|

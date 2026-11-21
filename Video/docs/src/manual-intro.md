@@ -3,7 +3,7 @@
 Version {{VERSION}} - {{COUNT}} video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
-DaVinci Resolve-style wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
+lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
 picture-in-picture, borders and shadows, looks, and multicam editing from a multiview recording.
 Every effect is an ordinary Video Processor preset, so projects render the same on any computer that has
 the presets, with or without the control panel open.
