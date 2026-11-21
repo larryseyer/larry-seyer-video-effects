@@ -24,11 +24,15 @@ MEDIA = os.path.join(WORK, "media")
 
 # effect -> website file name
 SHOTS = {"callout": "callout", "lower_third": "lower-third", "border": "border", "tr_shape": "tr-shape",
-         "title_card": "title-card", "multicam": "multicam"}
+         "title_card": "title-card", "multicam": "multicam", "place": "pip", "spotlight": "spotlight"}
 
 # The callout's own example points at a small control in show footage; over a gradient it needs to be larger.
 OVERRIDES = {"callout": dict(bx=0.16, by=0.32, bw=0.32, bh=0.36, lx=0.72, ly=0.5, size=0.055, thick=0.004),
              "multicam": dict(layout=2, cam=1, camb=4)}
+
+# Which of an effect's examples to show, when not its first (Picture-in-Picture's first is a logo; the webcam
+# bubble shows one gradient inset over the other).
+EXAMPLE = {"place": 1}
 
 # Text shown by the title-style effects in place of their examples' item names.
 LABELS = {"callout": "Call Outs"}
@@ -70,7 +74,7 @@ def main():
     make_media()
     for stem in only:
         e = effects[stem]
-        params = dict(e["examples"][0]["set"]) if e["examples"] else {}
+        params = dict(e["examples"][EXAMPLE.get(stem, 0)]["set"]) if e["examples"] else {}
         params.update(OVERRIDES.get(stem, {}))
         if stem == "multicam":
             sc, t = Scene(tracks=[Track(items=[Item("multiview.mp4", 0, 3, takefx=[Fx(stem, params)])])]), 1.5
