@@ -1,6 +1,6 @@
 ---
 name: larry-seyer-video-effects
-description: Use when building or editing a video in REAPER with the Larry Seyer Video Effects effects - titles, lower thirds, callouts, zoom to region, spotlight, transitions, color grading, picture-in-picture, logos, borders and shadows, looks, or multicam from a multiview recording - including Larry Seyer Drums (LSD) and Sparks of Light (SOL) tutorial videos.
+description: Use when building or editing a video in REAPER with the Larry Seyer Video Effects pack - titles, lower thirds, callouts, zoom to region, spotlight, transitions, color grading, picture-in-picture, logos, borders and shadows, looks, or multicam from a multiview recording - including Larry Seyer Drums (LSD) and Sparks of Light (SOL) tutorial videos.
 ---
 
 # Larry Seyer Video Effects
