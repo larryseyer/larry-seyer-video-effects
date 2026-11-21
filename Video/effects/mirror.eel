@@ -11,7 +11,8 @@
 //@param2:center 'Mirror line' 0 -0.5 0.5 0 0.001
 
 own = input_info(0, sw, sh);
-!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+// #include "lib/frame.eel"
+ls_frame_size();
 W = project_w; H = project_h;
 
 own ? (

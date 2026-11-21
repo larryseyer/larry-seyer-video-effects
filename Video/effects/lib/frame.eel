@@ -1,0 +1,22 @@
+// Title carriers and output frame size.
+// A title carrier is the transparent "LS Title Carrier.png" item that titles and callouts sit on. Some projects
+// stretch every item to the project size, so it is recognised by being transparent (center and corners), not
+// only by its 64x36 size. Real video is never transparent there.
+function ls_is_carrier() local(cr, cg, cb, a1, a2, a3) (
+  own && ((sw <= 64 && sh <= 64) ||
+    (colorspace == 'RGBA' &&
+     gfx_getpixel(0, floor(sw*0.5), floor(sh*0.5), cr, cg, cb, a1) && a1 < 1 &&
+     gfx_getpixel(0, 1, 1, cr, cg, cb, a2) && a2 < 1 &&
+     gfx_getpixel(0, sw - 2, sh - 2, cr, cg, cb, a3) && a3 < 1));
+);
+
+// When the project does not report a fixed video size, use this clip's size unless it is a title carrier;
+// then take it from the video on the tracks below (or 1920x1080).
+function ls_frame_size() local(bw, bh, b) (
+  !project_wh_valid ? (
+    own && !ls_is_carrier() ? ( project_w = sw; project_h = sh; )
+    : ( b = input_track(0);
+        b != 0 && input_info(b, bw, bh) ? ( project_w = bw; project_h = bh; )
+        : ( project_w = 1920; project_h = 1080; ); );
+  );
+);

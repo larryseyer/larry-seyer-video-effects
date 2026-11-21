@@ -43,7 +43,8 @@
 
 colorspace = 'RGBA';
 own = input_info(0, sw, sh);
-!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+// #include "lib/frame.eel"
+ls_frame_size();
 W = project_w; H = project_h;
 
 // Periodic Catmull-Rom through 6 points at pts[0..5] spaced 60 degrees apart; deg in 0..360.

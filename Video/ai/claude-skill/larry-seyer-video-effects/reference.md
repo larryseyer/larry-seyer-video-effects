@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.0.0. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.0.1. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 40 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render

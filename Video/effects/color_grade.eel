@@ -68,7 +68,8 @@
 
 colorspace = 'RGBA';
 own = input_info(0, sw, sh);
-!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+// #include "lib/frame.eel"
+ls_frame_size();
 W = project_w; H = project_h;
 
 function smoothstep01(e0, e1, v) local(q) ( q = min(max((v - e0)/(e1 - e0), 0), 1); q*q*(3 - 2*q); );

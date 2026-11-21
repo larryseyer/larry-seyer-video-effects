@@ -23,7 +23,8 @@
 //@param9:opacity 'Opacity' 1 0 1 1 0.001
 
 own = input_info(0, sw, sh);
-!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+// #include "lib/frame.eel"
+ls_frame_size();
 W = project_w; H = project_h;
 bg = input_track(0);
 

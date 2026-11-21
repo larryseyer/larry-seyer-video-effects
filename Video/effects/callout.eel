@@ -60,7 +60,8 @@
 
 colorspace = 'RGBA';
 own = input_info(0, sw, sh, srct, fadev);
-!project_wh_valid && own ? ( project_w = sw; project_h = sh; );
+// #include "lib/frame.eel"
+ls_frame_size();
 W = project_w; H = project_h;
 
 // #include "lib/ease.eel"

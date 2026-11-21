@@ -22,8 +22,10 @@ from dataclasses import dataclass, field
 HERE = os.path.dirname(os.path.abspath(__file__))
 PACK = os.path.dirname(HERE)
 EFFECTS = os.path.join(PACK, "effects")
-REAPER_BIN = os.environ.get(
-    "LSVFX_REAPER", os.path.expanduser("~/Dropbox/Reaper/REAPER.app/Contents/MacOS/REAPER"))
+# Tests only ever run in the isolated test install ~/ReaperTest (outside Dropbox, its own settings). It is started
+# as a separate instance, so it never touches the REAPER you are working in or any other REAPER folder.
+TEST_ROOT = os.path.expanduser("~/ReaperTest")
+REAPER_BIN = os.path.join(TEST_ROOT, "REAPER.app/Contents/MacOS/REAPER")
 
 
 INCLUDE = re.compile(r'^\s*//\s*#include\s+"([^"]+)"\s*$')
@@ -163,6 +165,7 @@ class Scene:
     tracks: list
     width: int = 1920
     height: int = 1080
+    vflags: int = 65792      # VIDEO_CONFIG flags; 67328 is what some user projects carry
     fps: float = 30.0
     tempo: float = 120.0
     length: float = None   # render length; defaults to end of last item
@@ -177,7 +180,7 @@ def render_cfg(w, h, fps):
 def build_rpp(scene, media_dir, out_file):
     end = scene.length or max(it.pos + it.length for t in scene.tracks for it in t.items)
     lines = ['<REAPER_PROJECT 0.1 "7.86/macOS-arm64" 0 0',
-             f"  VIDEO_CONFIG {scene.width} {scene.height} 65792",
+             f"  VIDEO_CONFIG {scene.width} {scene.height} {scene.vflags}",
              f"  TEMPO {scene.tempo} 4 4",
              f'  RENDER_FILE "{out_file}"', "  RENDER_FMT 0 2 0",
              f"  RENDER_RANGE 0 0 {end} 0 1000", "  RENDER_RESAMPLE 9 9 1", "  RENDER_ADDTOPROJ 0",
@@ -190,11 +193,10 @@ def build_rpp(scene, media_dir, out_file):
 
 
 def wait_for_reaper_exit(limit=30.0):
-    """REAPER is single-instance: a launch while a previous instance is still quitting hands off and fails."""
+    """Waits for the previous test instance to quit before starting the next."""
     end = time.time() + limit
     while time.time() < end:
-        if subprocess.run(["pgrep", "-f", "REAPER.app/Contents/MacOS/REAPER"],
-                          stdout=subprocess.DEVNULL).returncode != 0:
+        if subprocess.run(["pgrep", "-f", REAPER_BIN], stdout=subprocess.DEVNULL).returncode != 0:
             return
         time.sleep(0.25)
 
@@ -206,8 +208,15 @@ def playable(mp4):
                           stderr=subprocess.DEVNULL).returncode == 0
 
 
+def check_test_install():
+    """Refuse to run anything but the isolated test install."""
+    if not (os.path.isfile(REAPER_BIN) and os.path.isfile(os.path.join(TEST_ROOT, "reaper.ini"))):
+        raise RuntimeError("test install missing: expected a portable REAPER in " + TEST_ROOT)
+
+
 def render(scene, out_dir, times, tag="run", media_dir=None, cols=None, thumb_w=640, timeout=240):
-    """Render the scene and return the path of a contact sheet of frames at `times`."""
+    """Render the scene in the test install and return the path of a contact sheet of frames at `times`."""
+    check_test_install()
     os.makedirs(out_dir, exist_ok=True)
     media_dir = media_dir or os.environ.get("LSVFX_MEDIA", "")
     mp4 = os.path.join(out_dir, f"{tag}.mp4")
@@ -218,10 +227,10 @@ def render(scene, out_dir, times, tag="run", media_dir=None, cols=None, thumb_w=
         fh.write(build_rpp(scene, media_dir, mp4))
     t0 = time.time()
     for attempt in range(3):
-        wait_for_reaper_exit()
         if os.path.exists(mp4):
             os.remove(mp4)
-        subprocess.run([REAPER_BIN, "-nosplash", "-renderproject", rpp], timeout=timeout,
+        wait_for_reaper_exit()
+        subprocess.run([REAPER_BIN, "-newinst", "-nosplash", "-renderproject", rpp], timeout=timeout,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         wait_for_reaper_exit()
         if playable(mp4):
