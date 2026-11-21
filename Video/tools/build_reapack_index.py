@@ -110,11 +110,11 @@ def main():
              "Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, "
              "spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and multicam "
              "from a multiview recording.\n\nAfter installing, run 'Larry Seyer Video Effects' from the Actions list. "
-             "Requires ReaImGui. Manual: " + f"https://github.com/{repo}/blob/main/docs/MANUAL.md")
+             "Requires ReaImGui. Manual: " + f"https://github.com/{repo}/blob/main/{CATEGORY}/docs/MANUAL.md")
     desc = ET.SubElement(meta, "description")
     desc.text = rtf(about)
     ET.SubElement(meta, "link", rel="website").text = f"https://github.com/{repo}"
-    ET.SubElement(meta, "link", rel="screenshot").text = f"https://raw.githubusercontent.com/{repo}/main/docs/images/color_grade.jpg"
+    ET.SubElement(meta, "link", rel="screenshot").text = f"https://raw.githubusercontent.com/{repo}/main/{CATEGORY}/docs/images/color_grade.jpg"
     if pkg.find(f"version[@name='{version}']") is not None:
         sys.exit(f"version {version} is already in index.xml: bump @version in {MAIN}")
     ver = ET.SubElement(pkg, "version", name=version, author=author,

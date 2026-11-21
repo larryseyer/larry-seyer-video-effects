@@ -7,9 +7,9 @@
 \par
 Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and multicam from a multiview recording.\par
 \par
-After installing, run 'Larry Seyer Video Effects' from the Actions list. Requires ReaImGui. Manual: https://github.com/larryseyer/Reaper/blob/main/docs/MANUAL.md}</description>
+After installing, run 'Larry Seyer Video Effects' from the Actions list. Requires ReaImGui. Manual: https://github.com/larryseyer/Reaper/blob/main/Video/docs/MANUAL.md}</description>
         <link rel="website">https://github.com/larryseyer/Reaper</link>
-        <link rel="screenshot">https://raw.githubusercontent.com/larryseyer/Reaper/main/docs/images/color_grade.jpg</link>
+        <link rel="screenshot">https://raw.githubusercontent.com/larryseyer/Reaper/main/Video/docs/images/color_grade.jpg</link>
       </metadata>
       <version name="1.0.0" author="Larry Seyer" time="2026-11-21T02:02:42Z">
         <changelog>First release: 40 Video Processor effects with control panel, manual, AI reference and Claude skill.</changelog>
