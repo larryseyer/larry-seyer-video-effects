@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.1.0 - 43 video effects for REAPER.
+Version 1.1.1 - 43 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -14,7 +14,7 @@ the presets, with or without the control panel open.
    have them (ReaImGui is in ReaPack's default repository: *Extensions > ReaPack > Browse packages*, search
    "ReaImGui").
 2. *Extensions > ReaPack > Import repositories*, paste
-   `https://raw.githubusercontent.com/larryseyer/Reaper/main/index.xml`
+   `https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/main/index.xml`
 3. *Extensions > ReaPack > Browse packages*, type **Larry Seyer** in the filter, right-click
    **Larry Seyer Video Effects**, choose *Install*, then click *Apply*. Importing the repository in step 2 does not
    install anything by itself.

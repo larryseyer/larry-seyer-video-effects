@@ -5,7 +5,7 @@ description: Use when building or editing a video in REAPER with the Larry Seyer
 
 # Larry Seyer Video Effects
 
-Larry Seyer Video Effects (version 1.1.0) is a set of 43 REAPER Video Processor effects. Read `reference.md` in this
+Larry Seyer Video Effects (version 1.1.1) is a set of 43 REAPER Video Processor effects. Read `reference.md` in this
 folder before adding or changing effects: it has every effect's preset name, placement, controls with API
 index, ranges and meaning, and working examples.
 

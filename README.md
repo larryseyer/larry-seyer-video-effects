@@ -1,26 +1,25 @@
-# Larry Seyer - REAPER tools
+# Larry Seyer Video Effects for Reaper
 
-Tools for [REAPER](https://www.reaper.fm) by Larry Seyer, installable with [ReaPack](https://reapack.com).
+Video effects for REAPER's Video Processor with a control panel: color grading, titles, tutorial callouts and
+zooms, transitions, picture-in-picture, borders and shadows, looks, and a multicam switcher. 43 effects,
+installable with [ReaPack](https://reapack.com). REAPER itself is made by Cockos and is not part of this
+repository.
 
 ## Install
 
 *Extensions > ReaPack > Import repositories*, paste:
 
 ```
-https://raw.githubusercontent.com/larryseyer/Reaper/main/index.xml
+https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/main/index.xml
 ```
 
-then *Extensions > ReaPack > Browse packages*, right-click what you want, *Install*, *Apply*.
-Importing the repository does not install anything by itself.
+then *Extensions > ReaPack > Browse packages*, type **Larry Seyer**, right-click **Larry Seyer Video Effects**,
+*Install*, *Apply*. Importing the repository does not install anything by itself.
 
-**Larry Seyer Video Effects:** after installing, run **Larry Seyer Video Effects** once from
-*Actions > Show action list*. That adds its presets to the Video Processor; ReaPack cannot do that part.
+After installing, run **Larry Seyer Video Effects** once from *Actions > Show action list*. That adds its presets
+to the Video Processor; ReaPack cannot do that part.
 
-## Packages
-
-| Folder | Package | What it is |
-|---|---|---|
-| [Video](Video) | Larry Seyer Video Effects for Reaper | 40 video effects for REAPER's Video Processor with a control panel: color grading, titles, tutorial callouts and zooms, transitions, picture-in-picture, borders and shadows, looks, multicam. [Manual](Video/docs/MANUAL.md) |
+The effects, panel and manual are in [Video](Video) ([Manual](Video/docs/MANUAL.md)).
 
 ## License
 

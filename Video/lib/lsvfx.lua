@@ -4,7 +4,7 @@
 
 local M = {}
 
-M.HOME = "https://github.com/larryseyer/Reaper"   -- keep in step with tools/release.conf
+M.HOME = "https://github.com/larryseyer/larry-seyer-video-effects"   -- keep in step with tools/release.conf
 M.MANUAL_URL = M.HOME .. "/blob/main/Video/docs/MANUAL.md"
 
 M.CATEGORY_ORDER = { "Transform", "Color", "Look", "Transition", "Title", "Tutorial", "Compose", "Time" }

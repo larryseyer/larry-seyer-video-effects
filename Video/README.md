@@ -16,7 +16,7 @@ presets, with or without the panel open.
 1. You need [ReaPack](https://reapack.com) and ReaImGui (*Extensions > ReaPack > Browse packages*, search
    "ReaImGui", install).
 2. *Extensions > ReaPack > Import repositories*, paste:
-   `https://raw.githubusercontent.com/larryseyer/Reaper/main/index.xml`
+   `https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/main/index.xml`
 3. *Extensions > ReaPack > Browse packages*, type **Larry Seyer** in the filter, right-click
    **Larry Seyer Video Effects**, choose *Install*, then click *Apply*. (Importing the repository in step 2 does not
    install anything by itself.)
