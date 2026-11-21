@@ -3,8 +3,8 @@
 //@ls title Zoom & Spin
 //@ls where track
 //@ls about Put on a track: crossfades punch through with a zoom in, zoom out or spinning zoom, blurred at the peak for speed.
-//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
-//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.
 //@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
 //@ls help style Zoom in through, zoom out, or spinning zoom.
 //@ls help strength How far it zooms.
@@ -13,7 +13,7 @@
 //@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
 //@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
 //@ls enum style Zoom in|Zoom out|Spin
-//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls enum srcmode Item crossfades|Manual (this track to the one behind)
 //@ls toggle reverse
 //@param1:style 'Style' 0 0 2 0 1
 //@param2:strength 'Strength' 0.6 0 1 0.6 0.001

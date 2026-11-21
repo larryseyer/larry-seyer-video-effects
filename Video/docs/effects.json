@@ -1,7 +1,7 @@
 {
   "effects": [
     {
-      "about": "Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color.",
+      "about": "Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks behind it, a blurred copy or a color.",
       "category": "Transform",
       "controls": [
         {
@@ -233,13 +233,13 @@
         },
         {
           "default": 0,
-          "help": "What shows around the framed picture. Options: 0 Tracks below, 1 Blurred copy, 2 Solid color, 3 Black.",
+          "help": "What shows around the framed picture. Options: 0 Tracks behind, 1 Blurred copy, 2 Solid color, 3 Black.",
           "index": 22,
           "label": "Background",
           "max": 3,
           "min": 0,
           "options": [
-            "Tracks below",
+            "Tracks behind",
             "Blurred copy",
             "Solid color",
             "Black"
@@ -505,7 +505,7 @@
       ],
       "examples": [
         {
-          "notes": "Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.",
+          "notes": "Put on the screen recording item, on a track in front of the camera shot; move the four corners onto the monitor.",
           "set": {
             "blx": 0.3,
             "bly": 0.56,
@@ -1188,7 +1188,7 @@
       ],
       "examples": [
         {
-          "notes": "Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.",
+          "notes": "Put on the logo PNG item, on a track in front of the video. Give the item 0.5 s fades.",
           "set": {
             "anim": 1,
             "border": 0,
@@ -1635,13 +1635,13 @@
         },
         {
           "default": 0,
-          "help": "What shows around the picture when it is smaller than the frame. Options: 0 Tracks below, 1 Black, 2 Blurred copy, 3 Solid color.",
+          "help": "What shows around the picture when it is smaller than the frame. Options: 0 Tracks behind, 1 Black, 2 Blurred copy, 3 Solid color.",
           "index": 24,
           "label": "Background",
           "max": 3,
           "min": 0,
           "options": [
-            "Tracks below",
+            "Tracks behind",
             "Black",
             "Blurred copy",
             "Solid color"
@@ -1682,7 +1682,7 @@
       ],
       "examples": [
         {
-          "notes": "Put on the inset clip's item, on a track above the main video.",
+          "notes": "Put on the inset clip's item, on a track in front of the main video.",
           "set": {
             "border": 0.004,
             "posx": 0.3,
@@ -4079,21 +4079,21 @@
         },
         {
           "default": 0,
-          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind).",
           "index": 5,
           "label": "Source",
           "max": 1,
           "min": 0,
           "options": [
             "Item crossfades",
-            "Manual (this track to the one below)"
+            "Manual (this track to the one behind)"
           ],
           "toggle": false,
           "var": "srcmode"
         },
         {
           "default": 0,
-          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "help": "Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.",
           "index": 6,
           "label": "Manual progress",
           "max": 1,
@@ -4200,21 +4200,21 @@
         },
         {
           "default": 0,
-          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind).",
           "index": 5,
           "label": "Source",
           "max": 1,
           "min": 0,
           "options": [
             "Item crossfades",
-            "Manual (this track to the one below)"
+            "Manual (this track to the one behind)"
           ],
           "toggle": false,
           "var": "srcmode"
         },
         {
           "default": 0,
-          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "help": "Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.",
           "index": 6,
           "label": "Manual progress",
           "max": 1,
@@ -4324,21 +4324,21 @@
         },
         {
           "default": 0,
-          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind).",
           "index": 4,
           "label": "Source",
           "max": 1,
           "min": 0,
           "options": [
             "Item crossfades",
-            "Manual (this track to the one below)"
+            "Manual (this track to the one behind)"
           ],
           "toggle": false,
           "var": "srcmode"
         },
         {
           "default": 0,
-          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "help": "Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.",
           "index": 5,
           "label": "Manual progress",
           "max": 1,
@@ -4511,21 +4511,21 @@
         },
         {
           "default": 0,
-          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind).",
           "index": 11,
           "label": "Source",
           "max": 1,
           "min": 0,
           "options": [
             "Item crossfades",
-            "Manual (this track to the one below)"
+            "Manual (this track to the one behind)"
           ],
           "toggle": false,
           "var": "srcmode"
         },
         {
           "default": 0,
-          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "help": "Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.",
           "index": 12,
           "label": "Manual progress",
           "max": 1,
@@ -4621,21 +4621,21 @@
         },
         {
           "default": 0,
-          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below).",
+          "help": "Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind).",
           "index": 3,
           "label": "Source",
           "max": 1,
           "min": 0,
           "options": [
             "Item crossfades",
-            "Manual (this track to the one below)"
+            "Manual (this track to the one behind)"
           ],
           "toggle": false,
           "var": "srcmode"
         },
         {
           "default": 0,
-          "help": "Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.",
+          "help": "Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.",
           "index": 4,
           "label": "Manual progress",
           "max": 1,
@@ -6230,12 +6230,12 @@
       "title": "Spotlight"
     },
     {
-      "about": "Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.",
+      "about": "Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.",
       "category": "Compose",
       "controls": [
         {
           "default": 2,
-          "help": "How this layer combines with the tracks below. Options: 0 Normal, 1 Multiply, 2 Screen, 3 Overlay, 4 Soft light, 5 Add, 6 Subtract, 7 Difference, 8 Lighten, 9 Darken, 10 Color dodge.",
+          "help": "How this layer combines with the tracks behind it. Options: 0 Normal, 1 Multiply, 2 Screen, 3 Overlay, 4 Soft light, 5 Add, 6 Subtract, 7 Difference, 8 Lighten, 9 Darken, 10 Color dodge.",
           "index": 0,
           "label": "Blend mode",
           "max": 10,
@@ -6282,12 +6282,12 @@
       "placement": "both",
       "text": false,
       "tips": [
-        "Put this on the upper track; it blends that track's video over everything below."
+        "Put this on the track in front; it blends that track's video over everything behind it."
       ],
       "title": "Blend Modes"
     },
     {
-      "about": "Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop.",
+      "about": "Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks behind it, with spill suppression, edge control and a garbage matte crop.",
       "category": "Compose",
       "controls": [
         {
@@ -6408,7 +6408,7 @@
       ],
       "examples": [
         {
-          "notes": "Put on the green-screen clip on a track above the new background.",
+          "notes": "Put on the green-screen clip on a track in front of the new background.",
           "set": {
             "keycolor": 0
           },
@@ -6423,7 +6423,7 @@
       "title": "Green Screen Key"
     },
     {
-      "about": "Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.",
+      "about": "Arranges this track and the tracks behind it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.",
       "category": "Compose",
       "controls": [
         {
@@ -6566,7 +6566,7 @@
       ],
       "examples": [
         {
-          "notes": "Put on the top video track; the track directly below supplies panel 2.",
+          "notes": "Put on the front video track; the track directly behind it supplies panel 2.",
           "set": {
             "gap": 0.008,
             "layout": 0
@@ -6579,7 +6579,7 @@
       "placement": "track",
       "text": false,
       "tips": [
-        "Panel 1 is this track; panels 2-4 are the next tracks below that have video."
+        "Panel 1 is this track; panels 2-4 are the next tracks behind it that have video."
       ],
       "title": "Split Screen"
     },
@@ -6625,5 +6625,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

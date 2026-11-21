@@ -1,5 +1,5 @@
 -- @description Larry Seyer Video Effects: control panel for the Larry Seyer Video Effects Video Processor effects
--- @version 1.0.1
+-- @version 1.0.2
 -- @author Larry Seyer
 -- @about Library of video effects for REAPER's Video Processor with color wheels, curve editors, a frame pad
 --   for positions and regions, keyframes at the edit cursor, and one-click titles and callouts.

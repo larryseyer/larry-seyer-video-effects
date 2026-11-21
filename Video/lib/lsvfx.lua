@@ -18,7 +18,15 @@ local function read_file(path)
   return s
 end
 
+local function ensure_dir(path)
+  local dir = path:match("^(.*)[/\\][^/\\]*$")
+  if not dir then return end
+  if reaper and reaper.RecursiveCreateDirectory then reaper.RecursiveCreateDirectory(dir, 0)
+  else os.execute('mkdir -p "' .. dir .. '"') end
+end
+
 local function write_file(path, data)
+  ensure_dir(path)   -- a fresh REAPER has no presets folder until something is saved there
   local f = assert(io.open(path, "wb"))
   f:write(data)
   f:close()

@@ -5,7 +5,7 @@ description: Use when building or editing a video in REAPER with the Larry Seyer
 
 # Larry Seyer Video Effects
 
-Larry Seyer Video Effects (version 1.0.1) is a set of 40 REAPER Video Processor effects. Read `reference.md` in this
+Larry Seyer Video Effects (version 1.0.2) is a set of 40 REAPER Video Processor effects. Read `reference.md` in this
 folder before adding or changing effects: it has every effect's preset name, placement, controls with API
 index, ranges and meaning, and working examples.
 
@@ -21,7 +21,8 @@ index, ranges and meaning, and working examples.
      a transparent title item (`LS.add_title`);
    - **item fades** time the in/out animation;
    - **transitions go on the track** and run on overlapping items;
-   - the foreground goes on the **upper** track;
+   - the foreground goes on a track **in front** (top or bottom depends on the project's Track order; use
+     `LS.front_is_top()` and `LS.add_track_in_front_of`);
    - values are real values, never 0..1 normalized.
 4. Before finishing, turn off preview-only switches (`split`, `showmask`, `showbox`, `showmatte`) and check the
    result: render a short section or ask the user to look at REAPER's Video window.

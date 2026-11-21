@@ -2,7 +2,7 @@
 //@ls category Transform
 //@ls title Border & Shadow
 //@ls where both
-//@ls about Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color.
+//@ls about Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks behind it, a blurred copy or a color.
 //@ls help size 1 makes picture plus border fill the frame; smaller insets it.
 //@ls help posx Offset, -1 left to 1 right (half-frame units).
 //@ls help posy Offset, -1 up to 1 down.
@@ -20,7 +20,7 @@
 //@ls example Framed clip over blurred background :: size=0.85 bstyle=1 bwidth=0.008 radius=0.03 bgmode=1 shadow=0.6
 //@ls example Mint glow frame :: size=1 bstyle=3 bwidth=0.008 bcr=0.24 bcg=0.87 bcb=0.66
 //@ls enum bstyle None|Solid|Double line|Glow|Gradient
-//@ls enum bgmode Tracks below|Blurred copy|Solid color|Black
+//@ls enum bgmode Tracks behind|Blurred copy|Solid color|Black
 //@ls point "Position" posx posy
 //@ls color "Border color" bcr bcg bcb
 //@ls color "Second border color" b2r b2g b2b

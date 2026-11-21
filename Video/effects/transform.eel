@@ -23,7 +23,7 @@
 //@ls help shang Direction the shadow falls in degrees: 90 straight down, 135 down-left, 45 down-right.
 //@ls help shsoft Blur of the shadow edge, fraction of frame height.
 //@ls help bgmode What shows around the picture when it is smaller than the frame.
-//@ls example Picture-in-picture, top right :: scale=0.35 posx=0.3 posy=-0.28 radius=0.06 border=0.004 shadow=0.6 :: Put on the inset clip's item, on a track above the main video.
+//@ls example Picture-in-picture, top right :: scale=0.35 posx=0.3 posy=-0.28 radius=0.06 border=0.004 shadow=0.6 :: Put on the inset clip's item, on a track in front of the main video.
 //@ls example Tilted card :: scale=0.6 rot=-6 radius=0.05 border=0.006 shadow=0.7
 //@ls example Animated zoom-out :: scale=1.5 :: Keyframe Scale at 1.5 at the item start and 1 two seconds later.
 //@ls tip On an item it changes only that clip; on a track it changes everything on the track.
@@ -38,7 +38,7 @@
 //@ls color "Background color" bgr bgg bgb
 //@ls toggle fliph
 //@ls toggle flipv
-//@ls enum bgmode Tracks below|Black|Blurred copy|Solid color
+//@ls enum bgmode Tracks behind|Black|Blurred copy|Solid color
 //@param1:posx 'Position X' 0 -1.5 1.5 0 0.001
 //@param2:posy 'Position Y' 0 -1.5 1.5 0 0.001
 //@param3:scale 'Scale' 1 0 5 1 0.001

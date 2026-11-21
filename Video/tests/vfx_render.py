@@ -214,6 +214,16 @@ def check_test_install():
         raise RuntimeError("test install missing: expected a portable REAPER in " + TEST_ROOT)
 
 
+def run_script(lua_path, timeout=120):
+    """Runs a ReaScript in the test install. The script must quit REAPER when done (Main_OnCommand(40004, 0)) after
+    saving or leaving its project unmodified."""
+    check_test_install()
+    wait_for_reaper_exit()
+    subprocess.run([REAPER_BIN, "-newinst", "-nosplash", lua_path], timeout=timeout,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    wait_for_reaper_exit()
+
+
 def render(scene, out_dir, times, tag="run", media_dir=None, cols=None, thumb_w=640, timeout=240):
     """Render the scene in the test install and return the path of a contact sheet of frames at `times`."""
     check_test_install()

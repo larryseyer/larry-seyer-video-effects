@@ -2,11 +2,11 @@
 //@ls category Compose
 //@ls title Blend Modes
 //@ls where both
-//@ls about Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.
-//@ls help mode How this layer combines with the tracks below.
+//@ls about Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.
+//@ls help mode How this layer combines with the tracks behind it.
 //@ls help opacity Layer opacity.
 //@ls example Light leak overlay :: mode=2 opacity=0.8 :: Put on a track holding a light-leak clip, above the footage.
-//@ls tip Put this on the upper track; it blends that track's video over everything below.
+//@ls tip Put this on the track in front; it blends that track's video over everything behind it.
 //@ls enum mode Normal|Multiply|Screen|Overlay|Soft light|Add|Subtract|Difference|Lighten|Darken|Color dodge
 //@param1:mode 'Blend mode' 2 0 10 2 1
 //@param2:opacity 'Opacity' 1 0 1 1 0.001

@@ -4,7 +4,7 @@
 //@ls where both
 //@ls about Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot.
 //@ls help tlx Corner positions are fractions of the frame (0..1, may go off screen).
-//@ls example Screen recording on a monitor in the shot :: tlx=0.31 tly=0.22 trx=0.62 try=0.2 brx=0.63 bry=0.55 blx=0.3 bly=0.56 :: Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.
+//@ls example Screen recording on a monitor in the shot :: tlx=0.31 tly=0.22 trx=0.62 try=0.2 brx=0.63 bry=0.55 blx=0.3 bly=0.56 :: Put on the screen recording item, on a track in front of the camera shot; move the four corners onto the monitor.
 //@ls tip Drag the four corner points on the panel's frame pad.
 //@ls point "Top left" tlx tly
 //@ls point "Top right" trx try

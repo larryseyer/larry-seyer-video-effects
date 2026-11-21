@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.0.1. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.0.2. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 40 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
@@ -25,8 +25,8 @@ local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 LS.ensure_presets()
 
 -- tracks and media
-local titles = LS.add_track("Titles", 0)                        -- inserted at index 0 = top = in front
-local screen = LS.add_track("Screen", 1)
+local screen = LS.add_track("Screen")                            -- appended to the track list
+local titles = LS.add_track_in_front_of(screen, "Titles")       -- in front of it, whichever Track order is set
 local item = LS.add_media(screen, "/path/clip.mp4", 0, 6)       -- track, file, position[, length[, offset]]; no fades
                                                                 -- (default length: the file's, 5 s for still images)
 local item2 = LS.add_media(screen, "/path/next.mp4", 5, 6)      -- overlaps the first item by 1 s
@@ -73,10 +73,13 @@ processor first loads the user's default preset, so always load the LS preset be
 2. **One item at a time per track.** Where items overlap on a track, REAPER shows only one of them (unless a
    transition effect is on that track). Graphics that overlap in time (a lower third and a callout, two titles) must
    go on **separate tracks**. `LS.add_title` refuses an overlap with an explanation.
-3. **Layers.** Video tracks higher in the track list are in front. Effects that place or frame a picture (Transform,
-   Picture-in-Picture & Logo, Border & Shadow, Corner Pin, Green Screen Key, Blend Modes, titles, callouts) draw the
-   tracks *below* as the background. Put the foreground clip on a track above the background. Nothing on a lower track
-   affects a higher one: a credits backdrop or a callout's dimming does not darken a logo on a track above it.
+3. **Layers: in front and behind.** Project Settings > Video > *Track order* decides whether the **top** or the
+   **bottom** of the track list is in front; both settings are common. `LS.front_is_top()` tells you which applies
+   (true = top track in front). "Behind" means further from the front in that order. Effects that place or frame a
+   picture (Transform, Picture-in-Picture & Logo, Border & Shadow, Corner Pin, Green Screen Key, Blend Modes, Split
+   Screen, titles, callouts) draw the tracks *behind* them as the background, so put the foreground clip on a track in
+   front of the background; `LS.add_track_in_front_of(track, name)` inserts on the correct side. Nothing behind
+   affects what is in front: a credits backdrop does not darken a logo on a track in front of it.
 4. **Text.** Titles, lower thirds, credits and callouts take their text from the **item (take) name**. `|` starts a new
    line (`Name | Subtitle`). Credits: one entry per `|`; `Role: Name` makes two columns. Put these effects on a
    transparent title item (`LS.add_title`, or an item whose source is `LS Title Carrier.png` in the pack folder).
@@ -92,7 +95,7 @@ processor first loads the user's default preset, so always load the LS preset be
    crossfade**: fade-out on the first item and fade-in on the second, both as long as the overlap (`LS.crossfade`
    does this). Without the fades there is a hard cut. Every crossfade on the track becomes the transition; one
    instance serves them all.
-   Manual mode instead blends this track into the track below with a keyframed `progress` from 0 to 1.
+   Manual mode instead blends this track into the track behind it with a keyframed `progress` from 0 to 1.
 7. **Keyframes** are REAPER FX envelopes holding real values, with linear points. Take-FX envelopes use time relative
    to the item start (`LS.keyframe` converts project time for you). An effect's own easing still shapes the motion.
 8. **Durations.** Ken Burns `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
@@ -110,9 +113,9 @@ processor first loads the user's default preset, so always load the LS preset be
 ```lua
 local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 LS.ensure_presets()
-local titles  = LS.add_track("Titles", 0)     -- titles and lower thirds, in front
-local callouts = LS.add_track("Callouts", 1)  -- a second graphics track, for graphics that overlap the titles
-local screen  = LS.add_track("Screen", 2)     -- the screen recording / screenshots
+local screen   = LS.add_track("Screen")                           -- the screen recording / screenshots
+local callouts = LS.add_track_in_front_of(screen, "Callouts")    -- graphics that overlap the titles
+local titles   = LS.add_track_in_front_of(callouts, "Titles")    -- titles and lower thirds, in front
 
 -- Opening title over the first 5 seconds
 LS.add_title(titles, 0, 5, "Energy Levels | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
@@ -136,7 +139,7 @@ local shot2 = LS.add_media(screen, "/path/shot2.png", 25.5, 6)
 LS.crossfade(shot1, shot2)
 LS.add_to_track(screen, "LS Transition: Dissolve & Dip", { style = 0 })
 
--- Logo in the corner for the whole video: logo PNG item on a track above everything
+-- Logo in the corner for the whole video: logo PNG item on a track in front of everything
 LS.add_to_item(logo_item, "LS Transform: Picture-in-Picture & Logo", { corner = 8, size = 0.12, shape = 0, border = 0, anim = 1 })
 
 -- Hide private information
@@ -152,7 +155,7 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 
 | Preset name | Placement | What it does |
 |---|---|---|
-| `LS Transform: Border & Shadow` | Item or track | Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color. |
+| `LS Transform: Border & Shadow` | Item or track | Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks behind it, a blurred copy or a color. |
 | `LS Transform: Camera Shake` | Item or track | Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments. |
 | `LS Transform: Corner Pin` | Item or track | Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot. |
 | `LS Transform: Flip & Mirror` | Item or track | Flips the picture or mirrors one half onto the other, including a four-way kaleidoscope. |
@@ -188,16 +191,16 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 | `LS Tutorial: Callout` | Item (title item) | Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out. |
 | `LS Tutorial: Magnifier` | Item or track | A zoom lens that shows a small detail enlarged somewhere else on screen, with a marker on the original spot and an optional connecting line. Item fades animate it. |
 | `LS Tutorial: Spotlight` | Item or track | Dims and optionally blurs everything except one area, with an outline around it, to pull attention to a control or part of the screen. Item fades animate it. |
-| `LS Compose: Blend Modes` | Item or track | Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge. |
-| `LS Compose: Green Screen Key` | Item or track | Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop. |
-| `LS Compose: Split Screen` | Track | Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing. |
+| `LS Compose: Blend Modes` | Item or track | Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge. |
+| `LS Compose: Green Screen Key` | Item or track | Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks behind it, with spill suppression, edge control and a garbage matte crop. |
+| `LS Compose: Split Screen` | Track | Arranges this track and the tracks behind it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing. |
 | `LS Time: Freeze & Stutter` | Item or track | Freeze holds the picture from the moment it switches on (automate it for freeze frames). Stutter holds every frame for several frames for a choppy, stop-motion feel. |
 
 ### LS Transform: Border & Shadow
 
 *Placement:* an item or a track.
 
-Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color.
+Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks behind it, a blurred copy or a color.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -223,7 +226,7 @@ Frames a clip with a border (solid, double, glow or gradient), rounded corners, 
 | 19 | `scb` | Shadow blue | 0 | 0 to 1 | Blue part of Shadow color (0..1). |
 | 20 | `inner` | Inner shading | 0.25 | 0 to 1 | Darkens the picture toward its edges. |
 | 21 | `innersize` | Shading size | 0.06 | 0.005 to 0.3 | How far the inner shading reaches. |
-| 22 | `bgmode` | Background | 0 | 0 to 3 | What shows around the framed picture. Options: 0 Tracks below, 1 Blurred copy, 2 Solid color, 3 Black. |
+| 22 | `bgmode` | Background | 0 | 0 to 3 | What shows around the framed picture. Options: 0 Tracks behind, 1 Blurred copy, 2 Solid color, 3 Black. |
 | 23 | `bgr` | Background red | 0.1 | 0 to 1 | Red part of Background color (0..1). |
 | 24 | `bgg` | Background green | 0.1 | 0 to 1 | Green part of Background color (0..1). |
 | 25 | `bgb` | Background blue | 0.12 | 0 to 1 | Blue part of Background color (0..1). |
@@ -273,7 +276,7 @@ Pins the four corners of this clip anywhere on screen, for putting a screen reco
 
 Examples:
 
-- Screen recording on a monitor in the shot: `LS.add_to_item(item, "LS Transform: Corner Pin", { tlx = 0.31, tly = 0.22, trx = 0.62, try = 0.2, brx = 0.63, bry = 0.55, blx = 0.3, bly = 0.56 })` Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.
+- Screen recording on a monitor in the shot: `LS.add_to_item(item, "LS Transform: Corner Pin", { tlx = 0.31, tly = 0.22, trx = 0.62, try = 0.2, brx = 0.63, bry = 0.55, blx = 0.3, bly = 0.56 })` Put on the screen recording item, on a track in front of the camera shot; move the four corners onto the monitor.
 
 - Drag the four corner points on the panel's frame pad.
 
@@ -381,7 +384,7 @@ Places this clip, screenshot or logo in a corner or anywhere on screen, with rou
 
 Examples:
 
-- Logo bug, bottom right: `LS.add_to_item(item, "LS Transform: Picture-in-Picture & Logo", { corner = 8, size = 0.12, shape = 0, border = 0, shadow = 0.4, anim = 1, usealpha = 1 })` Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.
+- Logo bug, bottom right: `LS.add_to_item(item, "LS Transform: Picture-in-Picture & Logo", { corner = 8, size = 0.12, shape = 0, border = 0, shadow = 0.4, anim = 1, usealpha = 1 })` Put on the logo PNG item, on a track in front of the video. Give the item 0.5 s fades.
 - Round webcam bubble: `LS.add_to_item(item, "LS Transform: Picture-in-Picture & Logo", { corner = 6, size = 0.22, shape = 2, border = 0.004, anim = 3 })` Put on the webcam item; use Zoom inside and Pan to frame the face.
 - Screenshot card sliding in: `LS.add_to_item(item, "LS Transform: Picture-in-Picture & Logo", { corner = 4, size = 0.6, shape = 1, radius = 0.04, anim = 2 })`
 
@@ -445,14 +448,14 @@ Position, scale, rotate, crop, round corners, border and drop shadow in one pass
 | 21 | `shdist` | Shadow distance | 0.012 | 0 to 0.1 | Shadow offset, fraction of frame height. |
 | 22 | `shang` | Shadow angle | 135 | -180 to 180 | Direction the shadow falls in degrees: 90 straight down, 135 down-left, 45 down-right. |
 | 23 | `shsoft` | Shadow softness | 0.02 | 0 to 0.1 | Blur of the shadow edge, fraction of frame height. |
-| 24 | `bgmode` | Background | 0 | 0 to 3 | What shows around the picture when it is smaller than the frame. Options: 0 Tracks below, 1 Black, 2 Blurred copy, 3 Solid color. |
+| 24 | `bgmode` | Background | 0 | 0 to 3 | What shows around the picture when it is smaller than the frame. Options: 0 Tracks behind, 1 Black, 2 Blurred copy, 3 Solid color. |
 | 25 | `bgr` | Background red | 0 | 0 to 1 | Red part of Background color (0..1). |
 | 26 | `bgg` | Background green | 0 | 0 to 1 | Green part of Background color (0..1). |
 | 27 | `bgb` | Background blue | 0 | 0 to 1 | Blue part of Background color (0..1). |
 
 Examples:
 
-- Picture-in-picture, top right: `LS.add_to_item(item, "LS Transform: Transform", { scale = 0.35, posx = 0.3, posy = -0.28, radius = 0.06, border = 0.004, shadow = 0.6 })` Put on the inset clip's item, on a track above the main video.
+- Picture-in-picture, top right: `LS.add_to_item(item, "LS Transform: Transform", { scale = 0.35, posx = 0.3, posy = -0.28, radius = 0.06, border = 0.004, shadow = 0.6 })` Put on the inset clip's item, on a track in front of the main video.
 - Tilted card: `LS.add_to_item(item, "LS Transform: Transform", { scale = 0.6, rot = -6, radius = 0.05, border = 0.006, shadow = 0.7 })`
 - Animated zoom-out: `LS.add_to_item(item, "LS Transform: Transform", { scale = 1.5 })` Keyframe Scale at 1.5 at the item start and 1 two seconds later.
 
@@ -870,8 +873,8 @@ Put on a track: every crossfade between items on that track becomes this transit
 | 2 | `dcr` | Dip red | 0.2 | 0 to 1 | Red part of Dip color (0..1). |
 | 3 | `dcg` | Dip green | 0.6 | 0 to 1 | Green part of Dip color (0..1). |
 | 4 | `dcb` | Dip blue | 0.9 | 0 to 1 | Blue part of Dip color (0..1). |
-| 5 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
-| 6 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. |
+| 5 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind). |
+| 6 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. |
 | 7 | `reverse` | Reverse | 0 | 0 to 1 | Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on. |
 
 Examples:
@@ -895,8 +898,8 @@ Put on a track: crossfades cut through a white flash, a digital glitch, a warm l
 | 2 | `lcr` | Light red | 1 | 0 to 1 | Red part of Light color (0..1). |
 | 3 | `lcg` | Light green | 0.62 | 0 to 1 | Green part of Light color (0..1). |
 | 4 | `lcb` | Light blue | 0.25 | 0 to 1 | Blue part of Light color (0..1). |
-| 5 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
-| 6 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. |
+| 5 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind). |
+| 6 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. |
 | 7 | `reverse` | Reverse | 0 | 0 to 1 | Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on. |
 
 Examples:
@@ -919,8 +922,8 @@ Put on a track: crossfades become a push, slide, reveal, split or squeeze in any
 | 1 | `dir` | Direction | 0 | 0 to 3 | Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right). Options: 0 Left, 1 Right, 2 Up, 3 Down. |
 | 2 | `blur` | Motion blur | 0.5 | 0 to 1 | Motion blur during the move. |
 | 3 | `ease` | Smoothness | 1 | 0 to 3 | How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out. |
-| 4 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
-| 5 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. |
+| 4 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind). |
+| 5 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. |
 | 6 | `reverse` | Reverse | 0 | 0 to 1 | Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on. |
 
 Examples:
@@ -950,8 +953,8 @@ Put on a track: crossfades reveal the next shot through a growing circle, box, d
 | 8 | `bcg` | Border green | 0.85 | 0 to 1 | Green part of Border color (0..1). |
 | 9 | `bcb` | Border blue | 0.5 | 0 to 1 | Blue part of Border color (0..1). |
 | 10 | `shrink` | Shrink instead of grow | 0 | 0 to 1 | Shrink from the edges instead of growing from the center. 0 off, 1 on. |
-| 11 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
-| 12 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. |
+| 11 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind). |
+| 12 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. |
 | 13 | `reverse` | Reverse | 0 | 0 to 1 | Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on. |
 
 Examples:
@@ -974,8 +977,8 @@ Put on a track: crossfades punch through with a zoom in, zoom out or spinning zo
 | 0 | `style` | Style | 0 | 0 to 2 | Zoom in through, zoom out, or spinning zoom. Options: 0 Zoom in, 1 Zoom out, 2 Spin. |
 | 1 | `strength` | Strength | 0.6 | 0 to 1 | How far it zooms. |
 | 2 | `blur` | Zoom blur | 0.6 | 0 to 1 | Zoom blur at the peak. |
-| 3 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
-| 4 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. |
+| 3 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one behind). |
+| 4 | `progress` | Manual progress | 0 | 0 to 1 | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. |
 | 5 | `reverse` | Reverse | 0 | 0 to 1 | Swap outgoing and incoming (use if a direction comes out backwards). 0 off, 1 on. |
 
 Examples:
@@ -1232,24 +1235,24 @@ Examples:
 
 *Placement:* an item or a track.
 
-Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.
+Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
-| 0 | `mode` | Blend mode | 2 | 0 to 10 | How this layer combines with the tracks below. Options: 0 Normal, 1 Multiply, 2 Screen, 3 Overlay, 4 Soft light, 5 Add, 6 Subtract, 7 Difference, 8 Lighten, 9 Darken, 10 Color dodge. |
+| 0 | `mode` | Blend mode | 2 | 0 to 10 | How this layer combines with the tracks behind it. Options: 0 Normal, 1 Multiply, 2 Screen, 3 Overlay, 4 Soft light, 5 Add, 6 Subtract, 7 Difference, 8 Lighten, 9 Darken, 10 Color dodge. |
 | 1 | `opacity` | Opacity | 1 | 0 to 1 | Layer opacity. |
 
 Examples:
 
 - Light leak overlay: `LS.add_to_item(item, "LS Compose: Blend Modes", { mode = 2, opacity = 0.8 })` Put on a track holding a light-leak clip, above the footage.
 
-- Put this on the upper track; it blends that track's video over everything below.
+- Put this on the track in front; it blends that track's video over everything behind it.
 
 ### LS Compose: Green Screen Key
 
 *Placement:* an item or a track.
 
-Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop.
+Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks behind it, with spill suppression, edge control and a garbage matte crop.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -1267,13 +1270,13 @@ Removes a green or blue backdrop (or any picked color) and puts this clip over t
 
 Examples:
 
-- Standard green screen: `LS.add_to_item(item, "LS Compose: Green Screen Key", { keycolor = 0 })` Put on the green-screen clip on a track above the new background.
+- Standard green screen: `LS.add_to_item(item, "LS Compose: Green Screen Key", { keycolor = 0 })` Put on the green-screen clip on a track in front of the new background.
 
 ### LS Compose: Split Screen
 
 *Placement:* a track.
 
-Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.
+Arranges this track and the tracks behind it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
@@ -1293,9 +1296,9 @@ Arranges this track and the tracks below it side by side, stacked, one large wit
 
 Examples:
 
-- Two cameras side by side: `LS.add_to_track(track, "LS Compose: Split Screen", { layout = 0, gap = 0.008 })` Put on the top video track; the track directly below supplies panel 2.
+- Two cameras side by side: `LS.add_to_track(track, "LS Compose: Split Screen", { layout = 0, gap = 0.008 })` Put on the front video track; the track directly behind it supplies panel 2.
 
-- Panel 1 is this track; panels 2-4 are the next tracks below that have video.
+- Panel 1 is this track; panels 2-4 are the next tracks behind it that have video.
 
 ### LS Time: Freeze & Stutter
 

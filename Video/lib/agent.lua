@@ -110,7 +110,7 @@ end
 -- Adds an effect to an item (only that clip). Returns the FX index on the item's active take.
 function M.add_to_item(item, name, params) return add(item, name, params) end
 
--- Adds an effect to a track (everything on it, and for overlays/transitions, the tracks below). Returns the FX index.
+-- Adds an effect to a track (everything on it, and for overlays/transitions, the tracks behind it). Returns the FX index.
 function M.add_to_track(track, name, params) return add(track, name, params) end
 
 -- Sets controls on an existing effect: target is the item or track, fx its index.
@@ -128,6 +128,13 @@ local function overlapping(track, pos, len)
     if p < pos + len - 1e-6 and p + l > pos + 1e-6 then return it, p, l end
   end
 end
+
+-- True when the top of the track list is in front (REAPER's default Track order); false when the bottom is.
+function M.front_is_top() return A.front_is_top() end
+
+-- Inserts a track named `name` directly in front of `track` in the layer order (above it with the default
+-- Track order, below it with the reversed one). Returns the new track.
+function M.add_track_in_front_of(track, name) return A.insert_in_front_of(track, name or "") end
 
 -- Inserts a track named `name` at position `index` (0 = top; default: after the last track). Returns the track.
 function M.add_track(name, index)
@@ -179,7 +186,7 @@ function M.add_title(track, pos, len, text, name, params, fade_in, fade_out)
   if other then
     error(string.format("Larry Seyer Video Effects: this title (%.2f-%.2f s) overlaps another item (%.2f-%.2f s) on the same track. " ..
       "A track shows one item at a time, so graphics that overlap in time need separate tracks " ..
-      "(for example LS.add_track(\"Titles 2\", index)).", pos, pos + len, op, op + ol), 2)
+      "(for example LS.add_track_in_front_of(track, \"Titles 2\")).", pos, pos + len, op, op + ol), 2)
   end
   local item = reaper.AddMediaItemToTrack(track)
   reaper.SetMediaItemInfo_Value(item, "D_POSITION", pos)

@@ -3,8 +3,8 @@
 //@ls title Dissolve & Dip
 //@ls where track
 //@ls about Put on a track: every crossfade between items on that track becomes this transition, lasting as long as the crossfade. Cross dissolve, dip to black, white or a color, additive, blur and luma dissolves.
-//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
-//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.
 //@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
 //@ls help ease How the transition speeds up and slows down.
 //@ls help style Kind of dissolve.
@@ -14,7 +14,7 @@
 //@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
 //@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
 //@ls enum style Cross dissolve|Dip to black|Dip to white|Dip to color|Additive dissolve|Blur dissolve|Luma dissolve
-//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls enum srcmode Item crossfades|Manual (this track to the one behind)
 //@ls toggle reverse
 //@ls enum ease Linear|Smooth|Ease in|Ease out
 //@ls color "Dip color" dcr dcg dcb

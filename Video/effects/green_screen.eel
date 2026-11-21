@@ -2,7 +2,7 @@
 //@ls category Compose
 //@ls title Green Screen Key
 //@ls where both
-//@ls about Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop.
+//@ls about Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks behind it, with spill suppression, edge control and a garbage matte crop.
 //@ls help keycolor Backdrop color to remove.
 //@ls help keyhue Custom hue in degrees (used with Custom hue).
 //@ls help tolerance Raise if backdrop color remains; lower if the subject gets holes.
@@ -11,7 +11,7 @@
 //@ls help spill Removes backdrop color reflected on the subject.
 //@ls help cropl Garbage matte: crop away parts outside the backdrop.
 //@ls help showmatte Shows the key as black and white. Turn off before rendering.
-//@ls example Standard green screen :: keycolor=0 :: Put on the green-screen clip on a track above the new background.
+//@ls example Standard green screen :: keycolor=0 :: Put on the green-screen clip on a track in front of the new background.
 //@ls enum keycolor Green|Blue|Custom hue
 //@ls toggle showmatte
 //@ls section "Key" keycolor keyhue tolerance softness choke

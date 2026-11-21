@@ -163,29 +163,47 @@ function A.jump_key(t, fx, nparams, dir)
   end
 end
 
+-- Layer order --------------------------------------------------------------------------------------
+
+-- True when tracks higher in the list are in front (Project Settings > Video > Track order: "Items in lower
+-- numbered tracks replace higher", REAPER's default); false when the bottom track is in front.
+function A.front_is_top()
+  local ok, flags = reaper.get_config_var_string("projvidflags")
+  if not ok then return true end
+  return (math.floor(tonumber(flags) or 256) & 256) ~= 0
+end
+
+-- Inserts a track named `name` directly in front of `track` in the layer order. Returns it.
+function A.insert_in_front_of(track, name)
+  local idx = math.floor(reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")) - 1
+  if not A.front_is_top() then idx = idx + 1 end
+  reaper.InsertTrackAtIndex(idx, true)
+  local t = reaper.GetTrack(0, idx)
+  reaper.GetSetMediaTrackInfo_String(t, "P_NAME", name, true)
+  return t
+end
+
 -- Title carriers ------------------------------------------------------------------------------------
 
 -- Inserts a transparent carrier item (for titles and callouts) at the edit cursor or time selection,
--- on the selected track or a new "Titles" track at the top. Returns the new target.
+-- on the selected track or a new "Titles" track at the front of the layer order. Returns the new target.
 function A.add_carrier(carrier_png, text, length)
   local track = reaper.GetSelectedTrack(0, 0)
   if not track then
-    reaper.InsertTrackAtIndex(0, true)
-    track = reaper.GetTrack(0, 0)
+    local idx = A.front_is_top() and 0 or reaper.CountTracks(0)
+    reaper.InsertTrackAtIndex(idx, true)
+    track = reaper.GetTrack(0, idx)
     reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "Titles", true)
   end
   local ts, te = reaper.GetSet_LoopTimeRange(false, false, 0, 0, false)
   local pos, len = reaper.GetCursorPosition(), length
   if te > ts then pos, len = ts, te - ts end
-  -- a track shows one item at a time: put overlapping graphics on a new track above
+  -- a track shows one item at a time: put overlapping graphics on a new track in front of it
   for k = 0, reaper.CountTrackMediaItems(track) - 1 do
     local it = reaper.GetTrackMediaItem(track, k)
     local p = reaper.GetMediaItemInfo_Value(it, "D_POSITION")
     if p < pos + len - 1e-6 and p + reaper.GetMediaItemInfo_Value(it, "D_LENGTH") > pos + 1e-6 then
-      local idx = math.floor(reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")) - 1
-      reaper.InsertTrackAtIndex(idx, true)
-      track = reaper.GetTrack(0, idx)
-      reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "Titles", true)
+      track = A.insert_in_front_of(track, "Titles")
       break
     end
   end

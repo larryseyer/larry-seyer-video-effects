@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.0.1 - 40 video effects for REAPER.
+Version 1.0.2 - 40 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 DaVinci Resolve-style wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -41,8 +41,9 @@ Without the panel: add a Video processor to an item or track and choose any **LS
 
 ## Things that work the same everywhere
 
-- **Layers:** video tracks higher in the track list are in front. Effects that place or frame a picture draw
-  the tracks below as the background, so put the foreground clip on the upper track.
+- **Layers:** *Project Settings > Video > Track order* decides whether the top or the bottom track is in front.
+  Effects that place or frame a picture draw the tracks behind them as the background, so put the foreground clip
+  on a track in front of it. The panel's **+** buttons put new title tracks on the correct side for either setting.
 - **Transitions:** put a transition effect on a track; every crossfade between items on that track becomes the
   transition, as long as the crossfade.
 - **Animated entrances** follow the item fades (titles, callouts, picture-in-picture, Zoom to Region,
@@ -67,7 +68,7 @@ that takes control names instead of numbers. For Claude Code, copy `ai/claude-sk
 
 ![Border & Shadow](images/border.jpg)
 
-Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks below, a blurred copy or a color. **Goes on:** item or track. Preset name: `LS Transform: Border & Shadow`.
+Frames a clip with a border (solid, double, glow or gradient), rounded corners, a drop shadow and soft inner shading, over the tracks behind it, a blurred copy or a color. **Goes on:** item or track. Preset name: `LS Transform: Border & Shadow`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -87,7 +88,7 @@ Frames a clip with a border (solid, double, glow or gradient), rounded corners, 
 | Shadow color | Color picker. |  |
 | Inner shading | Darkens the picture toward its edges. | 0 to 1 (0.25) |
 | Shading size | How far the inner shading reaches. | 0.005 to 0.3 (0.06) |
-| Background | What shows around the framed picture. | Tracks below, Blurred copy, Solid color, Black |
+| Background | What shows around the framed picture. | Tracks behind, Blurred copy, Solid color, Black |
 | Background color | Color picker. |  |
 
 **Try this:**
@@ -135,7 +136,7 @@ Pins the four corners of this clip anywhere on screen, for putting a screen reco
 
 **Try this:**
 
-- *Screen recording on a monitor in the shot* - Top left X 0.31, Top left Y 0.22, Top right X 0.62, Top right Y 0.2, Bottom right X 0.63, Bottom right Y 0.55, Bottom left X 0.3, Bottom left Y 0.56. Put on the screen recording item, on a track above the camera shot; move the four corners onto the monitor.
+- *Screen recording on a monitor in the shot* - Top left X 0.31, Top left Y 0.22, Top right X 0.62, Top right Y 0.2, Bottom right X 0.63, Bottom right Y 0.55, Bottom left X 0.3, Bottom left Y 0.56. Put on the screen recording item, on a track in front of the camera shot; move the four corners onto the monitor.
 
 - Drag the four corner points on the panel's frame pad.
 
@@ -241,7 +242,7 @@ Places this clip, screenshot or logo in a corner or anywhere on screen, with rou
 
 **Try this:**
 
-- *Logo bug, bottom right* - Corner Bottom right, Size 0.12, Shape Rectangle, Border width 0, Shadow opacity 0.4, Entrance Fade, Use image transparency 1. Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.
+- *Logo bug, bottom right* - Corner Bottom right, Size 0.12, Shape Rectangle, Border width 0, Shadow opacity 0.4, Entrance Fade, Use image transparency 1. Put on the logo PNG item, on a track in front of the video. Give the item 0.5 s fades.
 - *Round webcam bubble* - Corner Bottom left, Size 0.22, Shape Circle, Border width 0.004, Entrance Pop. Put on the webcam item; use Zoom inside and Pan to frame the face.
 - *Screenshot card sliding in* - Corner Center, Size 0.6, Shape Rounded, Corner radius 0.04, Entrance Slide in.
 
@@ -301,12 +302,12 @@ Position, scale, rotate, crop, round corners, border and drop shadow in one pass
 | Shadow distance | Shadow offset, fraction of frame height. | 0 to 0.1 (0.012) |
 | Shadow angle | Direction the shadow falls in degrees: 90 straight down, 135 down-left, 45 down-right. | -180 to 180 (135) |
 | Shadow softness | Blur of the shadow edge, fraction of frame height. | 0 to 0.1 (0.02) |
-| Background | What shows around the picture when it is smaller than the frame. | Tracks below, Black, Blurred copy, Solid color |
+| Background | What shows around the picture when it is smaller than the frame. | Tracks behind, Black, Blurred copy, Solid color |
 | Background color | Color picker. |  |
 
 **Try this:**
 
-- *Picture-in-picture, top right* - Scale 0.35, Position X 0.3, Position Y -0.28, Corner radius 0.06, Border width 0.004, Shadow opacity 0.6. Put on the inset clip's item, on a track above the main video.
+- *Picture-in-picture, top right* - Scale 0.35, Position X 0.3, Position Y -0.28, Corner radius 0.06, Border width 0.004, Shadow opacity 0.6. Put on the inset clip's item, on a track in front of the main video.
 - *Tilted card* - Scale 0.6, Rotation -6, Corner radius 0.05, Border width 0.006, Shadow opacity 0.7.
 - *Animated zoom-out* - Scale 1.5. Keyframe Scale at 1.5 at the item start and 1 two seconds later.
 
@@ -671,8 +672,8 @@ Put on a track: every crossfade between items on that track becomes this transit
 | Style | Kind of dissolve. | Cross dissolve, Dip to black, Dip to white, Dip to color, Additive dissolve, Blur dissolve, Luma dissolve |
 | Smoothness | How the transition speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
 | Dip color | Color picker. |  |
-| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
-| Manual progress | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
+| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. | Item crossfades, Manual (this track to the one behind) |
+| Manual progress | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
 | Reverse | Swap outgoing and incoming (use if a direction comes out backwards). | off/on (off) |
 
 **Try this:**
@@ -694,8 +695,8 @@ Put on a track: crossfades cut through a white flash, a digital glitch, a warm l
 | Style | Flash cuts through white; Glitch cuts with digital breakup; Light leak and Film burn add warm light. | Flash, Glitch, Light leak, Film burn |
 | Strength | Strength of the flash or light. | 0 to 1 (0.8) |
 | Light color | Color picker. |  |
-| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
-| Manual progress | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
+| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. | Item crossfades, Manual (this track to the one behind) |
+| Manual progress | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
 | Reverse | Swap outgoing and incoming (use if a direction comes out backwards). | off/on (off) |
 
 **Try this:**
@@ -718,8 +719,8 @@ Put on a track: crossfades become a push, slide, reveal, split or squeeze in any
 | Direction | Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right). | Left, Right, Up, Down |
 | Motion blur | Motion blur during the move. | 0 to 1 (0.5) |
 | Smoothness | How the transition speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
-| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
-| Manual progress | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
+| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. | Item crossfades, Manual (this track to the one behind) |
+| Manual progress | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
 | Reverse | Swap outgoing and incoming (use if a direction comes out backwards). | off/on (off) |
 
 **Try this:**
@@ -747,8 +748,8 @@ Put on a track: crossfades reveal the next shot through a growing circle, box, d
 | Border | Glowing edge width (0 = none). | 0 to 0.05 (0) |
 | Border color | Color picker. |  |
 | Shrink instead of grow | Shrink from the edges instead of growing from the center. | off/on (off) |
-| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
-| Manual progress | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
+| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. | Item crossfades, Manual (this track to the one behind) |
+| Manual progress | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
 | Reverse | Swap outgoing and incoming (use if a direction comes out backwards). | off/on (off) |
 
 **Try this:**
@@ -771,8 +772,8 @@ Put on a track: crossfades punch through with a zoom in, zoom out or spinning zo
 | Style | Zoom in through, zoom out, or spinning zoom. | Zoom in, Zoom out, Spin |
 | Strength | How far it zooms. | 0 to 1 (0.6) |
 | Zoom blur | Zoom blur at the peak. | 0 to 1 (0.6) |
-| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
-| Manual progress | Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
+| Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress. | Item crossfades, Manual (this track to the one behind) |
+| Manual progress | Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition. | 0 to 1 (0) |
 | Reverse | Swap outgoing and incoming (use if a direction comes out backwards). | off/on (off) |
 
 **Try this:**
@@ -997,24 +998,24 @@ Dims and optionally blurs everything except one area, with an outline around it,
 
 ![Blend Modes](images/blend.jpg)
 
-Blends this layer over the tracks below like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge. **Goes on:** item or track. Preset name: `LS Compose: Blend Modes`.
+Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge. **Goes on:** item or track. Preset name: `LS Compose: Blend Modes`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
-| Blend mode | How this layer combines with the tracks below. | Normal, Multiply, Screen, Overlay, Soft light, Add, Subtract, Difference, Lighten, Darken, Color dodge |
+| Blend mode | How this layer combines with the tracks behind it. | Normal, Multiply, Screen, Overlay, Soft light, Add, Subtract, Difference, Lighten, Darken, Color dodge |
 | Opacity | Layer opacity. | 0 to 1 (1) |
 
 **Try this:**
 
 - *Light leak overlay* - Blend mode Screen, Opacity 0.8. Put on a track holding a light-leak clip, above the footage.
 
-- Put this on the upper track; it blends that track's video over everything below.
+- Put this on the track in front; it blends that track's video over everything behind it.
 
 ### Green Screen Key
 
 ![Green Screen Key](images/green_screen.jpg)
 
-Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks below, with spill suppression, edge control and a garbage matte crop. **Goes on:** item or track. Preset name: `LS Compose: Green Screen Key`.
+Removes a green or blue backdrop (or any picked color) and puts this clip over the tracks behind it, with spill suppression, edge control and a garbage matte crop. **Goes on:** item or track. Preset name: `LS Compose: Green Screen Key`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -1032,13 +1033,13 @@ Removes a green or blue backdrop (or any picked color) and puts this clip over t
 
 **Try this:**
 
-- *Standard green screen* - Key color Green. Put on the green-screen clip on a track above the new background.
+- *Standard green screen* - Key color Green. Put on the green-screen clip on a track in front of the new background.
 
 ### Split Screen
 
 ![Split Screen](images/split_screen.jpg)
 
-Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing. **Goes on:** track. Preset name: `LS Compose: Split Screen`.
+Arranges this track and the tracks behind it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing. **Goes on:** track. Preset name: `LS Compose: Split Screen`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -1056,9 +1057,9 @@ Arranges this track and the tracks below it side by side, stacked, one large wit
 
 **Try this:**
 
-- *Two cameras side by side* - Layout Side by side, Gap 0.008. Put on the top video track; the track directly below supplies panel 2.
+- *Two cameras side by side* - Layout Side by side, Gap 0.008. Put on the front video track; the track directly behind it supplies panel 2.
 
-- Panel 1 is this track; panels 2-4 are the next tracks below that have video.
+- Panel 1 is this track; panels 2-4 are the next tracks behind it that have video.
 
 ## Time
 

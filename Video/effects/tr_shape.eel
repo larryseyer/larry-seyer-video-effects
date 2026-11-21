@@ -3,8 +3,8 @@
 //@ls title Shape Wipe
 //@ls where track
 //@ls about Put on a track: crossfades reveal the next shot through a growing circle, box, diamond, clock sweep, barn doors, angled wipe or blinds, with soft edges and an optional glowing border.
-//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
-//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.
 //@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
 //@ls help shape Shape of the reveal.
 //@ls help soft Edge softness.
@@ -20,7 +20,7 @@
 //@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
 //@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
 //@ls enum shape Circle|Box|Diamond|Clock|Barn doors (vertical)|Barn doors (horizontal)|Angled wipe|Blinds
-//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls enum srcmode Item crossfades|Manual (this track to the one behind)
 //@ls toggle reverse
 //@ls toggle shrink
 //@ls point "Center" cx cy

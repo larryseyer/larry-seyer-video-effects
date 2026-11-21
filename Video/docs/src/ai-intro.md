@@ -25,8 +25,8 @@ local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 LS.ensure_presets()
 
 -- tracks and media
-local titles = LS.add_track("Titles", 0)                        -- inserted at index 0 = top = in front
-local screen = LS.add_track("Screen", 1)
+local screen = LS.add_track("Screen")                            -- appended to the track list
+local titles = LS.add_track_in_front_of(screen, "Titles")       -- in front of it, whichever Track order is set
 local item = LS.add_media(screen, "/path/clip.mp4", 0, 6)       -- track, file, position[, length[, offset]]; no fades
                                                                 -- (default length: the file's, 5 s for still images)
 local item2 = LS.add_media(screen, "/path/next.mp4", 5, 6)      -- overlaps the first item by 1 s
@@ -73,10 +73,13 @@ processor first loads the user's default preset, so always load the LS preset be
 2. **One item at a time per track.** Where items overlap on a track, REAPER shows only one of them (unless a
    transition effect is on that track). Graphics that overlap in time (a lower third and a callout, two titles) must
    go on **separate tracks**. `LS.add_title` refuses an overlap with an explanation.
-3. **Layers.** Video tracks higher in the track list are in front. Effects that place or frame a picture (Transform,
-   Picture-in-Picture & Logo, Border & Shadow, Corner Pin, Green Screen Key, Blend Modes, titles, callouts) draw the
-   tracks *below* as the background. Put the foreground clip on a track above the background. Nothing on a lower track
-   affects a higher one: a credits backdrop or a callout's dimming does not darken a logo on a track above it.
+3. **Layers: in front and behind.** Project Settings > Video > *Track order* decides whether the **top** or the
+   **bottom** of the track list is in front; both settings are common. `LS.front_is_top()` tells you which applies
+   (true = top track in front). "Behind" means further from the front in that order. Effects that place or frame a
+   picture (Transform, Picture-in-Picture & Logo, Border & Shadow, Corner Pin, Green Screen Key, Blend Modes, Split
+   Screen, titles, callouts) draw the tracks *behind* them as the background, so put the foreground clip on a track in
+   front of the background; `LS.add_track_in_front_of(track, name)` inserts on the correct side. Nothing behind
+   affects what is in front: a credits backdrop does not darken a logo on a track in front of it.
 4. **Text.** Titles, lower thirds, credits and callouts take their text from the **item (take) name**. `|` starts a new
    line (`Name | Subtitle`). Credits: one entry per `|`; `Role: Name` makes two columns. Put these effects on a
    transparent title item (`LS.add_title`, or an item whose source is `LS Title Carrier.png` in the pack folder).
@@ -92,7 +95,7 @@ processor first loads the user's default preset, so always load the LS preset be
    crossfade**: fade-out on the first item and fade-in on the second, both as long as the overlap (`LS.crossfade`
    does this). Without the fades there is a hard cut. Every crossfade on the track becomes the transition; one
    instance serves them all.
-   Manual mode instead blends this track into the track below with a keyframed `progress` from 0 to 1.
+   Manual mode instead blends this track into the track behind it with a keyframed `progress` from 0 to 1.
 7. **Keyframes** are REAPER FX envelopes holding real values, with linear points. Take-FX envelopes use time relative
    to the item start (`LS.keyframe` converts project time for you). An effect's own easing still shapes the motion.
 8. **Durations.** Ken Burns `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
@@ -110,9 +113,9 @@ processor first loads the user's default preset, so always load the LS preset be
 ```lua
 local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 LS.ensure_presets()
-local titles  = LS.add_track("Titles", 0)     -- titles and lower thirds, in front
-local callouts = LS.add_track("Callouts", 1)  -- a second graphics track, for graphics that overlap the titles
-local screen  = LS.add_track("Screen", 2)     -- the screen recording / screenshots
+local screen   = LS.add_track("Screen")                           -- the screen recording / screenshots
+local callouts = LS.add_track_in_front_of(screen, "Callouts")    -- graphics that overlap the titles
+local titles   = LS.add_track_in_front_of(callouts, "Titles")    -- titles and lower thirds, in front
 
 -- Opening title over the first 5 seconds
 LS.add_title(titles, 0, 5, "Energy Levels | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
@@ -136,7 +139,7 @@ local shot2 = LS.add_media(screen, "/path/shot2.png", 25.5, 6)
 LS.crossfade(shot1, shot2)
 LS.add_to_track(screen, "LS Transition: Dissolve & Dip", { style = 0 })
 
--- Logo in the corner for the whole video: logo PNG item on a track above everything
+-- Logo in the corner for the whole video: logo PNG item on a track in front of everything
 LS.add_to_item(logo_item, "LS Transform: Picture-in-Picture & Logo", { corner = 8, size = 0.12, shape = 0, border = 0, anim = 1 })
 
 -- Hide private information

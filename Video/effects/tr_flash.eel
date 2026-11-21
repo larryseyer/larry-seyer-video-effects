@@ -3,8 +3,8 @@
 //@ls title Flash, Glitch & Light Leak
 //@ls where track
 //@ls about Put on a track: crossfades cut through a white flash, a digital glitch, a warm light leak or a film burn.
-//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress.
-//@ls help progress Manual mode: 0 shows this track, 1 the track below. Keyframe 0 to 1 over the transition.
+//@ls help srcmode Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track behind it using Manual progress.
+//@ls help progress Manual mode: 0 shows this track, 1 the track behind. Keyframe 0 to 1 over the transition.
 //@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
 //@ls help style Flash cuts through white; Glitch cuts with digital breakup; Light leak and Film burn add warm light.
 //@ls help strength Strength of the flash or light.
@@ -14,7 +14,7 @@
 //@ls tip Put this on the track. Overlap two items on that track (a crossfade); the transition lasts as long as the overlap.
 //@ls tip One instance handles every crossfade on the track. Use separate tracks for different transition styles.
 //@ls enum style Flash|Glitch|Light leak|Film burn
-//@ls enum srcmode Item crossfades|Manual (this track to the one below)
+//@ls enum srcmode Item crossfades|Manual (this track to the one behind)
 //@ls toggle reverse
 //@ls color "Light color" lcr lcg lcb
 //@param1:style 'Style' 0 0 3 0 1

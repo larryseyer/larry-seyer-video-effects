@@ -20,7 +20,7 @@
 //@ls help anim Entrance animation. It plays during the item fade-in and runs backwards during the fade-out.
 //@ls help animsrc Item fades: the item's fade handles drive the animation. Manual: Manual amount does (0 hidden, 1 shown).
 //@ls help amount Used when Animate with is Manual: 0 hidden, 1 fully shown. Keyframe it for custom timing.
-//@ls example Logo bug, bottom right :: corner=8 size=0.12 shape=0 border=0 shadow=0.4 anim=1 usealpha=1 :: Put on the logo PNG item, on a track above the video. Give the item 0.5 s fades.
+//@ls example Logo bug, bottom right :: corner=8 size=0.12 shape=0 border=0 shadow=0.4 anim=1 usealpha=1 :: Put on the logo PNG item, on a track in front of the video. Give the item 0.5 s fades.
 //@ls example Round webcam bubble :: corner=6 size=0.22 shape=2 border=0.004 anim=3 :: Put on the webcam item; use Zoom inside and Pan to frame the face.
 //@ls example Screenshot card sliding in :: corner=4 size=0.6 shape=1 radius=0.04 anim=2
 //@ls tip Use this instead of REAPER's stock Image overlay preset.

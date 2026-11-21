@@ -2,7 +2,7 @@
 //@ls category Compose
 //@ls title Split Screen
 //@ls where track
-//@ls about Arranges this track and the tracks below it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.
+//@ls about Arranges this track and the tracks behind it side by side, stacked, one large with two small, a 2x2 grid or three columns, with gaps, rounded corners and per-panel framing.
 //@ls help layout Panel arrangement.
 //@ls help split Where two-panel layouts divide.
 //@ls help gap Gap between panels, fraction of frame height.
@@ -10,8 +10,8 @@
 //@ls help radius Panel corner rounding.
 //@ls help pan1 Which part of the source shows in its panel, -1..1 (along the cropped direction).
 //@ls help zoomall Zoom inside every panel.
-//@ls example Two cameras side by side :: layout=0 gap=0.008 :: Put on the top video track; the track directly below supplies panel 2.
-//@ls tip Panel 1 is this track; panels 2-4 are the next tracks below that have video.
+//@ls example Two cameras side by side :: layout=0 gap=0.008 :: Put on the front video track; the track directly behind it supplies panel 2.
+//@ls tip Panel 1 is this track; panels 2-4 are the next tracks behind it that have video.
 //@ls enum layout Side by side|Stacked|One large + two small|2x2 grid|Three columns
 //@ls color "Gap color" gcr gcg gcb
 //@ls section "Layout" layout split gap margin radius

@@ -41,8 +41,9 @@ Without the panel: add a Video processor to an item or track and choose any **LS
 
 ## Things that work the same everywhere
 
-- **Layers:** video tracks higher in the track list are in front. Effects that place or frame a picture draw
-  the tracks below as the background, so put the foreground clip on the upper track.
+- **Layers:** *Project Settings > Video > Track order* decides whether the top or the bottom track is in front.
+  Effects that place or frame a picture draw the tracks behind them as the background, so put the foreground clip
+  on a track in front of it. The panel's **+** buttons put new title tracks on the correct side for either setting.
 - **Transitions:** put a transition effect on a track; every crossfade between items on that track becomes the
   transition, as long as the crossfade.
 - **Animated entrances** follow the item fades (titles, callouts, picture-in-picture, Zoom to Region,
