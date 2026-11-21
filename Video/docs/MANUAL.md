@@ -239,6 +239,8 @@ Lets you click a camera in the video window to cut to it while the Multicam Swit
 
 ### Multicam Switcher
 
+![Multicam Switcher](images/multicam_switcher.jpg)
+
 Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window). **Goes on:** track. Preset name: `LS Transform: Multicam Switcher`.
 
 | Control | What it does | Range (default) |

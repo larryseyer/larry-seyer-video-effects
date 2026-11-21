@@ -17,6 +17,24 @@ from vfx_render import Fx, Item, Scene, Track, render  # noqa: E402
 OUT = os.path.join(ROOT, "docs", "images")
 WORK = os.environ.get("LSVFX_OUT", "/tmp/lsvfx") + "/docimages"
 
+# The Multicam Switcher picture uses four generic gradient cameras made here, never show footage.
+CAMERAS = {"Wide": "c0=0x0e2238:c1=0x1f7a80", "Drums": "c0=0x3b1a45:c1=0xd0813a",
+           "Keys": "c0=0x1d1442:c1=0x7b5cc4", "Guitar": "c0=0x0f2e22:c1=0x4fae7c"}
+
+
+def switcher_scene():
+    """Switcher view over four gradient camera tracks (camera 2 on air); returns (scene, time, media folder)."""
+    media = os.path.join(WORK, "cameras")
+    os.makedirs(media, exist_ok=True)
+    tracks = [Track(name="Multicam", fx=[Fx("multicam_switcher", {"show": 1, "cam": 2})])]
+    for i, (name, spec) in enumerate(CAMERAS.items(), 1):
+        clip = f"camera{i}.mp4"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+                        f"gradients=s=1920x1080:{spec}:x0=0:y0=1080:x1=1920:y1=0:r=30:d=4:n=2:speed=0:seed=1",
+                        "-c:v", "libx264", "-pix_fmt", "yuv420p", os.path.join(media, clip)], check=True)
+        tracks.append(Track(name=name, items=[Item(clip, 0, 3)], fx=[Fx("multicam_camera", {"camid": i})]))
+    return Scene(tracks=tracks), 1.5, media
+
 
 def scene_for(e, params):
     """Builds a short scene that shows the effect the way it is meant to be used; returns (scene, time)."""
@@ -62,10 +80,14 @@ def main():
             params["showbox"] = 0
         if stem == "credits":
             params["dur"] = 5      # keep the roll inside the 6 s sample clip
-        sc, t = scene_for(e, params)
+        media = None
+        if stem == "multicam_switcher":
+            sc, t, media = switcher_scene()
+        else:
+            sc, t = scene_for(e, params)
         if stem == "reframe":
             sc.width, sc.height = 1080, 1920   # shown as a vertical Short, its main use
-        png = render(sc, WORK, [t], tag=stem, thumb_w=960 if sc.width >= sc.height else 400)
+        png = render(sc, WORK, [t], tag=stem, media_dir=media, thumb_w=960 if sc.width >= sc.height else 400)
         jpg = os.path.join(OUT, stem + ".jpg")
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", png, "-q:v", "4", jpg], check=True)
         print("image", stem)
