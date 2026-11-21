@@ -66,7 +66,7 @@ end
 
 local function read_all(t, fx, e)
   local vals = {}
-  for _, p in ipairs(e.params) do vals[p.var] = A.get(t, fx, p.index - 1) or p.def end
+  for _, p in ipairs(e.params) do vals[p.var] = A.value(t, fx, p.index - 1) or p.def end
   return vals
 end
 
@@ -276,7 +276,8 @@ local function editor_header(t, fx, e)
   if ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, "Move the edit cursor to the previous keyframe") end
   ImGui.SameLine(ctx)
   if ImGui.Button(ctx, "Keyframe all") then
-    for _, p in ipairs(e.params) do A.set_key(t, fx, p.index - 1, A.get(t, fx, p.index - 1)) end
+    local cur = reaper.GetCursorPosition()
+    for _, p in ipairs(e.params) do A.set_key(t, fx, p.index - 1, A.value(t, fx, p.index - 1, cur)) end
     undo_point("keyframe all")
   end
   if ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, "Key every control at the edit cursor") end

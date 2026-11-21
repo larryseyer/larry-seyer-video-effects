@@ -92,14 +92,33 @@ function A.env(t, fx, i, create)
   return F(t, reaper.TakeFX_GetEnvelope, reaper.GetFXEnvelope)(obj(t), fx, i, create or false)
 end
 
--- Envelope time for the edit cursor (take envelopes are relative to the item start).
-function A.env_time(t)
-  local cur = reaper.GetCursorPosition()
+-- Envelope time for project time `pos`, default the edit cursor (take envelopes are relative to the item start).
+function A.env_time(t, pos)
+  pos = pos or reaper.GetCursorPosition()
   if t.kind == "take" then
     local rate = reaper.GetMediaItemTakeInfo_Value(t.take, "D_PLAYRATE")
-    return (cur - reaper.GetMediaItemInfo_Value(t.item, "D_POSITION")) * rate
+    return (pos - reaper.GetMediaItemInfo_Value(t.item, "D_POSITION")) * rate
   end
-  return cur
+  return pos
+end
+
+-- Project time the panel shows: the play position while playing or recording, otherwise the edit cursor.
+local function view_pos()
+  if reaper.GetPlayState() & 5 ~= 0 then return reaper.GetPlayPosition() end
+  return reaper.GetCursorPosition()
+end
+
+-- Value of parameter i at project time `pos` (default: the time the panel shows). A keyframed parameter is read
+-- from its envelope, because its live value is whatever the video thread last rendered: stale while stopped and
+-- ahead of the play position (buffered frames) while playing.
+function A.value(t, fx, i, pos)
+  local env = A.env(t, fx, i, false)
+  if env and reaper.CountEnvelopePoints(env) > 0
+     and select(2, reaper.GetSetEnvelopeInfo_String(env, "ACTIVE", "", false)) ~= "0" then
+    local _, v = reaper.Envelope_Evaluate(env, A.env_time(t, pos or view_pos()), 0, 0)
+    return v
+  end
+  return A.get(t, fx, i)
 end
 
 local function point_at(env, time)
