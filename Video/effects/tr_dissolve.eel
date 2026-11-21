@@ -36,37 +36,7 @@ W = project_w; H = project_h;
 // #include "lib/ease.eel"
 // #include "lib/pyramid.eel"
 // #include "lib/transition.eel"
+// #include "lib/trstyles.eel"
 
-tr_setup() ? (
-  p = ls_ease(tr_p, ease == 0 ? 0 : ease);
-  gfx_mode = 0; gfx_a = 1;
-  style == 0 ? ( gfx_blit(tr_a); gfx_a = p; gfx_blit(tr_b); )
-  : style >= 1 && style <= 3 ? (
-    p < 0.5 ? gfx_blit(tr_a) : gfx_blit(tr_b);
-    style == 1 ? gfx_set(0, 0, 0, 1 - abs(p - 0.5)*2) : style == 2 ? gfx_set(1, 1, 1, 1 - abs(p - 0.5)*2)
-               : gfx_set(dcr, dcg, dcb, 1 - abs(p - 0.5)*2);
-    gfx_fillrect(0, 0, W, H);
-  )
-  : style == 4 ? (
-    gfx_set(0); gfx_fillrect(0, 0, W, H);
-    gfx_mode = 1; gfx_a = min(2*(1 - p), 1); gfx_blit(tr_a); gfx_a = min(2*p, 1); gfx_blit(tr_b);
-  )
-  : style == 5 ? (
-    gfx_blit(tr_a); gfx_a = p; gfx_blit(tr_b);
-    bamt = sin(p*$pi);
-    bamt > 0.02 ? (
-      trbl = gfx_img_resize(trbl, W, H);
-      blur_copy(trbl, 1 + floor(bamt*5));
-      gfx_mode = 0; gfx_a = min(bamt*1.5, 1); gfx_blit(trbl);
-    );
-  )
-  : (
-    gfx_blit(tr_a);
-    lp = p*1.3 - 0.15;
-    gfx_evalrect(0, 0, W, H, "
-      _1 = min(max((lp - (0.299*r + 0.587*g + 0.114*b)*(1/255))/0.15 + 0.5, 0), 1);
-      r += (sr - r)*_1; g += (sg - g)*_1; b += (sb - b)*_1;
-    ", 0, tr_b);
-  );
-  gfx_mode = 0; gfx_a = 1;
-) : own ? gfx_blit(0, 1);
+tr_setup() ? tr_dissolve_draw(style, ls_ease(tr_p, ease == 0 ? 0 : ease), dcr, dcg, dcb)
+: own ? gfx_blit(0, 1);

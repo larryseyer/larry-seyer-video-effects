@@ -2,8 +2,9 @@
 
 Video effects for REAPER's Video Processor, with a control panel: color grading with lift, gamma and
 gain wheels and curves, titles and lower thirds, tutorial callouts and zooms, transitions that run on crossfades,
-picture-in-picture, borders and shadows, film and music-video looks, and multicam editing from a multiview
-recording. 40 effects in all.
+picture-in-picture, borders and shadows, film and music-video looks, and a multicam switcher (cut between
+camera tracks with the number keys or by clicking in the Video window, with a transition per cut). 43 effects in
+all.
 
 ![Color Grade](docs/images/color_grade.jpg)
 

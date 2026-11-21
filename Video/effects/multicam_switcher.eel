@@ -1,0 +1,210 @@
+// LS Multicam Switcher
+//@ls category Transform
+//@ls title Multicam Switcher
+//@ls where track
+//@ls about Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).
+//@ls help cam Camera on air. Its envelope holds the cuts: each point switches to that camera.
+//@ls help show Program shows the edit (what renders). Switcher shows the program with all cameras underneath, for cutting; the Multicam action sets it back to Program when you close it.
+//@ls help trans How the switch to the next camera happens. Automate it with the camera to give each cut its own transition.
+//@ls help frames Length of the transition in frames.
+//@ls help dir Direction for Push, Slide, Split and Squeeze.
+//@ls help ease How the transition speeds up and slows down.
+//@ls help pushblur Motion blur for Push and Slide.
+//@ls help source Camera tracks: each camera on its own track, marked with a Multicam Camera effect. Multiview: one recording with the cameras in a grid, on the track directly behind.
+//@ls help trim With a multiview recording: cuts this fraction off each cell's edges to hide dividers.
+//@ls help names Show each camera's track name in switcher view.
+//@ls example Straight cuts :: trans=0
+//@ls example Half-second dissolves (30 fps) :: trans=1 frames=15
+//@ls example Quick push to the left :: trans=7 frames=10 dir=0
+//@ls example Switcher view while cutting :: show=1
+//@ls example 2x2 multiview recording :: source=1
+//@ls tip Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
+//@ls tip Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.
+//@ls tip Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
+//@ls enum show Program|Switcher
+//@ls enum trans Cut|Cross dissolve|Dip to black|Dip to white|Additive dissolve|Blur dissolve|Luma dissolve|Push|Slide in|Slide out|Split open|Squeeze
+//@ls enum dir Left|Right|Up|Down
+//@ls enum ease Linear|Smooth|Ease in|Ease out
+//@ls enum source Camera tracks|2x2 multiview|3x3 multiview
+//@ls toggle names
+//@ls section "Cutting" cam show
+//@ls section "Transition" trans frames dir ease pushblur
+//@ls section "Cameras" source trim names
+//@param1:cam 'Camera' 1 1 9 1 1
+//@param2:show 'View' 0 0 1 0 1
+//@param3:trans 'Transition' 0 0 11 0 1
+//@param4:frames 'Transition frames' 12 1 120 12 1
+//@param5:dir 'Direction' 0 0 3 0 1
+//@param6:ease 'Smoothness' 1 0 3 1 1
+//@param7:pushblur 'Motion blur' 0.5 0 1 0.5 0.001
+//@param8:source 'Source' 0 0 2 0 1
+//@param9:trim 'Edge trim' 0.004 0 0.05 0.004 0.0005
+//@param10:names 'Camera names' 1 0 1 1 1
+//@gmem=LSVFX_Multicam
+
+// Shared memory with the Multicam Camera effects, the Multicam Clicks monitoring effect and the Multicam action:
+//   [1] click count  [2] clicked camera  [3] clicked time  [4] 1 when Shift was held
+//   [10] 1 while switcher view shows  [11] camera count  [12] live camera
+//   [20 + 4k .. 23 + 4k] camera k's box in the frame, 0..1 (x, y, w, h)
+//   [40 + k] written by camera k's Multicam Camera effect: +frame with video, -frame without
+TAG = 7151;
+camin = 1000;   // camin[k] = input for camera k (-1 = none; input 0 is a valid input)
+
+colorspace = 'RGBA';
+input_info(input_track(0), bw0, bh0);
+!project_wh_valid ? ( project_w = bw0 > 0 ? bw0 : 1920; project_h = bh0 > 0 ? bh0 : 1080; );
+W = project_w; H = project_h;
+
+// #include "lib/ease.eel"
+// #include "lib/trstyles.eel"
+
+// Find the cameras: tracks behind whose last effect is a Multicam Camera (any order, gaps allowed). Without any,
+// fall back to the order of the tracks behind.
+memset(camin, -1, 10);
+nin = input_track_count();
+ntag = 0; ncam = 0;
+i = 0;
+loop(nin,
+  src = input_track(i);
+  input_info(src, iw, ih, ist, iwet, ip1, ip2) && ip2 == TAG ? (
+    id = floor(ip1 + 0.5);
+    id >= 1 && id <= 9 && camin[id] < 0 ? ( camin[id] = src; ncam = max(ncam, id); ntag += 1; );
+  );
+  i += 1;
+);
+ntag == 0 ? (
+  ncam = min(nin, 9);
+  i = 0; loop(ncam, camin[i + 1] = input_track(i); i += 1; );
+);
+source > 0.5 ? (
+  ncam = source > 1.5 ? 9 : 4;
+  camin[0] = camin[1] >= 0 ? camin[1] : input_track(0);
+);
+ncam = max(ncam, 1);
+
+// Source image and crop rectangle (sx, sy, sw2, sh2) for camera k; returns 0 when it has no video now.
+function cam_src(k) local(cols, cell_w, cell_h, c, r, srcw, srch, ok) (
+  source < 0.5 ? (
+    csrc = camin[k];
+    ok = csrc >= 0 && (ntag == 0 || gmem[40 + k] >= 0) && input_info(csrc, srcw, srch);
+    ok ? ( sx = 0; sy = 0; sw2 = srcw; sh2 = srch; );
+  ) : (
+    csrc = camin[0];
+    ok = csrc >= 0 && input_info(csrc, srcw, srch);
+    ok ? (
+      cols = source > 1.5 ? 3 : 2;
+      cell_w = srcw/cols; cell_h = srch/cols;
+      c = (k - 1) % cols; r = floor((k - 1)/cols);
+      sx = c*cell_w + trim*cell_w; sy = r*cell_h + trim*cell_h;
+      sw2 = cell_w*(1 - 2*trim); sh2 = cell_h*(1 - 2*trim);
+    );
+  );
+  ok;
+);
+
+// Draws camera k fitted into the box (letterboxed when the shapes differ). Returns 0 when it has no video.
+function draw_cam(k, dx, dy, dw, dh) local(s, fw, fh) (
+  cam_src(k) ? (
+    s = min(dw/sw2, dh/sh2);
+    fw = sw2*s; fh = sh2*s;
+    gfx_mode = 0x100; gfx_a = 1;
+    gfx_blit(csrc, 0, dx + (dw - fw)*0.5, dy + (dh - fh)*0.5, fw, fh, sx, sy, sw2, sh2);
+    gfx_mode = 0;
+    1;
+  ) : 0;
+);
+
+// Full-frame canvas of camera k for the transitions.
+function cam_canvas(img, k) (
+  img = gfx_img_resize(img, W, H);
+  gfx_dest = img; gfx_mode = 0; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, W, H);
+  draw_cam(k, 0, 0, W, H);
+  gfx_dest = -1;
+  img;
+);
+
+// Live camera and transition. Frames arrive in order while playing and rendering; a jump starts fresh (no
+// transition), so scrubbing always shows a clean picture.
+frame_no = floor(project_time*framerate + 0.5);
+want = min(max(floor(cam + 0.5), 1), ncam);
+steady = frame_no >= lastframe && frame_no - lastframe <= 2;
+!steady ? tstart = -1000000;
+want != live ? (
+  steady && live >= 1 && trans >= 0.5 ? (
+    fromcam = live; tstart = frame_no;
+    tkind = floor(trans + 0.5); tlen = max(floor(frames + 0.5), 1); tdir = floor(dir + 0.5);
+  ) : tstart = -1000000;
+  live = want;
+);
+lastframe = frame_no;
+tlen = max(tlen, 1);
+traw = (frame_no - tstart)/tlen;
+intrans = traw >= 0 && traw < 1;
+
+// Draws the program (the edit) full frame.
+function compose_program() local(tp) (
+  intrans ? (
+    tr_a = cam_canvas(tr_a, fromcam);
+    tr_b = cam_canvas(tr_b, live);
+    tp = ls_ease(traw, ease);
+    tkind <= 6 ? tr_dissolve_draw(tkind <= 3 ? tkind - 1 : tkind, tp, 0, 0, 0)
+               : tr_push_draw(tkind - 7, tdir, tp, traw, pushblur);
+  ) : (
+    gfx_mode = 0; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, W, H);
+    draw_cam(live, 0, 0, W, H);
+  );
+  gfx_mode = 0; gfx_a = 1;
+);
+
+function frame_box(x, y, w, h, t) (
+  gfx_fillrect(x, y, w, t); gfx_fillrect(x, y + h - t, w, t);
+  gfx_fillrect(x, y, t, h); gfx_fillrect(x + w - t, y, t, h);
+);
+
+// Text #lbl with a dark backing at (x, y).
+function label(x, y) local(lw, lh, pad) (
+  gfx_str_measure(#lbl, lw, lh);
+  pad = floor(lh*0.25);
+  gfx_set(0, 0, 0, 0.6); gfx_fillrect(x, y, lw + pad*2, lh + pad);
+  gfx_set(1, 1, 1, 1); gfx_str_draw(#lbl, x + pad, y + pad*0.5);
+);
+
+compose_program();
+
+show < 0.5 ? gmem[10] = 0 : (
+  pgm = gfx_img_resize(pgm, W, H);
+  gfx_dest = pgm; gfx_mode = 0; gfx_a = 1; gfx_blit(-1, 0, 0, 0, W, H, 0, 0, W, H);
+  gfx_dest = -1;
+  gfx_set(0.08, 0.08, 0.09, 1); gfx_fillrect(0, 0, W, H);
+  slots = max(ncam, 4);
+  tw = floor(W/slots); th = floor(H/slots);
+  ph = H - th - floor(H*0.02); pw = floor(ph*W/H);
+  px = floor((W - pw)*0.5);
+  gfx_mode = 0x100; gfx_blit(pgm, 0, px, 0, pw, ph, 0, 0, W, H); gfx_mode = 0;
+  bt = max(2, floor(H/200));
+  gfx_set(0.85, 0.1, 0.1, 1); frame_box(px, 0, pw, ph, bt);
+  gfx_setfont(max(12, floor(H/34)), "Arial", 'B');
+  #lbl = "PROGRAM"; label(px + bt*3, bt*3);
+  gfx_setfont(max(11, floor(H/40)), "Arial", 'B');
+  x0 = floor((W - ncam*tw)*0.5); y0 = H - th;
+  k = 1;
+  loop(ncam,
+    cx = x0 + (k - 1)*tw;
+    gfx_set(0, 0, 0, 1); gfx_fillrect(cx + 1, y0 + 1, tw - 2, th - 2);
+    draw_cam(k, cx + 1, y0 + 1, tw - 2, th - 2) == 0 ? (
+      #lbl = "no video"; gfx_set(0.6, 0.6, 0.6, 1);
+      gfx_str_measure(#lbl, nw, nh); gfx_str_draw(#lbl, cx + (tw - nw)*0.5, y0 + (th - nh)*0.5);
+    );
+    k == live ? ( gfx_set(0.9, 0.1, 0.1, 1); frame_box(cx, y0, tw, th, bt*2); )
+              : ( gfx_set(0.35, 0.35, 0.38, 1); frame_box(cx, y0, tw, th, 1); );
+    #nm = "";
+    names && source < 0.5 && camin[k] >= 0 ? input_get_name(camin[k], #nm);
+    strlen(#nm) > 0 ? sprintf(#lbl, "%d  %s", k, #nm) : sprintf(#lbl, "%d", k);
+    label(cx + bt*3, y0 + bt*3);
+    gmem[20 + 4*k] = cx/W; gmem[21 + 4*k] = y0/H; gmem[22 + 4*k] = tw/W; gmem[23 + 4*k] = th/H;
+    k += 1;
+  );
+  gmem[10] = 1;
+);
+gmem[11] = ncam;
+gmem[12] = live;

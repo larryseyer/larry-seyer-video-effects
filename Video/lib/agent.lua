@@ -13,6 +13,7 @@ local ROOT = DIR:gsub("lib[/\\]$", "")
 package.path = DIR .. "?.lua;" .. package.path
 local L = require "lsvfx"
 local A = require "fxapi"
+local MC = require "multicam"
 
 local M = {}
 M.ROOT = ROOT
@@ -226,10 +227,49 @@ function M.controls(name)
   local e = M.effect(name)
   local out = {}
   for _, p in ipairs(e.params) do
-    out[#out + 1] = { var = p.var, label = p.label, index = p.index - 1, min = p.min, max = p.max, default = p.def,
-                      help = e.help[p.var], options = e.enums[p.var] }
+    if not p.hidden then
+      out[#out + 1] = { var = p.var, label = p.label, index = p.index - 1, min = p.min, max = p.max, default = p.def,
+                        help = e.help[p.var], options = e.enums[p.var] }
+    end
   end
   return out
+end
+
+-- Multicam -------------------------------------------------------------------------------------------------
+
+-- Makes a multicam from camera tracks (a list of 2 to 9 tracks, lined up in time; the first is camera 1): marks
+-- each with a Multicam Camera effect and adds a "Multicam" track with the Multicam Switcher in front of them, in
+-- Program view, showing camera 1. Returns the Multicam track.
+function M.multicam_setup(tracks)
+  M.ensure_presets()
+  local sw, err = MC.setup(A.insert_in_front_of, tracks)
+  if not sw then error("Larry Seyer Video Effects: " .. err, 2) end
+  MC.set_view(sw, false)
+  return sw.track
+end
+
+-- Switches the multicam to camera `cam` at project time `time` (seconds). `transition` is a Transition option
+-- name or number ("Cut" / 0 = straight cut, "Cross dissolve", "Push", ...; default "Cut"), `frames` its length
+-- (default 12) and `dir` 0-3 (Left, Right, Up, Down) for Push, Slide, Split and Squeeze. The first shot is a cut
+-- at time 0 that setup creates; call this with time 0 to change its camera.
+function M.multicam_cut(multicam_track, time, cam, transition, frames, dir)
+  local sw = MC.on_track(multicam_track)
+  if not sw then error("Larry Seyer Video Effects: that track has no Multicam Switcher (use LS.multicam_setup)", 2) end
+  local style = 0
+  if type(transition) == "string" then
+    style = nil
+    for k, nm in ipairs(MC.TRANSITIONS) do if nm:lower() == transition:lower() then style = k - 1 end end
+    if not style then
+      error("Larry Seyer Video Effects: unknown transition '" .. transition .. "'. Options: "
+            .. table.concat(MC.TRANSITIONS, ", "), 2)
+    end
+  elseif transition then
+    style = transition
+  end
+  if cam < 1 or cam > 9 or style < 0 or style >= #MC.TRANSITIONS then
+    error("Larry Seyer Video Effects: camera must be 1-9 and transition 0-" .. (#MC.TRANSITIONS - 1), 2)
+  end
+  MC.add_cut(sw, time, cam, style, frames or 12, dir or 0)
 end
 
 return M

@@ -22,7 +22,10 @@ REPO_ROOT = subprocess.run(["git", "rev-parse", "--show-toplevel"], cwd=ROOT, ca
 INDEX = os.path.join(REPO_ROOT, "index.xml")
 CATEGORY = os.path.relpath(ROOT, REPO_ROOT)                            # ReaPack category = folder name
 MAIN = "Larry Seyer Video Effects.lua"
-ACTIONS = ["Larry Seyer Video Effects - Install or update presets.lua"]
+ACTIONS = ["Larry Seyer Video Effects - Install or update presets.lua", "Larry Seyer Video Effects - Multicam.lua"]
+# One script installed under 18 names; it reads the camera number and "(Shift)" from its file name.
+CAMERA_TEMPLATE = "actions/multicam_camera.lua"
+CAMERA_ACTIONS = [f"Larry Seyer Video Effects - Multicam camera {n}{s}.lua" for n in range(1, 10) for s in ("", " (Shift)")]
 PACKAGED_DIRS = ["lib", "effects", "ai"]
 PACKAGED_FILES = ["LS Title Carrier.png", "README.md", "LICENSE", "docs/AI-REFERENCE.md", "docs/MANUAL.md",
                   "docs/effects.json"]
@@ -61,7 +64,7 @@ def packaged_files():
 
 def tracked_and_clean(files):
     """Every packaged file must be committed, or the pinned URLs would not serve it."""
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", MAIN, *ACTIONS, *files], cwd=ROOT,
+    dirty = subprocess.run(["git", "status", "--porcelain", "--", MAIN, *ACTIONS, CAMERA_TEMPLATE, *files], cwd=ROOT,
                            capture_output=True, text=True).stdout.strip()
     if dirty:
         sys.exit("commit these first:\n" + dirty)
@@ -109,10 +112,11 @@ def main():
         meta.remove(child)
     about = ("Larry Seyer Video Effects: video effects for REAPER's Video Processor with a control panel.\n\n"
              "Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, "
-             "spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and multicam "
-             "from a multiview recording.\n\n"
+             "spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and a multicam "
+             "switcher (cut between camera tracks with the number keys or by clicking in the video window, with a "
+             "transition per cut).\n\n"
              "IMPORTANT: after installing, open Actions > Show action list, search 'Larry Seyer Video Effects' and run "
-             "it once. That adds the 40 LS presets to the Video Processor preset list; until then they are not there.\n\n"
+             "it once. That adds the LS presets to the Video Processor preset list; until then they are not there.\n\n"
              "Requires ReaImGui. Manual: " + f"https://github.com/{repo}/blob/main/{CATEGORY}/docs/MANUAL.md")
     desc = ET.SubElement(meta, "description")
     desc.text = rtf(about)
@@ -132,11 +136,13 @@ def main():
     ET.SubElement(ver, "source", main="main").text = url(MAIN)
     for act in ACTIONS:
         ET.SubElement(ver, "source", main="main", file=act).text = url(act)
+    for act in CAMERA_ACTIONS:
+        ET.SubElement(ver, "source", main="main", file=act).text = url(CAMERA_TEMPLATE)
     for f in files:
         ET.SubElement(ver, "source", file=f).text = url(f)
     ET.indent(tree, space="  ")
     tree.write(INDEX, encoding="utf-8", xml_declaration=True)
-    print(f"index.xml: {MAIN} {version} at {commit[:10]} with {len(files) + 1 + len(ACTIONS)} files")
+    print(f"index.xml: {MAIN} {version} at {commit[:10]} with {len(files) + 1 + len(ACTIONS) + len(CAMERA_ACTIONS)} files")
 
 
 if __name__ == "__main__":

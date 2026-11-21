@@ -1,11 +1,11 @@
 ---
 name: larry-seyer-video-effects
-description: Use when building or editing a video in REAPER with the Larry Seyer Video Effects pack - titles, lower thirds, callouts, zoom to region, spotlight, transitions, color grading, picture-in-picture, logos, borders and shadows, looks, or multicam from a multiview recording - including Larry Seyer Drums (LSD) and Sparks of Light (SOL) tutorial videos.
+description: Use when building or editing a video in REAPER with the Larry Seyer Video Effects pack - titles, lower thirds, callouts, zoom to region, spotlight, transitions, color grading, picture-in-picture, logos, borders and shadows, looks, or multicam editing between camera tracks or from a multiview recording - including Larry Seyer Drums (LSD) and Sparks of Light (SOL) tutorial videos.
 ---
 
 # Larry Seyer Video Effects
 
-Larry Seyer Video Effects (version 1.0.4) is a set of 40 REAPER Video Processor effects. Read `reference.md` in this
+Larry Seyer Video Effects (version 1.1.0) is a set of 43 REAPER Video Processor effects. Read `reference.md` in this
 folder before adding or changing effects: it has every effect's preset name, placement, controls with API
 index, ranges and meaning, and working examples.
 
@@ -24,7 +24,10 @@ index, ranges and meaning, and working examples.
    - the foreground goes on a track **in front** (top or bottom depends on the project's Track order; use
      `LS.front_is_top()` and `LS.add_track_in_front_of`);
    - values are real values, never 0..1 normalized.
-4. Before finishing, turn off preview-only switches (`split`, `showmask`, `showbox`, `showmatte`) and check the
+4. Multicam (cutting between camera tracks): `LS.multicam_setup` and `LS.multicam_cut`, see `reference.md`
+   section 5.
+5. Before finishing, turn off preview-only switches (`split`, `showmask`, `showbox`, `showmatte`, Multicam
+   Switcher `show`) and check the
    result: render a short section or ask the user to look at REAPER's Video window.
 
 ## Tutorial videos (LSD, SOL)

@@ -106,7 +106,8 @@ processor first loads the user's default preset, so always load the LS preset be
    Sharpen, Green Screen, Blend Modes, Luma dissolve and Shape Wipe work per pixel and render more slowly.
 12. **Check your work** by rendering a short section or asking the user to look at the Video window. Turn off
     preview-only switches before rendering: Color Grade `split`, Isolate Color `showmask`, Zoom to Region `showbox`,
-    Green Screen `showmatte`. That is the complete list, and all four are off by default.
+    Green Screen `showmatte`, Multicam Switcher `show` (0 = Program). That is the complete list, and all five are
+    off by default.
 
 ## 5. Recipes for tutorial videos (Larry Seyer Drums, Sparks of Light)
 
@@ -149,5 +150,20 @@ LS.add_to_item(item, "LS Tutorial: Blur or Pixelate Region", { rx = 0.62, ry = 0
 LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry Seyer | Thanks for watching",
   "LS Title: Scrolling Credits", { dur = 12 })
 ```
+
+### Multicam: cutting between camera tracks
+
+```lua
+-- Camera tracks already on the timeline and lined up in time; the first in the list becomes camera 1.
+local mc = LS.multicam_setup({ wide, drums, keys, guitar })      -- returns the new Multicam track (Program view)
+LS.multicam_cut(mc, 0, 1)                                         -- first shot: camera 1 from the start
+LS.multicam_cut(mc, 8.0, 2)                                       -- straight cut to camera 2 at 8 s
+LS.multicam_cut(mc, 15.5, 3, "Cross dissolve", 15)                -- 15-frame dissolve to camera 3
+LS.multicam_cut(mc, 24.0, 1, "Push", 10, 0)                       -- push to the left, 10 frames
+```
+
+Each camera track gets a `LS Transform: Multicam Camera` effect (its `camid` is the camera number; keep it last on
+the track). Cuts are square points on the `LS Transform: Multicam Switcher` envelopes `cam`, `trans`, `frames` and
+`dir` at the same time. A camera with no video at a moment shows black.
 
 ## 6. Effect reference

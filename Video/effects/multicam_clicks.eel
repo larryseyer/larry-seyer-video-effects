@@ -1,0 +1,40 @@
+// LS Multicam Clicks
+//@ls category Transform
+//@ls title Multicam Clicks
+//@ls where monitor
+//@ls about Lets you click a camera in the video window to cut to it while the Multicam Switcher shows switcher view. Lives in Monitoring FX (never in renders); the Larry Seyer Video Effects - Multicam action adds it while open and removes it when closed.
+//@ls help hover Outline the camera under the mouse.
+//@ls toggle hover
+//@param1:hover 'Hover outline' 1 0 1 1 1
+//@gmem=LSVFX_Multicam
+
+// Reads the camera boxes the Multicam Switcher publishes (gmem[11] cameras, gmem[20 + 4k ..] boxes, 0..1) and
+// reports a click as gmem[2] camera, gmem[3] time of the frame on screen, gmem[4] Shift held, then bumps gmem[1].
+input_info(0, project_w, project_h);
+gfx_blit(0, 0);
+gmem[10] > 0.5 ? (
+  st = ui_get_state(ctx, mx, my, 0.05);
+  over = 0;
+  ctx == -1 ? (
+    k = 1;
+    loop(min(gmem[11], 9),
+      bx = gmem[20 + 4*k]; by = gmem[21 + 4*k]; bw = gmem[22 + 4*k]; bh = gmem[23 + 4*k];
+      mx >= bx && mx < bx + bw && my >= by && my < by + bh ? over = k;
+      k += 1;
+    );
+    down = st & 1;
+    down && !wasdown && over ? (
+      gmem[2] = over; gmem[3] = project_time; gmem[4] = (st & 16) ? 1 : 0;
+      gmem[1] += 1;
+    );
+    wasdown = down;
+    hover && over ? (
+      t = max(2, floor(project_h/180));
+      x = floor(gmem[20 + 4*over]*project_w); y = floor(gmem[21 + 4*over]*project_h);
+      w = floor(gmem[22 + 4*over]*project_w); h = floor(gmem[23 + 4*over]*project_h);
+      gfx_set(1, 1, 1, down ? 1 : 0.7);
+      gfx_fillrect(x, y, w, t); gfx_fillrect(x, y + h - t, w, t);
+      gfx_fillrect(x, y, t, h); gfx_fillrect(x + w - t, y, t, h);
+    );
+  ) : wasdown = 0;
+);

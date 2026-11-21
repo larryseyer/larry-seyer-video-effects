@@ -1,8 +1,8 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.0.4. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.1.0. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
-Larry Seyer Video Effects adds 40 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
+Larry Seyer Video Effects adds 43 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
 like any other Video Processor; the Larry Seyer Video Effects panel is optional.
 
@@ -106,7 +106,8 @@ processor first loads the user's default preset, so always load the LS preset be
    Sharpen, Green Screen, Blend Modes, Luma dissolve and Shape Wipe work per pixel and render more slowly.
 12. **Check your work** by rendering a short section or asking the user to look at the Video window. Turn off
     preview-only switches before rendering: Color Grade `split`, Isolate Color `showmask`, Zoom to Region `showbox`,
-    Green Screen `showmatte`. That is the complete list, and all four are off by default.
+    Green Screen `showmatte`, Multicam Switcher `show` (0 = Program). That is the complete list, and all five are
+    off by default.
 
 ## 5. Recipes for tutorial videos (Larry Seyer Drums, Sparks of Light)
 
@@ -150,6 +151,21 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
   "LS Title: Scrolling Credits", { dur = 12 })
 ```
 
+### Multicam: cutting between camera tracks
+
+```lua
+-- Camera tracks already on the timeline and lined up in time; the first in the list becomes camera 1.
+local mc = LS.multicam_setup({ wide, drums, keys, guitar })      -- returns the new Multicam track (Program view)
+LS.multicam_cut(mc, 0, 1)                                         -- first shot: camera 1 from the start
+LS.multicam_cut(mc, 8.0, 2)                                       -- straight cut to camera 2 at 8 s
+LS.multicam_cut(mc, 15.5, 3, "Cross dissolve", 15)                -- 15-frame dissolve to camera 3
+LS.multicam_cut(mc, 24.0, 1, "Push", 10, 0)                       -- push to the left, 10 frames
+```
+
+Each camera track gets a `LS Transform: Multicam Camera` effect (its `camid` is the camera number; keep it last on
+the track). Cuts are square points on the `LS Transform: Multicam Switcher` envelopes `cam`, `trans`, `frames` and
+`dir` at the same time. A camera with no video at a moment shows black.
+
 ## 6. Effect reference
 
 
@@ -159,6 +175,9 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 | `LS Transform: Camera Shake` | Item or track | Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments. |
 | `LS Transform: Corner Pin` | Item or track | Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot. |
 | `LS Transform: Flip & Mirror` | Item or track | Flips the picture or mirrors one half onto the other, including a four-way kaleidoscope. |
+| `LS Transform: Multicam Camera` | Track | Marks a track as a camera for the Multicam Switcher and gives it its number. The Multicam action adds it to each camera track; keep it last in the track's effects (put color matching before it). |
+| `LS Transform: Multicam Clicks` | Monitoring FX | Lets you click a camera in the video window to cut to it while the Multicam Switcher shows switcher view. Lives in Monitoring FX (never in renders); the Larry Seyer Video Effects - Multicam action adds it while open and removes it when closed. |
+| `LS Transform: Multicam Switcher` | Track | Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window). |
 | `LS Transform: Multiview Camera Select` | Item or track | Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions. |
 | `LS Transform: Pan & Zoom` | Item or track | Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). |
 | `LS Transform: Picture-in-Picture & Logo` | Item or track | Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles. |
@@ -294,6 +313,61 @@ Flips the picture or mirrors one half onto the other, including a four-way kalei
 Examples:
 
 - Kaleidoscope: `LS.add_to_item(item, "LS Transform: Flip & Mirror", { mode = 8 })`
+
+### LS Transform: Multicam Camera
+
+*Placement:* a track.
+
+Marks a track as a camera for the Multicam Switcher and gives it its number. The Multicam action adds it to each camera track; keep it last in the track's effects (put color matching before it).
+
+| API index | var | Control | Default | Range | Meaning |
+|---|---|---|---|---|---|
+| 0 | `camid` | Camera number | 1 | 1 to 9 | This track's camera number in the Multicam Switcher (1-9). |
+
+Examples:
+
+- Camera 2: `LS.add_to_track(track, "LS Transform: Multicam Camera", { camid = 2 })`
+
+### LS Transform: Multicam Clicks
+
+*Placement:* Monitoring FX (added and removed by its action; never in renders).
+
+Lets you click a camera in the video window to cut to it while the Multicam Switcher shows switcher view. Lives in Monitoring FX (never in renders); the Larry Seyer Video Effects - Multicam action adds it while open and removes it when closed.
+
+| API index | var | Control | Default | Range | Meaning |
+|---|---|---|---|---|---|
+| 0 | `hover` | Hover outline | 1 | 0 to 1 | Outline the camera under the mouse. 0 off, 1 on. |
+
+### LS Transform: Multicam Switcher
+
+*Placement:* a track.
+
+Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).
+
+| API index | var | Control | Default | Range | Meaning |
+|---|---|---|---|---|---|
+| 0 | `cam` | Camera | 1 | 1 to 9 | Camera on air. Its envelope holds the cuts: each point switches to that camera. |
+| 1 | `show` | View | 0 | 0 to 1 | Program shows the edit (what renders). Switcher shows the program with all cameras underneath, for cutting; the Multicam action sets it back to Program when you close it. Options: 0 Program, 1 Switcher. |
+| 2 | `trans` | Transition | 0 | 0 to 11 | How the switch to the next camera happens. Automate it with the camera to give each cut its own transition. Options: 0 Cut, 1 Cross dissolve, 2 Dip to black, 3 Dip to white, 4 Additive dissolve, 5 Blur dissolve, 6 Luma dissolve, 7 Push, 8 Slide in, 9 Slide out, 10 Split open, 11 Squeeze. |
+| 3 | `frames` | Transition frames | 12 | 1 to 120 | Length of the transition in frames. |
+| 4 | `dir` | Direction | 0 | 0 to 3 | Direction for Push, Slide, Split and Squeeze. Options: 0 Left, 1 Right, 2 Up, 3 Down. |
+| 5 | `ease` | Smoothness | 1 | 0 to 3 | How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out. |
+| 6 | `pushblur` | Motion blur | 0.5 | 0 to 1 | Motion blur for Push and Slide. |
+| 7 | `source` | Source | 0 | 0 to 2 | Camera tracks: each camera on its own track, marked with a Multicam Camera effect. Multiview: one recording with the cameras in a grid, on the track directly behind. Options: 0 Camera tracks, 1 2x2 multiview, 2 3x3 multiview. |
+| 8 | `trim` | Edge trim | 0.004 | 0 to 0.05 | With a multiview recording: cuts this fraction off each cell's edges to hide dividers. |
+| 9 | `names` | Camera names | 1 | 0 to 1 | Show each camera's track name in switcher view. 0 off, 1 on. |
+
+Examples:
+
+- Straight cuts: `LS.add_to_track(track, "LS Transform: Multicam Switcher", { trans = 0 })`
+- Half-second dissolves (30 fps): `LS.add_to_track(track, "LS Transform: Multicam Switcher", { trans = 1, frames = 15 })`
+- Quick push to the left: `LS.add_to_track(track, "LS Transform: Multicam Switcher", { trans = 7, frames = 10, dir = 0 })`
+- Switcher view while cutting: `LS.add_to_track(track, "LS Transform: Multicam Switcher", { show = 1 })`
+- 2x2 multiview recording: `LS.add_to_track(track, "LS Transform: Multicam Switcher", { source = 1 })`
+
+- Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
+- Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.
+- Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
 
 ### LS Transform: Multiview Camera Select
 

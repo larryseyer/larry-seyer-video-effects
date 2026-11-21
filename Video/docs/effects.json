@@ -581,6 +581,251 @@
       "title": "Flip & Mirror"
     },
     {
+      "about": "Marks a track as a camera for the Multicam Switcher and gives it its number. The Multicam action adds it to each camera track; keep it last in the track's effects (put color matching before it).",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "This track's camera number in the Multicam Switcher (1-9).",
+          "index": 0,
+          "label": "Camera number",
+          "max": 9,
+          "min": 1,
+          "toggle": false,
+          "var": "camid"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "camid": 2
+          },
+          "title": "Camera 2"
+        }
+      ],
+      "file": "multicam_camera.eel",
+      "name": "LS Transform: Multicam Camera",
+      "placement": "track",
+      "text": false,
+      "tips": [],
+      "title": "Multicam Camera"
+    },
+    {
+      "about": "Lets you click a camera in the video window to cut to it while the Multicam Switcher shows switcher view. Lives in Monitoring FX (never in renders); the Larry Seyer Video Effects - Multicam action adds it while open and removes it when closed.",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "Outline the camera under the mouse. 0 off, 1 on.",
+          "index": 0,
+          "label": "Hover outline",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "hover"
+        }
+      ],
+      "examples": [],
+      "file": "multicam_clicks.eel",
+      "name": "LS Transform: Multicam Clicks",
+      "placement": "monitor",
+      "text": false,
+      "tips": [],
+      "title": "Multicam Clicks"
+    },
+    {
+      "about": "Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "Camera on air. Its envelope holds the cuts: each point switches to that camera.",
+          "index": 0,
+          "label": "Camera",
+          "max": 9,
+          "min": 1,
+          "toggle": false,
+          "var": "cam"
+        },
+        {
+          "default": 0,
+          "help": "Program shows the edit (what renders). Switcher shows the program with all cameras underneath, for cutting; the Multicam action sets it back to Program when you close it. Options: 0 Program, 1 Switcher.",
+          "index": 1,
+          "label": "View",
+          "max": 1,
+          "min": 0,
+          "options": [
+            "Program",
+            "Switcher"
+          ],
+          "toggle": false,
+          "var": "show"
+        },
+        {
+          "default": 0,
+          "help": "How the switch to the next camera happens. Automate it with the camera to give each cut its own transition. Options: 0 Cut, 1 Cross dissolve, 2 Dip to black, 3 Dip to white, 4 Additive dissolve, 5 Blur dissolve, 6 Luma dissolve, 7 Push, 8 Slide in, 9 Slide out, 10 Split open, 11 Squeeze.",
+          "index": 2,
+          "label": "Transition",
+          "max": 11,
+          "min": 0,
+          "options": [
+            "Cut",
+            "Cross dissolve",
+            "Dip to black",
+            "Dip to white",
+            "Additive dissolve",
+            "Blur dissolve",
+            "Luma dissolve",
+            "Push",
+            "Slide in",
+            "Slide out",
+            "Split open",
+            "Squeeze"
+          ],
+          "toggle": false,
+          "var": "trans"
+        },
+        {
+          "default": 12,
+          "help": "Length of the transition in frames.",
+          "index": 3,
+          "label": "Transition frames",
+          "max": 120,
+          "min": 1,
+          "toggle": false,
+          "var": "frames"
+        },
+        {
+          "default": 0,
+          "help": "Direction for Push, Slide, Split and Squeeze. Options: 0 Left, 1 Right, 2 Up, 3 Down.",
+          "index": 4,
+          "label": "Direction",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Left",
+            "Right",
+            "Up",
+            "Down"
+          ],
+          "toggle": false,
+          "var": "dir"
+        },
+        {
+          "default": 1,
+          "help": "How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 5,
+          "label": "Smoothness",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        },
+        {
+          "default": 0.5,
+          "help": "Motion blur for Push and Slide.",
+          "index": 6,
+          "label": "Motion blur",
+          "max": 1,
+          "min": 0,
+          "toggle": false,
+          "var": "pushblur"
+        },
+        {
+          "default": 0,
+          "help": "Camera tracks: each camera on its own track, marked with a Multicam Camera effect. Multiview: one recording with the cameras in a grid, on the track directly behind. Options: 0 Camera tracks, 1 2x2 multiview, 2 3x3 multiview.",
+          "index": 7,
+          "label": "Source",
+          "max": 2,
+          "min": 0,
+          "options": [
+            "Camera tracks",
+            "2x2 multiview",
+            "3x3 multiview"
+          ],
+          "toggle": false,
+          "var": "source"
+        },
+        {
+          "default": 0.004,
+          "help": "With a multiview recording: cuts this fraction off each cell's edges to hide dividers.",
+          "index": 8,
+          "label": "Edge trim",
+          "max": 0.05,
+          "min": 0,
+          "toggle": false,
+          "var": "trim"
+        },
+        {
+          "default": 1,
+          "help": "Show each camera's track name in switcher view. 0 off, 1 on.",
+          "index": 9,
+          "label": "Camera names",
+          "max": 1,
+          "min": 0,
+          "toggle": true,
+          "var": "names"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "",
+          "set": {
+            "trans": 0
+          },
+          "title": "Straight cuts"
+        },
+        {
+          "notes": "",
+          "set": {
+            "frames": 15,
+            "trans": 1
+          },
+          "title": "Half-second dissolves (30 fps)"
+        },
+        {
+          "notes": "",
+          "set": {
+            "dir": 0,
+            "frames": 10,
+            "trans": 7
+          },
+          "title": "Quick push to the left"
+        },
+        {
+          "notes": "",
+          "set": {
+            "show": 1
+          },
+          "title": "Switcher view while cutting"
+        },
+        {
+          "notes": "",
+          "set": {
+            "source": 1
+          },
+          "title": "2x2 multiview recording"
+        }
+      ],
+      "file": "multicam_switcher.eel",
+      "name": "LS Transform: Multicam Switcher",
+      "placement": "track",
+      "text": false,
+      "tips": [
+        "Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.",
+        "Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.",
+        "Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut."
+      ],
+      "title": "Multicam Switcher"
+    },
+    {
       "about": "Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions.",
       "category": "Transform",
       "controls": [
@@ -6625,5 +6870,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.0.4"
+  "version": "1.1.0"
 }

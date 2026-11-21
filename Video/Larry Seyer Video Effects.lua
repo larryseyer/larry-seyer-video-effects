@@ -1,5 +1,5 @@
 -- @description Larry Seyer Video Effects: control panel for the Larry Seyer Video Effects Video Processor effects
--- @version 1.0.4
+-- @version 1.1.0
 -- @author Larry Seyer
 -- @about Library of video effects for REAPER's Video Processor with color wheels, curve editors, a frame pad
 --   for positions and regions, keyframes at the edit cursor, and one-click titles and callouts.
@@ -329,7 +329,7 @@ local function draw_editor(t, fx, e)
     for _, var in ipairs(sec.vars) do emit(var) end
   end
   local rest = {}
-  for _, p in ipairs(e.params) do if not done[p.var] then rest[#rest + 1] = p.var end end
+  for _, p in ipairs(e.params) do if not done[p.var] and not p.hidden then rest[#rest + 1] = p.var end end
   if #rest > 0 then
     ImGui.SeparatorText(ctx, #e.sections > 0 and "More" or "Settings")
     for _, var in ipairs(rest) do emit(var) end
@@ -370,7 +370,8 @@ local function draw_library(t)
   local cat
   local open = true
   for _, e in ipairs(EFFECTS) do
-    local match = q == "" or e.title:lower():find(q, 1, true) or (e.about or ""):lower():find(q, 1, true)
+    local match = e.where ~= "monitor"   -- Monitoring FX effects are managed by their own actions
+      and (q == "" or e.title:lower():find(q, 1, true) or (e.about or ""):lower():find(q, 1, true))
     if match then
       if e.category ~= cat then
         cat = e.category
@@ -439,6 +440,11 @@ local function toolbar(t)
     end
     ImGui.SameLine(ctx)
   end
+  if ImGui.SmallButton(ctx, "Multicam") then
+    reaper.Main_OnCommand(reaper.AddRemoveReaScript(true, 0, DIR .. "Larry Seyer Video Effects - Multicam.lua", true), 0)
+  end
+  if ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, "Open the multicam switcher: cut between camera tracks with the number keys or clicks") end
+  ImGui.SameLine(ctx)
   if ImGui.SmallButton(ctx, "Help") then
     if reaper.CF_ShellExecute then reaper.CF_ShellExecute(L.MANUAL_URL) else os.execute('open "' .. L.MANUAL_URL .. '"') end
   end

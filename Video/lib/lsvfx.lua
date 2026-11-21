@@ -85,7 +85,7 @@ end
 function M.read_effect(effects_dir, file)
   local code = M.expand(effects_dir, effects_dir .. "/" .. file)
   local e = { file = file, formerly = {}, params = {}, byvar = {}, enums = {}, toggles = {}, colors = {}, wheels = {},
-              curves = {}, huecurves = {}, rects = {}, points = {}, sections = {}, help = {}, examples = {},
+              curves = {}, huecurves = {}, rects = {}, points = {}, sections = {}, help = {}, examples = {}, hidden = {},
               tips = {}, code = code }
   for _, line in ipairs(code) do
     local idx, var, rest = line:match("^%s*//@param%s*(%d+)%s*:%s*([%w_.]+)%s+(.*)$")
@@ -119,6 +119,7 @@ function M.read_effect(effects_dir, file)
         for o in args:sub(#w[1] + 2):gmatch("[^|]+") do opts[#opts + 1] = o end
         e.enums[w[1]] = opts
       elseif key == "toggle" then e.toggles[w[1]] = true
+      elseif key == "hide" then e.hidden[w[1]] = true   -- internal value: no control, not documented
       elseif key == "color" then e.colors[#e.colors + 1] = { label = w[1], vars = { w[2], w[3], w[4] } }
       elseif key == "wheel" then e.wheels[#e.wheels + 1] = { label = w[1], vars = { w[2], w[3], w[4] }, master = w[5] }
       elseif key == "curve" or key == "huecurve" then
@@ -144,6 +145,7 @@ function M.read_effect(effects_dir, file)
     end
   end
   table.sort(e.params, function(a, b) return a.index < b.index end)
+  for _, p in ipairs(e.params) do p.hidden = e.hidden[p.var] or false end
   e.name = "LS " .. (e.category or "Misc") .. ": " .. (e.title or file)
   return e
 end

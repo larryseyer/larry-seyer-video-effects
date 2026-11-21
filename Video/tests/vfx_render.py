@@ -229,6 +229,12 @@ def render(scene, out_dir, times, tag="run", media_dir=None, cols=None, thumb_w=
     check_test_install()
     os.makedirs(out_dir, exist_ok=True)
     media_dir = media_dir or os.environ.get("LSVFX_MEDIA", "")
+    missing = sorted({it.file if os.path.isabs(it.file) else os.path.join(media_dir, it.file)
+                      for t in scene.tracks for it in t.items if it.file} - {None})
+    missing = [m for m in missing if not os.path.isfile(m)]
+    if missing:
+        # REAPER would stop on a "Replace missing file" dialog that someone has to click.
+        raise RuntimeError("missing media (set LSVFX_MEDIA to the test media folder): " + ", ".join(missing))
     mp4 = os.path.join(out_dir, f"{tag}.mp4")
     rpp = os.path.join(out_dir, f"{tag}.RPP")
     if os.path.exists(mp4):

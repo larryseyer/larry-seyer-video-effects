@@ -22,8 +22,9 @@ for k, v in read(ROOT .. "tools/release.conf"):gmatch("([%w_]+)%s*=%s*([^\n]+)")
 local INDEX_URL = "https://raw.githubusercontent.com/" .. CONF.repo .. "/main/index.xml"
 local EFFECTS = L.load_all(ROOT .. "effects", list_files)
 
-local PLACEMENT = { item = "an item (usually a transparent title item; see rule 3)", track = "a track", both = "an item or a track" }
-local PLACEMENT_SHORT = { item = "Item (title item)", track = "Track", both = "Item or track" }
+local PLACEMENT = { item = "an item (usually a transparent title item; see rule 3)", track = "a track", both = "an item or a track",
+                    monitor = "Monitoring FX (added and removed by its action; never in renders)" }
+local PLACEMENT_SHORT = { item = "Item (title item)", track = "Track", both = "Item or track", monitor = "Monitoring FX" }
 
 local function num(v)
   if v == math.floor(v) and math.abs(v) < 1e9 then return string.format("%d", v) end
@@ -91,8 +92,10 @@ local function ai_section(e)
   o[#o + 1] = "| API index | var | Control | Default | Range | Meaning |"
   o[#o + 1] = "|---|---|---|---|---|---|"
   for _, p in ipairs(e.params) do
-    o[#o + 1] = string.format("| %d | `%s` | %s | %s | %s to %s | %s |", p.index - 1, p.var, p.label, num(p.def),
-      num(p.min), num(p.max), meaning(e, p))
+    if not p.hidden then
+      o[#o + 1] = string.format("| %d | `%s` | %s | %s | %s to %s | %s |", p.index - 1, p.var, p.label, num(p.def),
+        num(p.min), num(p.max), meaning(e, p))
+    end
   end
   if #e.examples > 0 then
     o[#o + 1] = ""
@@ -129,7 +132,7 @@ local function slug(e) return (e.file:gsub("%.eel$", "")) end
 local function manual_rows(e)
   local rows, seen = {}, {}
   for _, p in ipairs(e.params) do
-    if not seen[p.var] then
+    if not seen[p.var] and not p.hidden then
       local kind, g = group_of(e, p.var)
       if kind == "color" or kind == "wheel" or kind == "curve" or kind == "huecurve" then
         for _, v in ipairs(g.vars) do seen[v] = true end
@@ -230,8 +233,10 @@ local function json()
   for _, e in ipairs(EFFECTS) do
     local controls = {}
     for _, p in ipairs(e.params) do
-      controls[#controls + 1] = { index = p.index - 1, var = p.var, label = p.label, default = p.def, min = p.min,
-        max = p.max, help = meaning(e, p), options = e.enums[p.var], toggle = e.toggles[p.var] or false }
+      if not p.hidden then
+        controls[#controls + 1] = { index = p.index - 1, var = p.var, label = p.label, default = p.def, min = p.min,
+          max = p.max, help = meaning(e, p), options = e.enums[p.var], toggle = e.toggles[p.var] or false }
+      end
     end
     local examples = {}
     for _, ex in ipairs(e.examples) do

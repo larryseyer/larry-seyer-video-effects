@@ -1,0 +1,23 @@
+// LS Multicam Camera
+//@ls category Transform
+//@ls title Multicam Camera
+//@ls where track
+//@ls about Marks a track as a camera for the Multicam Switcher and gives it its number. The Multicam action adds it to each camera track; keep it last in the track's effects (put color matching before it).
+//@ls help camid This track's camera number in the Multicam Switcher (1-9).
+//@ls hide tag
+//@ls example Camera 2 :: camid=2
+//@param1:camid 'Camera number' 1 1 9 1 1
+//@param2:tag 'Multicam tag' 7151 7151 7151 7151 1
+//@gmem=LSVFX_Multicam
+
+// The switcher reads camid and tag from this effect through input_info. On a track with no video item at this
+// moment, input 0 is the layer behind (input_track(0) == 0): show black instead of another camera's picture.
+colorspace = 'RGBA';
+own = input_track(0) != 0 && input_info(0, ow, oh);
+frame_no = floor(project_time*framerate + 0.5) + 1;
+id = min(max(floor(camid + 0.5), 1), 9);
+gmem[40 + id] = own ? frame_no : -frame_no;
+own ? gfx_blit(0, 0) : (
+  input_info(0, ow, oh) ? ( project_w = ow; project_h = oh; );
+  gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, project_w, project_h);
+);
