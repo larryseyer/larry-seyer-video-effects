@@ -98,7 +98,7 @@ processor first loads the user's default preset, so always load the LS preset be
    Manual mode instead blends this track into the track behind it with a keyframed `progress` from 0 to 1.
 7. **Keyframes** are REAPER FX envelopes holding real values, with linear points. Take-FX envelopes use time relative
    to the item start (`LS.keyframe` converts project time for you). An effect's own easing still shapes the motion.
-8. **Durations.** Ken Burns `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
+8. **Durations.** Pan & Zoom `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
 9. **Order.** Effects on one item or track run top to bottom: put color correction before titles or borders.
 10. **How much.** Subtle color changes: temperature 0.1-0.2, saturation 1.05-1.15, contrast 1.05-1.15. Clearly
     visible: temperature 0.3-0.5, saturation 1.3. Examples in section 6 show typical values for each effect.
@@ -118,7 +118,7 @@ local callouts = LS.add_track_in_front_of(screen, "Callouts")    -- graphics tha
 local titles   = LS.add_track_in_front_of(callouts, "Titles")    -- titles and lower thirds, in front
 
 -- Opening title over the first 5 seconds
-LS.add_title(titles, 0, 5, "Energy Levels | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
+LS.add_title(titles, 0, 5, "Call Outs | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
 
 -- Presenter lower third
 LS.add_title(titles, 6, 6, "Larry Seyer | Creator, Larry Seyer Drums", "LS Title: Lower Third", { style = 0, align = 0 })

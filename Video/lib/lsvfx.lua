@@ -84,7 +84,7 @@ end
 -- Parse one effect file into { file, name, category, title, about, where, text, params, meta, code }.
 function M.read_effect(effects_dir, file)
   local code = M.expand(effects_dir, effects_dir .. "/" .. file)
-  local e = { file = file, params = {}, byvar = {}, enums = {}, toggles = {}, colors = {}, wheels = {},
+  local e = { file = file, formerly = {}, params = {}, byvar = {}, enums = {}, toggles = {}, colors = {}, wheels = {},
               curves = {}, huecurves = {}, rects = {}, points = {}, sections = {}, help = {}, examples = {},
               tips = {}, code = code }
   for _, line in ipairs(code) do
@@ -111,6 +111,7 @@ function M.read_effect(effects_dir, file)
       if key == "category" then e.category = args
       elseif key == "title" then e.title = args
       elseif key == "about" then e.about = args
+      elseif key == "formerly" then e.formerly[#e.formerly + 1] = args
       elseif key == "where" then e.where = args
       elseif key == "text" then e.text = w[1] or args
       elseif key == "enum" then

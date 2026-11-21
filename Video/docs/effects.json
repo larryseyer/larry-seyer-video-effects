@@ -581,140 +581,6 @@
       "title": "Flip & Mirror"
     },
     {
-      "about": "Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).",
-      "category": "Transform",
-      "controls": [
-        {
-          "default": 1,
-          "help": "Zoom at the start (1 = whole picture).",
-          "index": 0,
-          "label": "Start zoom",
-          "max": 5,
-          "min": 1,
-          "toggle": false,
-          "var": "z1"
-        },
-        {
-          "default": 0,
-          "help": "Start framing: -1 left edge, 1 right edge.",
-          "index": 1,
-          "label": "Start X",
-          "max": 1,
-          "min": -1,
-          "toggle": false,
-          "var": "x1"
-        },
-        {
-          "default": 0,
-          "help": "Start framing: -1 top, 1 bottom.",
-          "index": 2,
-          "label": "Start Y",
-          "max": 1,
-          "min": -1,
-          "toggle": false,
-          "var": "y1"
-        },
-        {
-          "default": 1.35,
-          "help": "Zoom at the end.",
-          "index": 3,
-          "label": "End zoom",
-          "max": 5,
-          "min": 1,
-          "toggle": false,
-          "var": "z2"
-        },
-        {
-          "default": 0.3,
-          "help": "End framing, -1..1.",
-          "index": 4,
-          "label": "End X",
-          "max": 1,
-          "min": -1,
-          "toggle": false,
-          "var": "x2"
-        },
-        {
-          "default": -0.2,
-          "help": "End framing, -1..1.",
-          "index": 5,
-          "label": "End Y",
-          "max": 1,
-          "min": -1,
-          "toggle": false,
-          "var": "y2"
-        },
-        {
-          "default": 6,
-          "help": "Length of the move in seconds; set it to the item length.",
-          "index": 6,
-          "label": "Duration (s)",
-          "max": 120,
-          "min": 0.1,
-          "toggle": false,
-          "var": "dur"
-        },
-        {
-          "default": 0,
-          "help": "Track FX only: project time in seconds when the move starts. On an item the move starts at the item start.",
-          "index": 7,
-          "label": "Start time (s)",
-          "max": 3600,
-          "min": 0,
-          "toggle": false,
-          "var": "delay"
-        },
-        {
-          "default": 1,
-          "help": "How the move speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
-          "index": 8,
-          "label": "Easing",
-          "max": 3,
-          "min": 0,
-          "options": [
-            "Linear",
-            "Smooth",
-            "Ease in",
-            "Ease out"
-          ],
-          "toggle": false,
-          "var": "ease"
-        }
-      ],
-      "examples": [
-        {
-          "notes": "Put on the photo item; set Duration to the item length.",
-          "set": {
-            "dur": 8,
-            "x2": 0,
-            "y2": 0,
-            "z1": 1,
-            "z2": 1.25
-          },
-          "title": "Slow push in on a photo"
-        },
-        {
-          "notes": "",
-          "set": {
-            "dur": 6,
-            "x1": -1,
-            "x2": 1,
-            "y1": 0,
-            "y2": 0,
-            "z1": 1.4,
-            "z2": 1.4
-          },
-          "title": "Pan across a wide screenshot"
-        }
-      ],
-      "file": "ken_burns.eel",
-      "name": "LS Transform: Ken Burns Pan & Zoom",
-      "placement": "both",
-      "text": false,
-      "tips": [],
-      "title": "Ken Burns Pan & Zoom"
-    },
-    {
       "about": "Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions.",
       "category": "Transform",
       "controls": [
@@ -904,6 +770,140 @@
         "Crossfade neighbouring items and put a Transition effect on the track for dissolves or pushes between cameras."
       ],
       "title": "Multiview Camera Select"
+    },
+    {
+      "about": "Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).",
+      "category": "Transform",
+      "controls": [
+        {
+          "default": 1,
+          "help": "Zoom at the start (1 = whole picture).",
+          "index": 0,
+          "label": "Start zoom",
+          "max": 5,
+          "min": 1,
+          "toggle": false,
+          "var": "z1"
+        },
+        {
+          "default": 0,
+          "help": "Start framing: -1 left edge, 1 right edge.",
+          "index": 1,
+          "label": "Start X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "x1"
+        },
+        {
+          "default": 0,
+          "help": "Start framing: -1 top, 1 bottom.",
+          "index": 2,
+          "label": "Start Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "y1"
+        },
+        {
+          "default": 1.35,
+          "help": "Zoom at the end.",
+          "index": 3,
+          "label": "End zoom",
+          "max": 5,
+          "min": 1,
+          "toggle": false,
+          "var": "z2"
+        },
+        {
+          "default": 0.3,
+          "help": "End framing, -1..1.",
+          "index": 4,
+          "label": "End X",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "x2"
+        },
+        {
+          "default": -0.2,
+          "help": "End framing, -1..1.",
+          "index": 5,
+          "label": "End Y",
+          "max": 1,
+          "min": -1,
+          "toggle": false,
+          "var": "y2"
+        },
+        {
+          "default": 6,
+          "help": "Length of the move in seconds; set it to the item length.",
+          "index": 6,
+          "label": "Duration (s)",
+          "max": 120,
+          "min": 0.1,
+          "toggle": false,
+          "var": "dur"
+        },
+        {
+          "default": 0,
+          "help": "Track FX only: project time in seconds when the move starts. On an item the move starts at the item start.",
+          "index": 7,
+          "label": "Start time (s)",
+          "max": 3600,
+          "min": 0,
+          "toggle": false,
+          "var": "delay"
+        },
+        {
+          "default": 1,
+          "help": "How the move speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out.",
+          "index": 8,
+          "label": "Easing",
+          "max": 3,
+          "min": 0,
+          "options": [
+            "Linear",
+            "Smooth",
+            "Ease in",
+            "Ease out"
+          ],
+          "toggle": false,
+          "var": "ease"
+        }
+      ],
+      "examples": [
+        {
+          "notes": "Put on the photo item; set Duration to the item length.",
+          "set": {
+            "dur": 8,
+            "x2": 0,
+            "y2": 0,
+            "z1": 1,
+            "z2": 1.25
+          },
+          "title": "Slow push in on a photo"
+        },
+        {
+          "notes": "",
+          "set": {
+            "dur": 6,
+            "x1": -1,
+            "x2": 1,
+            "y1": 0,
+            "y2": 0,
+            "z1": 1.4,
+            "z2": 1.4
+          },
+          "title": "Pan across a wide screenshot"
+        }
+      ],
+      "file": "pan_zoom.eel",
+      "name": "LS Transform: Pan & Zoom",
+      "placement": "both",
+      "text": false,
+      "tips": [],
+      "title": "Pan & Zoom"
     },
     {
       "about": "Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles.",
@@ -5832,7 +5832,7 @@
       ],
       "examples": [
         {
-          "notes": "Item name: \"Energy Levels\". Place the box over the control and the label beside it.",
+          "notes": "Item name: \"Call Outs\". Place the box over the control and the label beside it.",
           "set": {
             "bh": 0.05,
             "bw": 0.18,
@@ -6625,5 +6625,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.0.3"
+  "version": "1.0.4"
 }

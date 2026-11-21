@@ -85,7 +85,11 @@ end
 -- Finds which LS effect an FX instance is, from its renamed name or preset.
 local function effect_at(t, fx)
   local nm = A.name(t, fx)
-  for _, e in ipairs(M.effects()) do if e.name == nm or e.name == A.preset(t, fx) then return e end end
+  local preset = A.preset(t, fx)
+  for _, e in ipairs(M.effects()) do
+    if e.name == nm or e.name == preset then return e end
+    for _, old in ipairs(e.formerly) do if old == nm or old == preset then return e end end
+  end
   error("Larry Seyer Video Effects: FX " .. fx .. " is not an Larry Seyer Video Effects effect", 3)
 end
 

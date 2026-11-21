@@ -37,7 +37,7 @@ def scene_for(e, params):
         top = "bars.mp4" if stem == "blend" else "green.png"
         return Scene(tracks=[Track(items=[Item(top, 0, 2)], fx=[fx]), Track(items=[Item("show.mp4", 0, 2)])]), 1.0
     if e["text"]:
-        label = text or ("Title | Subtitle" if e["category"] == "Title" else "Energy Levels")
+        label = text or ("Title | Subtitle" if e["category"] == "Title" else "Call Outs")
         length = max(4.0, params.get("dur", 0))
         item = Item("blank.png", 0, length, fadein=0.3, fadeout=0.3, name=label, takefx=[fx])
         return Scene(tracks=[Track(items=[item]), Track(items=[Item("show.mp4", 0, length)])]), \

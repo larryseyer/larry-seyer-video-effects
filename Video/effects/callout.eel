@@ -15,7 +15,7 @@
 //@ls help anim Fade, Draw on (the arrow grows toward the target) or Pop.
 //@ls help animsrc Item fades or Manual amount.
 //@ls help amount Manual mode: 0 hidden, 1 shown.
-//@ls example Point at a control :: bx=0.08 by=0.1 bw=0.18 bh=0.05 lx=0.45 ly=0.125 :: Item name: "Energy Levels". Place the box over the control and the label beside it.
+//@ls example Point at a control :: bx=0.08 by=0.1 bw=0.18 bh=0.05 lx=0.45 ly=0.125 :: Item name: "Call Outs". Place the box over the control and the label beside it.
 //@ls tip Use the panel's + Callout button. The label text is the item name.
 //@ls tip The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
 //@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.

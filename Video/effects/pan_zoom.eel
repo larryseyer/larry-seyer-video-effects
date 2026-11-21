@@ -1,6 +1,7 @@
-// LS Ken Burns Pan & Zoom
+// LS Pan & Zoom
 //@ls category Transform
-//@ls title Ken Burns Pan & Zoom
+//@ls title Pan & Zoom
+//@ls formerly LS Transform: Ken Burns Pan & Zoom
 //@ls where both
 //@ls about Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).
 //@ls help z1 Zoom at the start (1 = whole picture).

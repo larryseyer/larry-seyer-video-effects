@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.0.3. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.0.4. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 40 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
@@ -98,7 +98,7 @@ processor first loads the user's default preset, so always load the LS preset be
    Manual mode instead blends this track into the track behind it with a keyframed `progress` from 0 to 1.
 7. **Keyframes** are REAPER FX envelopes holding real values, with linear points. Take-FX envelopes use time relative
    to the item start (`LS.keyframe` converts project time for you). An effect's own easing still shapes the motion.
-8. **Durations.** Ken Burns `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
+8. **Durations.** Pan & Zoom `dur` and Scrolling Credits `dur` are in seconds: set them to the item length.
 9. **Order.** Effects on one item or track run top to bottom: put color correction before titles or borders.
 10. **How much.** Subtle color changes: temperature 0.1-0.2, saturation 1.05-1.15, contrast 1.05-1.15. Clearly
     visible: temperature 0.3-0.5, saturation 1.3. Examples in section 6 show typical values for each effect.
@@ -118,7 +118,7 @@ local callouts = LS.add_track_in_front_of(screen, "Callouts")    -- graphics tha
 local titles   = LS.add_track_in_front_of(callouts, "Titles")    -- titles and lower thirds, in front
 
 -- Opening title over the first 5 seconds
-LS.add_title(titles, 0, 5, "Energy Levels | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
+LS.add_title(titles, 0, 5, "Call Outs | Larry Seyer Drums", "LS Title: Title & Subtitle", { anim = 1, backdrop = 1 })
 
 -- Presenter lower third
 LS.add_title(titles, 6, 6, "Larry Seyer | Creator, Larry Seyer Drums", "LS Title: Lower Third", { style = 0, align = 0 })
@@ -159,8 +159,8 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 | `LS Transform: Camera Shake` | Item or track | Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments. |
 | `LS Transform: Corner Pin` | Item or track | Pins the four corners of this clip anywhere on screen, for putting a screen recording onto a monitor or a sign in the shot. |
 | `LS Transform: Flip & Mirror` | Item or track | Flips the picture or mirrors one half onto the other, including a four-way kaleidoscope. |
-| `LS Transform: Ken Burns Pan & Zoom` | Item or track | Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). |
 | `LS Transform: Multiview Camera Select` | Item or track | Turns a multiview recording (four cameras in one frame) into a multicam edit: show one camera full screen, two side by side, or one inset over another. Put it on each item and pick the camera, then crossfade items for transitions. |
+| `LS Transform: Pan & Zoom` | Item or track | Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). |
 | `LS Transform: Picture-in-Picture & Logo` | Item or track | Places this clip, screenshot or logo in a corner or anywhere on screen, with rounded or circular framing, border, shadow and an entrance animated by the item fade handles. |
 | `LS Transform: Reframe & Letterbox` | Item or track | Fits or fills the frame from any source shape, with pan for choosing what stays in view. Use it for vertical short-form video from widescreen footage, blurred-background fills, and cinematic letterbox bars. |
 | `LS Transform: Transform` | Item or track | Position, scale, rotate, crop, round corners, border and drop shadow in one pass. Keyframe any control with envelopes. |
@@ -295,29 +295,6 @@ Examples:
 
 - Kaleidoscope: `LS.add_to_item(item, "LS Transform: Flip & Mirror", { mode = 8 })`
 
-### LS Transform: Ken Burns Pan & Zoom
-
-*Placement:* an item or a track.
-
-Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).
-
-| API index | var | Control | Default | Range | Meaning |
-|---|---|---|---|---|---|
-| 0 | `z1` | Start zoom | 1 | 1 to 5 | Zoom at the start (1 = whole picture). |
-| 1 | `x1` | Start X | 0 | -1 to 1 | Start framing: -1 left edge, 1 right edge. |
-| 2 | `y1` | Start Y | 0 | -1 to 1 | Start framing: -1 top, 1 bottom. |
-| 3 | `z2` | End zoom | 1.35 | 1 to 5 | Zoom at the end. |
-| 4 | `x2` | End X | 0.3 | -1 to 1 | End framing, -1..1. |
-| 5 | `y2` | End Y | -0.2 | -1 to 1 | End framing, -1..1. |
-| 6 | `dur` | Duration (s) | 6 | 0.1 to 120 | Length of the move in seconds; set it to the item length. |
-| 7 | `delay` | Start time (s) | 0 | 0 to 3600 | Track FX only: project time in seconds when the move starts. On an item the move starts at the item start. |
-| 8 | `ease` | Easing | 1 | 0 to 3 | How the move speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out. |
-
-Examples:
-
-- Slow push in on a photo: `LS.add_to_item(item, "LS Transform: Ken Burns Pan & Zoom", { z1 = 1, z2 = 1.25, x2 = 0, y2 = 0, dur = 8 })` Put on the photo item; set Duration to the item length.
-- Pan across a wide screenshot: `LS.add_to_item(item, "LS Transform: Ken Burns Pan & Zoom", { z1 = 1.4, x1 = -1, y1 = 0, z2 = 1.4, x2 = 1, y2 = 0, dur = 6 })`
-
 ### LS Transform: Multiview Camera Select
 
 *Placement:* an item or a track.
@@ -348,6 +325,29 @@ Examples:
 
 - Split the recording at every cut and set the camera on each item.
 - Crossfade neighbouring items and put a Transition effect on the track for dissolves or pushes between cameras.
+
+### LS Transform: Pan & Zoom
+
+*Placement:* an item or a track.
+
+Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX).
+
+| API index | var | Control | Default | Range | Meaning |
+|---|---|---|---|---|---|
+| 0 | `z1` | Start zoom | 1 | 1 to 5 | Zoom at the start (1 = whole picture). |
+| 1 | `x1` | Start X | 0 | -1 to 1 | Start framing: -1 left edge, 1 right edge. |
+| 2 | `y1` | Start Y | 0 | -1 to 1 | Start framing: -1 top, 1 bottom. |
+| 3 | `z2` | End zoom | 1.35 | 1 to 5 | Zoom at the end. |
+| 4 | `x2` | End X | 0.3 | -1 to 1 | End framing, -1..1. |
+| 5 | `y2` | End Y | -0.2 | -1 to 1 | End framing, -1..1. |
+| 6 | `dur` | Duration (s) | 6 | 0.1 to 120 | Length of the move in seconds; set it to the item length. |
+| 7 | `delay` | Start time (s) | 0 | 0 to 3600 | Track FX only: project time in seconds when the move starts. On an item the move starts at the item start. |
+| 8 | `ease` | Easing | 1 | 0 to 3 | How the move speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out. |
+
+Examples:
+
+- Slow push in on a photo: `LS.add_to_item(item, "LS Transform: Pan & Zoom", { z1 = 1, z2 = 1.25, x2 = 0, y2 = 0, dur = 8 })` Put on the photo item; set Duration to the item length.
+- Pan across a wide screenshot: `LS.add_to_item(item, "LS Transform: Pan & Zoom", { z1 = 1.4, x1 = -1, y1 = 0, z2 = 1.4, x2 = 1, y2 = 0, dur = 6 })`
 
 ### LS Transform: Picture-in-Picture & Logo
 
@@ -1164,7 +1164,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 
 Examples:
 
-- Point at a control: `LS.add_title(track, pos, len, "Energy Levels", "LS Tutorial: Callout", { bx = 0.08, by = 0.1, bw = 0.18, bh = 0.05, lx = 0.45, ly = 0.125 })` Item name: "Energy Levels". Place the box over the control and the label beside it.
+- Point at a control: `LS.add_title(track, pos, len, "Call Outs", "LS Tutorial: Callout", { bx = 0.08, by = 0.1, bw = 0.18, bh = 0.05, lx = 0.45, ly = 0.125 })` Item name: "Call Outs". Place the box over the control and the label beside it.
 
 - Use the panel's + Callout button. The label text is the item name.
 - The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).

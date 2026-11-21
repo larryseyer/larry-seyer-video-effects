@@ -1,5 +1,5 @@
 -- @description Larry Seyer Video Effects: control panel for the Larry Seyer Video Effects Video Processor effects
--- @version 1.0.3
+-- @version 1.0.4
 -- @author Larry Seyer
 -- @about Library of video effects for REAPER's Video Processor with color wheels, curve editors, a frame pad
 --   for positions and regions, keyframes at the edit cursor, and one-click titles and callouts.
@@ -34,7 +34,10 @@ end
 
 local EFFECTS = L.load_all(EFFECTS_DIR, list_files)
 local BYNAME = {}
-for _, e in ipairs(EFFECTS) do BYNAME[e.name] = e end
+for _, e in ipairs(EFFECTS) do
+  BYNAME[e.name] = e
+  for _, old in ipairs(e.formerly) do BYNAME[old] = e end   -- instances saved under an earlier preset name
+end
 if L.needs_install(INI, EFFECTS) then L.install(INI, EFFECTS) end
 
 local ctx = ImGui.CreateContext("Larry Seyer Video Effects")

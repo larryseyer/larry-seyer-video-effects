@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.0.3 - 40 video effects for REAPER.
+Version 1.0.4 - 40 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -155,29 +155,6 @@ Flips the picture or mirrors one half onto the other, including a four-way kalei
 
 - *Kaleidoscope* - Mode Kaleidoscope.
 
-### Ken Burns Pan & Zoom
-
-![Ken Burns Pan & Zoom](images/ken_burns.jpg)
-
-Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). **Goes on:** item or track. Preset name: `LS Transform: Ken Burns Pan & Zoom`.
-
-| Control | What it does | Range (default) |
-|---|---|---|
-| Start zoom | Zoom at the start (1 = whole picture). | 1 to 5 (1) |
-| Start X | Start framing: -1 left edge, 1 right edge. | -1 to 1 (0) |
-| Start Y | Start framing: -1 top, 1 bottom. | -1 to 1 (0) |
-| End zoom | Zoom at the end. | 1 to 5 (1.35) |
-| End X | End framing, -1..1. | -1 to 1 (0.3) |
-| End Y | End framing, -1..1. | -1 to 1 (-0.2) |
-| Duration (s) | Length of the move in seconds; set it to the item length. | 0.1 to 120 (6) |
-| Start time (s) | Track FX only: project time in seconds when the move starts. On an item the move starts at the item start. | 0 to 3600 (0) |
-| Easing | How the move speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
-
-**Try this:**
-
-- *Slow push in on a photo* - Start zoom 1, End zoom 1.25, End X 0, End Y 0, Duration (s) 8. Put on the photo item; set Duration to the item length.
-- *Pan across a wide screenshot* - Start zoom 1.4, Start X -1, Start Y 0, End zoom 1.4, End X 1, End Y 0, Duration (s) 6.
-
 ### Multiview Camera Select
 
 ![Multiview Camera Select](images/multicam.jpg)
@@ -208,6 +185,29 @@ Turns a multiview recording (four cameras in one frame) into a multicam edit: sh
 
 - Split the recording at every cut and set the camera on each item.
 - Crossfade neighbouring items and put a Transition effect on the track for dissolves or pushes between cameras.
+
+### Pan & Zoom
+
+![Pan & Zoom](images/pan_zoom.jpg)
+
+Slow pan and zoom across a photo, screenshot or shot. Set the start and end framing; the move runs for the duration, counted from the item start (item FX) or from the start time (track FX). **Goes on:** item or track. Preset name: `LS Transform: Pan & Zoom`.
+
+| Control | What it does | Range (default) |
+|---|---|---|
+| Start zoom | Zoom at the start (1 = whole picture). | 1 to 5 (1) |
+| Start X | Start framing: -1 left edge, 1 right edge. | -1 to 1 (0) |
+| Start Y | Start framing: -1 top, 1 bottom. | -1 to 1 (0) |
+| End zoom | Zoom at the end. | 1 to 5 (1.35) |
+| End X | End framing, -1..1. | -1 to 1 (0.3) |
+| End Y | End framing, -1..1. | -1 to 1 (-0.2) |
+| Duration (s) | Length of the move in seconds; set it to the item length. | 0.1 to 120 (6) |
+| Start time (s) | Track FX only: project time in seconds when the move starts. On an item the move starts at the item start. | 0 to 3600 (0) |
+| Easing | How the move speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
+
+**Try this:**
+
+- *Slow push in on a photo* - Start zoom 1, End zoom 1.25, End X 0, End Y 0, Duration (s) 8. Put on the photo item; set Duration to the item length.
+- *Pan across a wide screenshot* - Start zoom 1.4, Start X -1, Start Y 0, End zoom 1.4, End X 1, End Y 0, Duration (s) 6.
 
 ### Picture-in-Picture & Logo
 
@@ -929,7 +929,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 
 **Try this:**
 
-- *Point at a control* - Box left 0.08, Box top 0.1, Box width 0.18, Box height 0.05, Label X 0.45, Label Y 0.125. Item name: "Energy Levels". Place the box over the control and the label beside it.
+- *Point at a control* - Box left 0.08, Box top 0.1, Box width 0.18, Box height 0.05, Label X 0.45, Label Y 0.125. Item name: "Call Outs". Place the box over the control and the label beside it.
 
 - Use the panel's + Callout button. The label text is the item name.
 - The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
