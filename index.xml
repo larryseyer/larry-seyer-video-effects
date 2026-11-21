@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<index version="1" name="Larry Seyer" commit="d470e00fb3dd334b7db1789ea0020bd60d1e1587">
+<index version="1" name="Larry Seyer" commit="8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a">
   <category name="Video">
     <reapack name="Larry Seyer Video Effects.lua" type="script" desc="Larry Seyer Video Effects">
       <metadata>
@@ -143,6 +143,72 @@ Requires ReaImGui. Manual: https://github.com/larryseyer/Reaper/blob/main/Video/
         <source file="lib/fxapi.lua">https://raw.githubusercontent.com/larryseyer/Reaper/d470e00fb3dd334b7db1789ea0020bd60d1e1587/Video/lib/fxapi.lua</source>
         <source file="lib/lsvfx.lua">https://raw.githubusercontent.com/larryseyer/Reaper/d470e00fb3dd334b7db1789ea0020bd60d1e1587/Video/lib/lsvfx.lua</source>
         <source file="lib/widgets.lua">https://raw.githubusercontent.com/larryseyer/Reaper/d470e00fb3dd334b7db1789ea0020bd60d1e1587/Video/lib/widgets.lua</source>
+      </version>
+      <version name="1.0.2" author="Larry Seyer" time="2026-11-21T02:59:18Z">
+        <changelog>Works with either Track order setting (top or bottom track in front): the panel's + buttons put new title tracks in front. Fixes installing presets on a REAPER that has never saved a preset.</changelog>
+        <source main="main">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/Larry%20Seyer%20Video%20Effects.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Install or update presets.lua">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/Larry%20Seyer%20Video%20Effects%20-%20Install%20or%20update%20presets.lua</source>
+        <source file="LICENSE">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/LICENSE</source>
+        <source file="LS Title Carrier.png">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/LS%20Title%20Carrier.png</source>
+        <source file="README.md">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/README.md</source>
+        <source file="ai/claude-skill/larry-seyer-video-effects/SKILL.md">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/ai/claude-skill/larry-seyer-video-effects/SKILL.md</source>
+        <source file="ai/claude-skill/larry-seyer-video-effects/reference.md">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/ai/claude-skill/larry-seyer-video-effects/reference.md</source>
+        <source file="docs/AI-REFERENCE.md">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/docs/AI-REFERENCE.md</source>
+        <source file="docs/MANUAL.md">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/docs/MANUAL.md</source>
+        <source file="docs/effects.json">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/docs/effects.json</source>
+        <source file="effects/beat_pulse.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/beat_pulse.eel</source>
+        <source file="effects/blend.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/blend.eel</source>
+        <source file="effects/border.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/border.eel</source>
+        <source file="effects/callout.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/callout.eel</source>
+        <source file="effects/color_grade.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/color_grade.eel</source>
+        <source file="effects/corner_pin.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/corner_pin.eel</source>
+        <source file="effects/credits.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/credits.eel</source>
+        <source file="effects/curves.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/curves.eel</source>
+        <source file="effects/film.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/film.eel</source>
+        <source file="effects/freeze.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/freeze.eel</source>
+        <source file="effects/glitch.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/glitch.eel</source>
+        <source file="effects/glow.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/glow.eel</source>
+        <source file="effects/green_screen.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/green_screen.eel</source>
+        <source file="effects/hue_curves.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/hue_curves.eel</source>
+        <source file="effects/isolate.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/isolate.eel</source>
+        <source file="effects/ken_burns.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/ken_burns.eel</source>
+        <source file="effects/lib/ease.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/ease.eel</source>
+        <source file="effects/lib/frame.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/frame.eel</source>
+        <source file="effects/lib/layer.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/layer.eel</source>
+        <source file="effects/lib/noise.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/noise.eel</source>
+        <source file="effects/lib/overlay.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/overlay.eel</source>
+        <source file="effects/lib/pyramid.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/pyramid.eel</source>
+        <source file="effects/lib/rgbsplit.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/rgbsplit.eel</source>
+        <source file="effects/lib/shapes.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/shapes.eel</source>
+        <source file="effects/lib/transition.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lib/transition.eel</source>
+        <source file="effects/looks.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/looks.eel</source>
+        <source file="effects/lower_third.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/lower_third.eel</source>
+        <source file="effects/magnifier.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/magnifier.eel</source>
+        <source file="effects/mirror.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/mirror.eel</source>
+        <source file="effects/motion_blur.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/motion_blur.eel</source>
+        <source file="effects/multicam.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/multicam.eel</source>
+        <source file="effects/place.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/place.eel</source>
+        <source file="effects/reframe.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/reframe.eel</source>
+        <source file="effects/region_blur.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/region_blur.eel</source>
+        <source file="effects/shake.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/shake.eel</source>
+        <source file="effects/sharpen.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/sharpen.eel</source>
+        <source file="effects/split_screen.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/split_screen.eel</source>
+        <source file="effects/spotlight.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/spotlight.eel</source>
+        <source file="effects/title_card.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/title_card.eel</source>
+        <source file="effects/tr_dissolve.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/tr_dissolve.eel</source>
+        <source file="effects/tr_flash.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/tr_flash.eel</source>
+        <source file="effects/tr_push.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/tr_push.eel</source>
+        <source file="effects/tr_shape.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/tr_shape.eel</source>
+        <source file="effects/tr_zoom.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/tr_zoom.eel</source>
+        <source file="effects/trails.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/trails.eel</source>
+        <source file="effects/transform.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/transform.eel</source>
+        <source file="effects/vhs.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/vhs.eel</source>
+        <source file="effects/vignette.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/vignette.eel</source>
+        <source file="effects/zoom_region.eel">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/effects/zoom_region.eel</source>
+        <source file="lib/agent.lua">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/lib/agent.lua</source>
+        <source file="lib/fxapi.lua">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/lib/fxapi.lua</source>
+        <source file="lib/lsvfx.lua">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/lib/lsvfx.lua</source>
+        <source file="lib/widgets.lua">https://raw.githubusercontent.com/larryseyer/Reaper/8a6ac8f88ff27504dcadf79a899a5fdbe9b2788a/Video/lib/widgets.lua</source>
       </version>
     </reapack>
   </category>
