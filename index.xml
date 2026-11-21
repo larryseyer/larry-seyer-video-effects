@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<index version="1" name="Larry Seyer" commit="bf64e80cad12cca82675f02edba4314c7e32d099">
+<index version="1" name="Larry Seyer" commit="4dee795fee2339305386fbd00c339bc431e5e513">
   <category name="Video">
     <reapack name="Larry Seyer Video Effects.lua" type="script" desc="Larry Seyer Video Effects">
       <metadata>
@@ -7,7 +7,9 @@
 \par
 Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and multicam from a multiview recording.\par
 \par
-After installing, run 'Larry Seyer Video Effects' from the Actions list. Requires ReaImGui. Manual: https://github.com/larryseyer/Reaper/blob/main/Video/docs/MANUAL.md}</description>
+IMPORTANT: after installing, open Actions &gt; Show action list, search 'Larry Seyer Video Effects' and run it once. That adds the 40 LS presets to the Video Processor preset list; until then they are not there.\par
+\par
+Requires ReaImGui. Manual: https://github.com/larryseyer/Reaper/blob/main/Video/docs/MANUAL.md}</description>
         <link rel="website">https://github.com/larryseyer/Reaper</link>
         <link rel="screenshot">https://raw.githubusercontent.com/larryseyer/Reaper/main/Video/docs/images/color_grade.jpg</link>
       </metadata>
