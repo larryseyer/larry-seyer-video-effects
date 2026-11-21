@@ -2,9 +2,9 @@
 
 Video effects for REAPER's Video Processor, with a control panel: color grading with lift, gamma and
 gain wheels and curves, titles and lower thirds, tutorial callouts and zooms, transitions that run on crossfades,
-picture-in-picture, borders and shadows, film and music-video looks, and a multicam switcher (cut between
-camera tracks with the number keys or by clicking in the Video window, with a transition per cut). 43 effects in
-all.
+picture-in-picture, borders and shadows, film and music-video looks, and a multicam switcher (lines the cameras
+up by their sound, then cut between camera tracks with the number keys or by clicking in the Video window, with a
+transition per cut). 43 effects in all.
 
 ![Color Grade](docs/images/color_grade.jpg)
 
@@ -13,14 +13,19 @@ presets, with or without the panel open.
 
 ## Install with ReaPack
 
-1. You need [ReaPack](https://reapack.com) and ReaImGui (*Extensions > ReaPack > Browse packages*, search
-   "ReaImGui", install).
+1. Install [ReaPack](https://reapack.com) if you do not have it.
 2. *Extensions > ReaPack > Import repositories*, paste:
    `https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/main/index.xml`
 3. *Extensions > ReaPack > Browse packages*, type **Larry Seyer** in the filter, right-click
-   **Larry Seyer Video Effects**, choose *Install*, then click *Apply*. (Importing the repository in step 2 does not
-   install anything by itself.)
-4. **Important - run it once after installing:** ReaPack copies the files but cannot add presets by itself. Open *Actions > Show action list*, search **Larry Seyer Video Effects** and run it. The panel opens and adds the 40 **LS** presets to the Video Processor preset list. Until you do this, the presets are not there.
+   **Larry Seyer Video Effects** and choose *Install*. Also install **ReaImGui** (type *ReaImGui* in the same
+   window) if you do not have it. Click *Apply*, and restart REAPER if ReaPack asks you to. (Importing the
+   repository in step 2 does not install anything by itself.)
+4. **Important - run it once after installing:** ReaPack copies the files but cannot add presets by itself. Open
+   *Actions > Show action list*, search **Larry Seyer Video Effects** and run it. The panel opens and adds the 43
+   **LS** presets to the Video Processor preset list. If ReaImGui is missing, it offers to open ReaPack on it.
+
+Updates arrive with *Extensions > ReaPack > Synchronize packages*; the panel and the Multicam window bring the
+presets up to date the next time they open.
 
 ## Quick start
 

@@ -362,7 +362,7 @@ function M.apply(results)
           reaper.GetMediaItemTakeInfo_Value(take, "D_STARTOFFS") + cut*rate)
         reaper.SetMediaItemInfo_Value(item, "D_LENGTH", len - cut)
         reaper.SetMediaItemInfo_Value(item, "D_POSITION", 0)
-        res.note = string.format("trimmed %.3f s at its start (it began before the project start)", cut)
+        res.note = string.format("trimmed %.3f s at its start, which came before the project start", cut)
       end
     end
   end

@@ -113,11 +113,12 @@ def main():
     about = ("Larry Seyer Video Effects: video effects for REAPER's Video Processor with a control panel.\n\n"
              "Color grading with wheels and curves, titles, lower thirds, tutorial callouts, zoom to region, "
              "spotlight, transitions on crossfades, picture-in-picture, borders and shadows, looks, and a multicam "
-             "switcher (cut between camera tracks with the number keys or by clicking in the video window, with a "
-             "transition per cut).\n\n"
+             "switcher (lines the cameras up by their sound, then cut between camera tracks with the number keys or "
+             "by clicking in the video window, with a transition per cut).\n\n"
+             "Requires ReaImGui: install it from this same window (search 'ReaImGui') if you do not have it.\n\n"
              "IMPORTANT: after installing, open Actions > Show action list, search 'Larry Seyer Video Effects' and run "
              "it once. That adds the LS presets to the Video Processor preset list; until then they are not there.\n\n"
-             "Requires ReaImGui. Manual: " + f"https://github.com/{repo}/blob/main/{CATEGORY}/docs/MANUAL.md")
+             "Manual: " + f"https://github.com/{repo}/blob/main/{CATEGORY}/docs/MANUAL.md")
     desc = ET.SubElement(meta, "description")
     desc.text = rtf(about)
     ET.SubElement(meta, "link", rel="website").text = f"https://github.com/{repo}"

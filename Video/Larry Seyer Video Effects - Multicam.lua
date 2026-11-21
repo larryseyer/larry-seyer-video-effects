@@ -6,11 +6,9 @@
 --   video window (switcher view). Stopped, a number changes the shot at the edit cursor.
 
 local DIR = debug.getinfo(1, "S").source:match("^@(.*[/\\])")
-if not reaper.ImGui_GetBuiltinPath then
-  reaper.MB("Larry Seyer Video Effects needs the ReaImGui extension (install it with ReaPack).", "Multicam", 0)
-  return
-end
-package.path = DIR .. "lib/?.lua;" .. reaper.ImGui_GetBuiltinPath() .. "/?.lua;" .. package.path
+package.path = DIR .. "lib/?.lua;" .. package.path
+if not require("lsvfx").have_reaimgui("Multicam") then return end
+package.path = reaper.ImGui_GetBuiltinPath() .. "/?.lua;" .. package.path
 local ImGui = require "imgui" "0.10"
 local L = require "lsvfx"
 local A = require "fxapi"

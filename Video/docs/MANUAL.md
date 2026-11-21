@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.1.2 - 43 video effects for REAPER.
+Version 1.1.3 - 43 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -10,17 +10,20 @@ the presets, with or without the control panel open.
 
 ## Installing
 
-1. Install [ReaPack](https://reapack.com) and [ReaImGui](https://github.com/cfillion/reaimgui) if you do not
-   have them (ReaImGui is in ReaPack's default repository: *Extensions > ReaPack > Browse packages*, search
-   "ReaImGui").
+1. Install [ReaPack](https://reapack.com) if you do not have it.
 2. *Extensions > ReaPack > Import repositories*, paste
    `https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/main/index.xml`
 3. *Extensions > ReaPack > Browse packages*, type **Larry Seyer** in the filter, right-click
-   **Larry Seyer Video Effects**, choose *Install*, then click *Apply*. Importing the repository in step 2 does not
-   install anything by itself.
-4. **Important - run it once after installing:** ReaPack copies the files but cannot add presets by itself. Open *Actions > Show action list*, search **Larry Seyer Video Effects** and run it. The panel opens and adds the 43 **LS** presets to the Video Processor preset list. Until you do this, the presets are not there.
+   **Larry Seyer Video Effects** and choose *Install*. Also install **ReaImGui** (type *ReaImGui* in the same
+   window) if you do not have it; the panel and the Multicam window need it. Click *Apply*, and restart REAPER if
+   ReaPack asks you to. Importing the repository in step 2 does not install anything by itself.
+4. **Important - run it once after installing:** ReaPack copies the files but cannot add presets by itself. Open
+   *Actions > Show action list*, search **Larry Seyer Video Effects** and run it. The panel opens and adds the
+   43 **LS** presets to the Video Processor preset list. Until you do this, the presets are not there. If
+   ReaImGui is missing, it offers to open ReaPack on it.
 
-Updates arrive through *ReaPack > Synchronize packages*.
+Updates arrive through *ReaPack > Synchronize packages*; the panel and the Multicam window bring the presets up to
+date the next time they open.
 
 ## Using the panel
 
@@ -87,6 +90,8 @@ microphone, or a feed from the desk), the Multicam window lines them up for you:
 the **reference** (camera 1 by default, or any other track with clips, such as a board mix) and click **Line up
 the cameras**. Every clip on every camera track moves to where its sound matches the reference, to within a
 millisecond; the window lists what moved. **Undo** puts everything back in one step.
+
+![The Multicam window after lining up four cameras by their audio](images/multicam_window.jpg)
 
 - A camera stopped and started again (several clips on its track) is fine: each clip is lined up on its own.
 - A clip that belongs before the start of the project is trimmed at its start instead.

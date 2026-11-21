@@ -329,7 +329,7 @@ function M.sync_items(ref_track)
         if nm == "" and take then
           nm = reaper.GetMediaSourceFileName(reaper.GetMediaItemTake_Source(take)):match("[^/\\]*$")
         end
-        out[#out + 1] = { item = item, label = string.format("Camera %d: %s", c.id, nm) }
+        out[#out + 1] = { item = item, label = string.format("Camera %d (%s)", c.id, nm) }
       end
     end
   end

@@ -40,6 +40,21 @@ local function split_lines(s)
 end
 
 -- Inline `// #include "lib/x.eel"` lines (relative to the effects folder), each file at most once.
+-- True when the ReaImGui extension is installed. Otherwise says so and, when ReaPack is there, offers to open its
+-- package browser on ReaImGui.
+function M.have_reaimgui(title)
+  if reaper.ImGui_GetBuiltinPath then return true end
+  local msg = "Larry Seyer Video Effects needs the ReaImGui extension (free, installed with ReaPack)."
+  if reaper.ReaPack_BrowsePackages then
+    local answer = reaper.MB(msg .. "\n\nOpen ReaPack on ReaImGui now? Install it, click Apply, restart REAPER and "
+      .. "run this again.", title, 4)
+    if answer == 6 then reaper.ReaPack_BrowsePackages("ReaImGui") end
+  else
+    reaper.MB(msg, title, 0)
+  end
+  return false
+end
+
 function M.expand(effects_dir, path, seen)
   seen = seen or {}
   local src = read_file(path)

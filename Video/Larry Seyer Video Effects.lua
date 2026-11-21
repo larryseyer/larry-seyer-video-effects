@@ -1,16 +1,14 @@
 -- @description Larry Seyer Video Effects: control panel for the Larry Seyer Video Effects Video Processor effects
--- @version 1.1.2
+-- @version 1.1.3
 -- @author Larry Seyer
 -- @about Library of video effects for REAPER's Video Processor with color wheels, curve editors, a frame pad
 --   for positions and regions, keyframes at the edit cursor, and one-click titles and callouts.
 
 local DIR = debug.getinfo(1, "S").source:match("^@(.*[/\\])")
 reaper.SetExtState("LS_VIDEO_FX", "path", DIR, true)  -- lets scripts and AI agents find this folder
-if not reaper.ImGui_GetBuiltinPath then
-  reaper.MB("Larry Seyer Video Effects needs the ReaImGui extension (install it with ReaPack).", "Larry Seyer Video Effects", 0)
-  return
-end
-package.path = DIR .. "lib/?.lua;" .. reaper.ImGui_GetBuiltinPath() .. "/?.lua;" .. package.path
+package.path = DIR .. "lib/?.lua;" .. package.path
+if not require("lsvfx").have_reaimgui("Larry Seyer Video Effects") then return end
+package.path = reaper.ImGui_GetBuiltinPath() .. "/?.lua;" .. package.path
 local ImGui = require "imgui" "0.10"
 local L = require "lsvfx"
 local A = require "fxapi"
