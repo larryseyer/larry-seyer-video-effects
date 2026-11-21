@@ -1,0 +1,12 @@
+// Draws the source rectangle (wx, wy, ww, wh) of input 0 (size sw x sh) scaled to fill the W x H frame.
+// gfx_blit snaps a still image's source rectangle to whole pixels, which makes a slow zoom or pan wobble;
+// gfx_deltablit samples at fractional positions, so the move stays smooth on photos and video alike.
+// Samples are kept inside the picture: deltablit leaves pixels unpainted (black edges) where they fall outside.
+function ls_blit_window(wx, wy, ww, wh) local(kx, ky, x0, y0) (
+  kx = ww/W; ky = wh/H;
+  x0 = min(max(wx + 0.5*kx - 0.5, 0), sw - 1 - (W - 1)*kx);
+  y0 = min(max(wy + 0.5*ky - 0.5, 0), sh - 1 - (H - 1)*ky);
+  gfx_mode = 0x100; gfx_a = 1;
+  gfx_deltablit(0, 0, 0, W, H, x0, y0, kx, 0, 0, ky, 0, 0);
+  gfx_mode = 0;
+);

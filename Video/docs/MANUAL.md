@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.1.3 - 43 video effects for REAPER.
+Version 1.1.4 - 43 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,

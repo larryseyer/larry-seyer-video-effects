@@ -35,6 +35,7 @@ ls_frame_size();
 W = project_w; H = project_h;
 
 // #include "lib/ease.eel"
+// #include "lib/window.eel"
 
 own ? (
   fr = W/H;
@@ -53,9 +54,7 @@ own ? (
   chh = cw/fr;
   cx = fx + fw*0.5 + ((tx + tw*0.5) - (fx + fw*0.5))*kz - cw*0.5;
   cy = fy + fh*0.5 + ((ty + th*0.5) - (fy + fh*0.5))*kz - chh*0.5;
-  gfx_mode = 0x100; gfx_a = 1;
-  gfx_blit(0, 0, 0, 0, W, H, cx, cy, cw, chh);
-  gfx_mode = 0;
+  ls_blit_window(cx, cy, cw, chh);
   showbox > 0.5 ? (
     ox = (rx*sw - cx)*W/cw; oy = (ry*sh - cy)*H/chh; ow = rw*sw*W/cw; oh = rh*sh*H/chh;
     lw = max(2, H/360);
