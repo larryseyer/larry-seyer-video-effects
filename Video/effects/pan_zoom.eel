@@ -47,7 +47,13 @@ own ? (
   fr = W/H;
   sw/sh > fr ? ( winw = sh*fr; winh = sh; ) : ( winw = sw; winh = sw/fr; );
   winw /= zm; winh /= zm;
+  // gfx_blit snaps the source window of a still image to whole pixels, which makes a slow move wobble;
+  // gfx_deltablit samples at fractional source positions, so the move stays smooth on photos and video alike.
+  // Samples are kept inside the picture: deltablit leaves pixels unpainted (black edges) where they fall outside.
+  kx = winw/W; ky = winh/H;
+  srcx = min(max((sw - winw)*0.5*(1 + pxv) + 0.5*kx - 0.5, 0), sw - 1 - (W - 1)*kx);
+  srcy = min(max((sh - winh)*0.5*(1 + pyv) + 0.5*ky - 0.5, 0), sh - 1 - (H - 1)*ky);
   gfx_mode = 0x100; gfx_a = 1;
-  gfx_blit(0, 0, 0, 0, W, H, (sw - winw)*0.5*(1 + pxv), (sh - winh)*0.5*(1 + pyv), winw, winh);
+  gfx_deltablit(0, 0, 0, W, H, srcx, srcy, kx, 0, 0, ky, 0, 0);
   gfx_mode = 0;
 );
