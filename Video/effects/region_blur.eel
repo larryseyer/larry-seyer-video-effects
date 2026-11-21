@@ -5,8 +5,8 @@
 //@ls about Hides part of the picture, such as an email address, serial number or face, with blur, pixelation or a solid box. Stack several to hide several things.
 //@ls help rx Hidden area, fractions of the frame (left, top, width, height).
 //@ls help mode Blur, pixelate or a solid box.
-//@ls help strength Blur or pixel size.
-//@ls help shape Rectangle, rounded or ellipse.
+//@ls help strength Blur or pixel size; 0.6 or more makes text unreadable.
+//@ls help shape Rectangle, rounded or ellipse. Use Rectangle for areas that touch the frame edges.
 //@ls help feather Edge softness, fraction of frame height.
 //@ls example Hide an email address :: rx=0.6 ry=0.05 rw=0.3 rh=0.05 mode=0 strength=0.8
 //@ls tip Stack several instances to hide several things.

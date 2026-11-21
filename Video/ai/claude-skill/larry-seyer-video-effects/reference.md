@@ -14,7 +14,8 @@ like any other Video Processor; the Larry Seyer Video Effects panel is optional.
 - **Find the pack folder** with `reaper.GetExtState("LS_VIDEO_FX", "path")` (set whenever either script runs;
   the path ends with a slash). If it is empty, ask the user to run the panel once from the Actions list.
   A ReaPack install lives in `<resource path>/Scripts/Larry Seyer/Video/`.
-- **Project video size** (Project Settings > Video) decides the output frame. Every position and size in these
+- `LS.ensure_presets()` is cheap; call it at the start of every script.
+- **Project video size** (Project Settings > Video) is the user's setting; scripts do not need to set it. It decides the output frame. Every position and size in these
   effects is a fraction of the frame, so the same settings work at 1920x1080, 3840x2160 or 1080x1920.
 
 ## 2. Recommended: the scripting API (ReaScript Lua)
@@ -24,11 +25,12 @@ local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 LS.ensure_presets()
 
 -- tracks and media
-local titles = LS.add_track("Titles", 0)                        -- index 0 = top = in front
+local titles = LS.add_track("Titles", 0)                        -- inserted at index 0 = top = in front
 local screen = LS.add_track("Screen", 1)
-local item = LS.add_media(screen, "/path/clip.mp4", 0, 6)       -- track, file, position, length[, offset into file]
+local item = LS.add_media(screen, "/path/clip.mp4", 0, 6)       -- track, file, position[, length[, offset]]; no fades
+                                                                -- (default length: the file's, 5 s for still images)
 local item2 = LS.add_media(screen, "/path/next.mp4", 5, 6)      -- overlaps the first item by 1 s
-LS.crossfade(item, item2)                                       -- fades across the overlap (needed by transitions)
+LS.crossfade(item, item2)                                       -- linear fades across the overlap (needed by transitions)
 
 -- effect on one clip
 local fx = LS.add_to_item(item, "LS Color: Color Grade", { temp = 0.25, sat = 1.1 })
@@ -66,21 +68,26 @@ processor first loads the user's default preset, so always load the LS preset be
 ## 4. Rules that are not obvious
 
 1. **Item or track.** On an item the effect changes only that clip. On a track it changes everything on that track.
-   The *Placement* line of each effect says which is intended. Item effects run first, then track effects.
+   The *Placement* line of each effect says which is intended. Item effects run first, then track effects, so an
+   item's effects travel with that clip through a transition (a blurred area stays on its clip while it slides out).
 2. **One item at a time per track.** Where items overlap on a track, REAPER shows only one of them (unless a
    transition effect is on that track). Graphics that overlap in time (a lower third and a callout, two titles) must
    go on **separate tracks**. `LS.add_title` refuses an overlap with an explanation.
 3. **Layers.** Video tracks higher in the track list are in front. Effects that place or frame a picture (Transform,
    Picture-in-Picture & Logo, Border & Shadow, Corner Pin, Green Screen Key, Blend Modes, titles, callouts) draw the
-   tracks *below* as the background. Put the foreground clip on a track above the background.
+   tracks *below* as the background. Put the foreground clip on a track above the background. Nothing on a lower track
+   affects a higher one: a credits backdrop or a callout's dimming does not darken a logo on a track above it.
 4. **Text.** Titles, lower thirds, credits and callouts take their text from the **item (take) name**. `|` starts a new
    line (`Name | Subtitle`). Credits: one entry per `|`; `Role: Name` makes two columns. Put these effects on a
    transparent title item (`LS.add_title`, or an item whose source is `LS Title Carrier.png` in the pack folder).
 5. **Animation from item fades.** Effects with *Animate with = Item fades* animate in over the item's fade-in and out
    over its fade-out (titles, callouts, Picture-in-Picture entrances, Zoom to Region, Spotlight, Magnifier). Set the
-   fade lengths (`D_FADEINLEN`, `D_FADEOUTLEN`, linear shape) to set the timing. No fades means fully shown.
-   When an item's fades already serve a crossfade, set *Animate with* to Manual (`animsrc = 1`) and keyframe
-   `amount` instead (0 = off, 1 = full).
+   fade lengths (`D_FADEINLEN`, `D_FADEOUTLEN`, linear shape) to set the timing. A zero fade means no animation at
+   that end (fade-out 0 keeps it fully shown to the end). Item fades never fade the picture by themselves; they only
+   drive these animations and transitions. Scrolling Credits ignores fades.
+   When an item's fades already serve a crossfade, set *Animate with* to Manual (`animsrc = 1`) **and** keyframe
+   `amount` (0 = off, 1 = full). Keyframe a straight 0 to 1 ramp: the effect applies its own easing to it. Once
+   `amount` has keyframes, its static value no longer matters.
 6. **Transitions.** Put a Transition effect on the **track**, then make two items on that track overlap **and
    crossfade**: fade-out on the first item and fade-in on the second, both as long as the overlap (`LS.crossfade`
    does this). Without the fades there is a hard cut. Every crossfade on the track becomes the transition; one
@@ -96,7 +103,7 @@ processor first loads the user's default preset, so always load the LS preset be
    Sharpen, Green Screen, Blend Modes, Luma dissolve and Shape Wipe work per pixel and render more slowly.
 12. **Check your work** by rendering a short section or asking the user to look at the Video window. Turn off
     preview-only switches before rendering: Color Grade `split`, Isolate Color `showmask`, Zoom to Region `showbox`,
-    Green Screen `showmatte`.
+    Green Screen `showmatte`. That is the complete list, and all four are off by default.
 
 ## 5. Recipes for tutorial videos (Larry Seyer Drums, Sparks of Light)
 
@@ -475,6 +482,7 @@ Examples:
 
 - The region is grown to the frame shape so the picture never stretches.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+- The region grows around its center to the frame shape. A tall strip (such as the whole right half) grows back to the full frame and does not zoom; for 2x on the right half use left 0.5, top 0.25, width 0.5, height 0.5.
 
 ### LS Color: Color Grade
 
@@ -908,7 +916,7 @@ Put on a track: crossfades become a push, slide, reveal, split or squeeze in any
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
 | 0 | `style` | Style | 0 | 0 to 4 | Push moves both shots; Slide in covers; Slide out uncovers; Split opens like doors; Squeeze compresses. Options: 0 Push, 1 Slide in, 2 Slide out, 3 Split open, 4 Squeeze. |
-| 1 | `dir` | Direction | 0 | 0 to 3 | Direction of motion. Options: 0 Left, 1 Right, 2 Up, 3 Down. |
+| 1 | `dir` | Direction | 0 | 0 to 3 | Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right). Options: 0 Left, 1 Right, 2 Up, 3 Down. |
 | 2 | `blur` | Motion blur | 0.5 | 0 to 1 | Motion blur during the move. |
 | 3 | `ease` | Smoothness | 1 | 0 to 3 | How the transition speeds up and slows down. Options: 0 Linear, 1 Smooth, 2 Ease in, 3 Ease out. |
 | 4 | `srcmode` | Source | 0 | 0 to 1 | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. Options: 0 Item crossfades, 1 Manual (this track to the one below). |
@@ -1049,6 +1057,7 @@ Examples:
 - End credits: `LS.add_title(track, pos, len, "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching", "LS Title: Scrolling Credits", { mode = 0, dur = 12 })` Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
 
 - Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+- The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 
 ### LS Title: Title & Subtitle
 
@@ -1102,8 +1111,8 @@ Hides part of the picture, such as an email address, serial number or face, with
 | 2 | `rw` | Area width | 0.2 | 0.005 to 1 | Area width. |
 | 3 | `rh` | Area height | 0.1 | 0.005 to 1 | Area height. |
 | 4 | `mode` | Mode | 0 | 0 to 2 | Blur, pixelate or a solid box. Options: 0 Blur, 1 Pixelate, 2 Solid box. |
-| 5 | `strength` | Strength | 0.6 | 0 to 1 | Blur or pixel size. |
-| 6 | `shape` | Shape | 1 | 0 to 2 | Rectangle, rounded or ellipse. Options: 0 Rectangle, 1 Rounded, 2 Ellipse. |
+| 5 | `strength` | Strength | 0.6 | 0 to 1 | Blur or pixel size; 0.6 or more makes text unreadable. |
+| 6 | `shape` | Shape | 1 | 0 to 2 | Rectangle, rounded or ellipse. Use Rectangle for areas that touch the frame edges. Options: 0 Rectangle, 1 Rounded, 2 Ellipse. |
 | 7 | `feather` | Edge softness | 0.004 | 0 to 0.1 | Edge softness, fraction of frame height. |
 | 8 | `bcr` | Box red | 0.1 | 0 to 1 | Red part of Box color (0..1). |
 | 9 | `bcg` | Box green | 0.1 | 0 to 1 | Green part of Box color (0..1). |

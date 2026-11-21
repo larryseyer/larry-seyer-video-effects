@@ -334,6 +334,7 @@ Smoothly zooms into a chosen rectangle, ideal for showing a control in a screen 
 
 - The region is grown to the frame shape so the picture never stretches.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+- The region grows around its center to the frame shape. A tall strip (such as the whole right half) grows back to the full frame and does not zoom; for 2x on the right half use left 0.5, top 0.25, width 0.5, height 0.5.
 
 ## Color
 
@@ -712,7 +713,7 @@ Put on a track: crossfades become a push, slide, reveal, split or squeeze in any
 | Control | What it does | Range (default) |
 |---|---|---|
 | Style | Push moves both shots; Slide in covers; Slide out uncovers; Split opens like doors; Squeeze compresses. | Push, Slide in, Slide out, Split open, Squeeze |
-| Direction | Direction of motion. | Left, Right, Up, Down |
+| Direction | Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right). | Left, Right, Up, Down |
 | Motion blur | Motion blur during the move. | 0 to 1 (0.5) |
 | Smoothness | How the transition speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
 | Source | Item crossfades: runs on every crossfade between items on this track. Manual: blends this track into the next track down using Manual progress. | Item crossfades, Manual (this track to the one below) |
@@ -837,6 +838,7 @@ Rolling end credits or a sideways news-style crawl. Name the item with lines sep
 - *End credits* - Mode Roll up, Duration (s) 12. Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
 
 - Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+- The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 
 ### Title & Subtitle
 
@@ -884,8 +886,8 @@ Hides part of the picture, such as an email address, serial number or face, with
 | Area width |  | 0.005 to 1 (0.2) |
 | Area height |  | 0.005 to 1 (0.1) |
 | Mode | Blur, pixelate or a solid box. | Blur, Pixelate, Solid box |
-| Strength | Blur or pixel size. | 0 to 1 (0.6) |
-| Shape | Rectangle, rounded or ellipse. | Rectangle, Rounded, Ellipse |
+| Strength | Blur or pixel size; 0.6 or more makes text unreadable. | 0 to 1 (0.6) |
+| Shape | Rectangle, rounded or ellipse. Use Rectangle for areas that touch the frame edges. | Rectangle, Rounded, Ellipse |
 | Edge softness | Edge softness, fraction of frame height. | 0 to 0.1 (0.004) |
 | Box color | Color picker. |  |
 

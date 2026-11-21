@@ -1836,7 +1836,8 @@
       "text": false,
       "tips": [
         "The region is grown to the frame shape so the picture never stretches.",
-        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount."
+        "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.",
+        "The region grows around its center to the frame shape. A tall strip (such as the whole right half) grows back to the full frame and does not zoom; for 2x on the right half use left 0.5, top 0.25, width 0.5, height 0.5."
       ],
       "title": "Zoom to Region"
     },
@@ -4281,7 +4282,7 @@
         },
         {
           "default": 0,
-          "help": "Direction of motion. Options: 0 Left, 1 Right, 2 Up, 3 Down.",
+          "help": "Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right). Options: 0 Left, 1 Right, 2 Up, 3 Down.",
           "index": 1,
           "label": "Direction",
           "max": 3,
@@ -5145,7 +5146,8 @@
       "placement": "item",
       "text": "Line one | Role: Name | ... (item name)",
       "tips": [
-        "Separate lines with |. A line with a colon, like \"Drums: Larry\", becomes two columns."
+        "Separate lines with |. A line with a colon, like \"Drums: Larry\", becomes two columns.",
+        "The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect."
       ],
       "title": "Scrolling Credits"
     },
@@ -5470,7 +5472,7 @@
         },
         {
           "default": 0.6,
-          "help": "Blur or pixel size.",
+          "help": "Blur or pixel size; 0.6 or more makes text unreadable.",
           "index": 5,
           "label": "Strength",
           "max": 1,
@@ -5480,7 +5482,7 @@
         },
         {
           "default": 1,
-          "help": "Rectangle, rounded or ellipse. Options: 0 Rectangle, 1 Rounded, 2 Ellipse.",
+          "help": "Rectangle, rounded or ellipse. Use Rectangle for areas that touch the frame edges. Options: 0 Rectangle, 1 Rounded, 2 Ellipse.",
           "index": 6,
           "label": "Shape",
           "max": 2,

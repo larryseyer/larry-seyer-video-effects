@@ -8,7 +8,7 @@
 //@ls help reverse Swap outgoing and incoming (use if a direction comes out backwards).
 //@ls help ease How the transition speeds up and slows down.
 //@ls help style Push moves both shots; Slide in covers; Slide out uncovers; Split opens like doors; Squeeze compresses.
-//@ls help dir Direction of motion.
+//@ls help dir Direction the pictures move; the new shot enters from the opposite side (Left: it comes in from the right).
 //@ls help blur Motion blur during the move.
 //@ls example Push left :: style=0 dir=0
 //@ls example Slide up :: style=1 dir=2

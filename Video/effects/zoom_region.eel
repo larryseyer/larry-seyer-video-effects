@@ -13,6 +13,7 @@
 //@ls example Zoom into a control :: rx=0.05 ry=0.1 rw=0.3 rh=0.2 animsrc=0 :: Split the screen recording so one item covers the zoom; its fade-in is the zoom-in time, its fade-out the zoom-out time.
 //@ls tip The region is grown to the frame shape so the picture never stretches.
 //@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
+//@ls tip The region grows around its center to the frame shape. A tall strip (such as the whole right half) grows back to the full frame and does not zoom; for 2x on the right half use left 0.5, top 0.25, width 0.5, height 0.5.
 //@ls enum animsrc Item fades|Manual
 //@ls enum ease Linear|Smooth|Ease in|Ease out
 //@ls toggle showbox

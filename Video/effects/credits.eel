@@ -12,6 +12,7 @@
 //@ls help bkop Backdrop opacity.
 //@ls example End credits :: mode=0 dur=12 :: Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
 //@ls tip Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+//@ls tip The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 //@ls text "Line one | Role: Name | ... (item name)"
 //@ls enum mode Roll up|Crawl left
 //@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact

@@ -129,7 +129,7 @@ local function overlapping(track, pos, len)
   end
 end
 
--- Adds a track named `name` at position `index` (0 = top). Returns the track.
+-- Inserts a track named `name` at position `index` (0 = top; default: after the last track). Returns the track.
 function M.add_track(name, index)
   index = index or reaper.CountTracks(0)
   reaper.InsertTrackAtIndex(index, true)
@@ -138,8 +138,8 @@ function M.add_track(name, index)
   return track
 end
 
--- Puts a media file on `track` at `pos` for `len` seconds (default: the file's length), starting `offset` seconds
--- into the file. Returns the item.
+-- Puts a media file on `track` at `pos` for `len` seconds, starting `offset` seconds into the file. Without `len`
+-- the item is as long as the file (5 s for still images). Sets no fades. Returns the item.
 function M.add_media(track, path, pos, len, offset)
   local src = reaper.PCM_Source_CreateFromFile(path)
   if not src then error("Larry Seyer Video Effects: cannot open media '" .. tostring(path) .. "'", 2) end
@@ -148,7 +148,8 @@ function M.add_media(track, path, pos, len, offset)
   reaper.SetMediaItemTake_Source(take, src)
   reaper.SetMediaItemTakeInfo_Value(take, "D_STARTOFFS", offset or 0)
   reaper.SetMediaItemInfo_Value(item, "D_POSITION", pos or 0)
-  reaper.SetMediaItemInfo_Value(item, "D_LENGTH", len or (reaper.GetMediaSourceLength(src) - (offset or 0)))
+  local srclen = reaper.GetMediaSourceLength(src) - (offset or 0)
+  reaper.SetMediaItemInfo_Value(item, "D_LENGTH", len or (srclen > 0.05 and srclen or 5))
   reaper.UpdateArrange()
   return item
 end
