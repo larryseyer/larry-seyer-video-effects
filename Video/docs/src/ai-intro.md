@@ -154,8 +154,9 @@ LS.add_title(titles, end_time - 12, 12, "Larry Seyer Drums | Created by: Larry S
 ### Multicam: cutting between camera tracks
 
 ```lua
--- Camera tracks already on the timeline and lined up in time; the first in the list becomes camera 1.
+-- Camera tracks already on the timeline; the first in the list becomes camera 1.
 local mc = LS.multicam_setup({ wide, drums, keys, guitar })      -- returns the new Multicam track (Program view)
+local moved = LS.multicam_sync(mc)                                -- line the cameras up by their audio
 LS.multicam_cut(mc, 0, 1)                                         -- first shot: camera 1 from the start
 LS.multicam_cut(mc, 8.0, 2)                                       -- straight cut to camera 2 at 8 s
 LS.multicam_cut(mc, 15.5, 3, "Cross dissolve", 15)                -- 15-frame dissolve to camera 3
@@ -165,5 +166,13 @@ LS.multicam_cut(mc, 24.0, 1, "Push", 10, 0)                       -- push to the
 Each camera track gets a `LS Transform: Multicam Camera` effect (its `camid` is the camera number; keep it last on
 the track). Cuts are square points on the `LS Transform: Multicam Switcher` envelopes `cam`, `trans`, `frames` and
 `dir` at the same time. A camera with no video at a moment shows black.
+
+`LS.multicam_sync(mc[, reference_track])` lines the cameras up when they were started at different times: every
+clip on every camera track moves to where its audio matches the reference track (default camera 1's track; any
+track with audio works, such as a board mix), to within a millisecond, as one undo step. A clip that belongs
+before the project start is trimmed at its start instead. It returns one entry per clip:
+`{ item, label, pos, shift, note }`; `pos` is nil when the audio did not match (silent, unrelated, or less than
+about five seconds in common with the reference) and the clip stays put; `note` explains that, a start trim, or
+clock drift over 10 ms. Call it before writing cuts: moving clips after cutting changes what each cut shows.
 
 ## 6. Effect reference

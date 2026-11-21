@@ -44,11 +44,12 @@ Without the panel: add a Video processor to an item or track and choose any **LS
 Cut a shoot with several cameras the way a live switcher does: play it and press the number of the camera you
 want, or click that camera in the Video window.
 
-1. Put each camera on its own track and line the tracks up in time.
+1. Put each camera on its own track.
 2. Click **Multicam** in the panel (or run *Larry Seyer Video Effects - Multicam* from the Actions list). Select
    the camera tracks (2 to 9; top to bottom become cameras 1, 2, 3...) and click **Set up from selected tracks**.
    A *Multicam* track with the **Multicam Switcher** goes in front of them, and each camera track gets a
-   **Multicam Camera** effect with its number.
+   **Multicam Camera** effect with its number. With **Line them up by their audio** ticked (the default), every
+   camera's clips then move to where their sound matches camera 1's (see *Lining cameras up by audio* below).
 3. While the Multicam window is open, the Video window shows **switcher view**: the program large, every camera
    underneath with its track name, and the camera on air outlined in red.
 4. Play. Press **1-9**, click a camera button in the window, or click a camera in the Video window. Each switch is
@@ -78,6 +79,22 @@ order; jumping the play cursor into one shows a straight cut.
   set the switcher's *Source* to *2x2 multiview* or *3x3 multiview*. **Multiview Camera Select** is the per-item
   alternative.
 - Camera audio plays as usual; mute or lower the camera tracks if your mix is on other tracks.
+
+### Lining cameras up by audio
+
+Cameras are rarely started at the same moment. If each one recorded the sound of the performance (its own
+microphone, or a feed from the desk), the Multicam window lines them up for you: open **Line up by audio**, choose
+the **reference** (camera 1 by default, or any other track with clips, such as a board mix) and click **Line up
+the cameras**. Every clip on every camera track moves to where its sound matches the reference, to within a
+millisecond; the window lists what moved. **Undo** puts everything back in one step.
+
+- A camera stopped and started again (several clips on its track) is fine: each clip is lined up on its own.
+- A clip that belongs before the start of the project is trimmed at its start instead.
+- Clips whose sound does not match (a silent camera, a different song) stay where they are, and the list says so.
+  A clip needs about five seconds of sound in common with the reference.
+- Cameras' clocks run at slightly different speeds. When a clip drifts more than 10 ms against the reference
+  over its length, it is lined up at its middle and the list says how far it drifts.
+- The sync uses each clip's audio as it is on the timeline; it does not change the video or the sound.
 
 ## Things that work the same everywhere
 

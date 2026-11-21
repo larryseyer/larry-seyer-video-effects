@@ -1,9 +1,9 @@
 -- @description Larry Seyer Video Effects: Multicam switcher window
 -- @version 1.0.0
 -- @author Larry Seyer
--- @about A switcher window for the Multicam Switcher effect: set up from selected camera tracks, then cut while it
---   plays with the number keys, the camera buttons, or by clicking a camera in the video window (switcher view).
---   Stopped, a number changes the shot at the edit cursor.
+-- @about A switcher window for the Multicam Switcher effect: set up from selected camera tracks (lining them up by
+--   their audio), then cut while it plays with the number keys, the camera buttons, or by clicking a camera in the
+--   video window (switcher view). Stopped, a number changes the shot at the edit cursor.
 
 local DIR = debug.getinfo(1, "S").source:match("^@(.*[/\\])")
 if not reaper.ImGui_GetBuiltinPath then
@@ -43,7 +43,9 @@ local TALLY_HOVER = 0xE5483FFF
 local IDLE = 0x2B3138FF
 local PUSH_FAMILY = 7   -- transitions from Push on use Direction
 
-local S = { added_clicks = MC.add_clicks(), message = nil }
+-- job: the line-up in progress; results: its outcome; ref: the reference track chosen.
+local S = { added_clicks = MC.add_clicks(), message = nil, job = nil, results = nil, ref = nil, open_sync = false,
+            sync_message = nil }
 local _, _, section, cmd = reaper.get_action_context()
 reaper.SetToggleCommandState(section, cmd, 1)
 reaper.RefreshToolbar2(section, cmd)
@@ -85,16 +87,107 @@ local function camera_list()
   return out
 end
 
+-- Lining up by audio ----------------------------------------------------------------------------------
+
+local function track_label(tr)
+  for _, c in ipairs(MC.cameras()) do
+    if c.track == tr then return string.format("Camera %d: %s", c.id, c.name) end
+  end
+  return select(2, reaper.GetTrackName(tr))
+end
+
+-- Tracks that can be the reference: the cameras, then any other track with clips (such as a board mix).
+local function reference_choices(sw)
+  local out, seen = {}, {}
+  for _, c in ipairs(MC.cameras()) do out[#out + 1] = c.track; seen[c.track] = true end
+  for i = 0, reaper.CountTracks(0) - 1 do
+    local tr = reaper.GetTrack(0, i)
+    if not seen[tr] and tr ~= (sw and sw.track) and reaper.CountTrackMediaItems(tr) > 0 then out[#out + 1] = tr end
+  end
+  return out
+end
+
+local function start_sync(ref)
+  S.results, S.open_sync = nil, true
+  if not ref then S.sync_message = "There is no camera 1 to line up against." return end
+  local job, err = MC.sync_start(ref)
+  S.job, S.sync_message = job, err
+end
+
+-- Runs the line-up job for a slice of each frame, then moves the clips.
+local function step_sync()
+  if not S.job then return end
+  local ok, done = pcall(S.job.step, S.job, 0.03)
+  if not ok then
+    S.job, S.sync_message = nil, "Lining up stopped: " .. tostring(done)
+  elseif done then
+    MC.sync_apply(S.job.results)
+    S.results, S.job = S.job.results, nil
+  end
+end
+
+local function draw_results()
+  local moved = 0
+  for _, r in ipairs(S.results) do
+    local what = "left where it was"
+    if r.pos and math.abs(r.shift) >= 0.0005 then
+      moved = moved + 1
+      what = string.format("moved %+.3f s", r.shift)
+    elseif r.pos then
+      what = "already in place"
+    end
+    ImGui.TextWrapped(ctx, r.label .. ": " .. what .. (r.note and (" (" .. r.note .. ")") or ""))
+  end
+  dim(string.format("%d of %d clips moved. Undo puts them back.", moved, #S.results))
+end
+
+local function draw_sync(sw)
+  if S.open_sync then   -- a line-up just started: open the section and scroll it into view
+    ImGui.SetScrollHereY(ctx, 0)
+    ImGui.SetNextItemOpen(ctx, true)
+    S.open_sync = false
+  end
+  if not ImGui.CollapsingHeader(ctx, "Line up by audio") then return end
+  dim("Moves every camera's clips to where their sound matches the reference track. For cameras started at "
+      .. "different times; each needs its own microphone or line feed of the same sound.")
+  if not S.ref or not reaper.ValidatePtr(S.ref, "MediaTrack*") then S.ref = MC.reference() end
+  ImGui.SetNextItemWidth(ctx, 260)
+  if ImGui.BeginCombo(ctx, "reference", S.ref and track_label(S.ref) or "(none)") then
+    for i, tr in ipairs(reference_choices(sw)) do
+      if ImGui.Selectable(ctx, track_label(tr) .. "##ref" .. i, tr == S.ref) then S.ref = tr end
+    end
+    ImGui.EndCombo(ctx)
+  end
+  ImGui.SameLine(ctx)
+  ImGui.BeginDisabled(ctx, S.job ~= nil)
+  if ImGui.Button(ctx, "Line up the cameras") then start_sync(S.ref) end
+  ImGui.EndDisabled(ctx)
+  if S.job then
+    ImGui.ProgressBar(ctx, S.job.progress, -1, 0, string.format("Listening... %d%%", math.floor(S.job.progress*100)))
+  elseif S.sync_message then
+    ImGui.TextColored(ctx, 0xE5A04AFF, S.sync_message)
+  elseif S.results then
+    draw_results()
+  end
+end
+
 local function draw_setup()
   ImGui.PushFont(ctx, FONT_B, 15)
   ImGui.Text(ctx, "Set up multicam")
   ImGui.PopFont(ctx)
-  dim("Line your camera tracks up in time, select them (2 to 9; top to bottom become cameras 1, 2, 3...) and click "
-      .. "Set up. A Multicam track with the switcher goes in front of them.")
+  dim("Select your camera tracks (2 to 9; top to bottom become cameras 1, 2, 3...) and click Set up. A Multicam "
+      .. "track with the switcher goes in front of them.")
+  ImGui.Spacing(ctx)
+  local s = MC.settings()
+  local c, v = ImGui.Checkbox(ctx, "Line them up by their audio", s.sync == 1)
+  if c then s.sync = v and 1 or 0; MC.save_settings(s) end
+  dim(s.sync == 1 and "Every camera's clips move to where their sound matches camera 1's." or
+      "Line your camera tracks up in time yourself before setting up.")
   ImGui.Spacing(ctx)
   if ImGui.Button(ctx, "Set up from selected tracks", -1, 34) then
-    local _, err = MC.setup(A.insert_in_front_of)
+    local sw, err = MC.setup(A.insert_in_front_of)
     S.message = err
+    if sw and s.sync == 1 then start_sync(MC.reference()) end
   end
   if S.message then ImGui.Spacing(ctx); ImGui.TextColored(ctx, 0xE5A04AFF, S.message) end
 end
@@ -196,6 +289,7 @@ local function keys(sw)
 end
 
 local function frame()
+  step_sync()
   local sw = MC.find()
   if not sw then draw_setup() return end
   local click = MC.poll_click()
@@ -215,6 +309,7 @@ local function frame()
   draw_cameras(sw, live)
   draw_transition()
   draw_cut_tools(sw)
+  draw_sync(sw)
   ImGui.Spacing(ctx)
   dim("Playing: press 1-9, click a camera here or in the video window (switcher view). Re-cutting over a section "
       .. "replaces its earlier cuts. Stopped: a number changes the shot at the cursor. Space plays and stops. "

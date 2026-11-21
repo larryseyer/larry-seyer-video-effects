@@ -237,9 +237,9 @@ end
 
 -- Multicam -------------------------------------------------------------------------------------------------
 
--- Makes a multicam from camera tracks (a list of 2 to 9 tracks, lined up in time; the first is camera 1): marks
--- each with a Multicam Camera effect and adds a "Multicam" track with the Multicam Switcher in front of them, in
--- Program view, showing camera 1. Returns the Multicam track.
+-- Makes a multicam from camera tracks (a list of 2 to 9 tracks; the first is camera 1): marks each with a Multicam
+-- Camera effect and adds a "Multicam" track with the Multicam Switcher in front of them, in Program view, showing
+-- camera 1. Returns the Multicam track. LS.multicam_sync then lines the cameras up by their audio.
 function M.multicam_setup(tracks)
   M.ensure_presets()
   local sw, err = MC.setup(A.insert_in_front_of, tracks)
@@ -270,6 +270,21 @@ function M.multicam_cut(multicam_track, time, cam, transition, frames, dir)
     error("Larry Seyer Video Effects: camera must be 1-9 and transition 0-" .. (#MC.TRANSITIONS - 1), 2)
   end
   MC.add_cut(sw, time, cam, style, frames or 12, dir or 0)
+end
+
+-- Lines the camera tracks up by their audio: every clip on every camera track moves to where its sound matches
+-- `reference_track` (default camera 1's track; any track with audio, such as a board mix, works). A clip that
+-- belongs before the project start is trimmed at its start instead. One undo step. Returns one entry per clip:
+-- { item, label, pos (nil when no clear match: the clip stays put), shift (seconds moved), note }.
+function M.multicam_sync(multicam_track, reference_track)
+  if not MC.on_track(multicam_track) then
+    error("Larry Seyer Video Effects: that track has no Multicam Switcher (use LS.multicam_setup)", 2)
+  end
+  local ref = reference_track or MC.reference()
+  if not ref then error("Larry Seyer Video Effects: no camera 1 to line up against", 2) end
+  local results, err = MC.sync_now(ref)
+  if not results then error("Larry Seyer Video Effects: " .. err, 2) end
+  return results
 end
 
 return M

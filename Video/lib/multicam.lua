@@ -2,6 +2,8 @@
 -- from selected tracks, and writes cuts. A cut is a point on the switcher's Camera envelope, with points at the
 -- same time on its Transition, Transition frames and Direction envelopes, all square-shaped.
 
+local AS = require "audiosync"
+
 local M = {}
 
 M.SWITCHER = "LS Transform: Multicam Switcher"
@@ -18,15 +20,18 @@ local EXT = "LSVFX_Multicam"
 local VP = "Video processor"
 local MONITOR = 0x1000000
 
--- Settings for new cuts, kept between sessions: style is the transition used when Shift is not held
--- (0 = Cut); alt_style is the one used for a transition when style is Cut.
+-- Settings kept between sessions: style is the transition used when Shift is not held (0 = Cut); alt_style is the
+-- one used for a transition when style is Cut; sync = 1 lines the cameras up by their audio after setup.
+local SETTINGS = { style = 0, alt_style = 1, frames = 12, dir = 0, sync = 1 }
+
 function M.settings()
-  local function get(k, d) return tonumber(reaper.GetExtState(EXT, k)) or d end
-  return { style = get("style", 0), alt_style = get("alt_style", 1), frames = get("frames", 12), dir = get("dir", 0) }
+  local s = {}
+  for k, d in pairs(SETTINGS) do s[k] = tonumber(reaper.GetExtState(EXT, k)) or d end
+  return s
 end
 
 function M.save_settings(s)
-  for _, k in ipairs({ "style", "alt_style", "frames", "dir" }) do reaper.SetExtState(EXT, k, tostring(s[k]), true) end
+  for k in pairs(SETTINGS) do reaper.SetExtState(EXT, k, tostring(s[k]), true) end
 end
 
 -- Finding things -----------------------------------------------------------------------------------
@@ -301,6 +306,58 @@ function M.jump(sw, dir)
     if dir < 0 and c.time < now - 0.001 then best = c.time end
   end
   if best then reaper.SetEditCurPos(best, true, true) end
+end
+
+-- Lining up by audio ---------------------------------------------------------------------------------
+
+-- The default reference for lining up: camera 1's track, or nil.
+function M.reference()
+  local cams = M.cameras()
+  return cams[1] and cams[1].track or nil
+end
+
+-- What to line up against `ref_track`: every item on the camera tracks except the reference track's own, as
+-- { item, label } for lib/audiosync.lua.
+function M.sync_items(ref_track)
+  local out = {}
+  for _, c in ipairs(M.cameras()) do
+    if c.track ~= ref_track then
+      for i = 0, reaper.CountTrackMediaItems(c.track) - 1 do
+        local item = reaper.GetTrackMediaItem(c.track, i)
+        local take = reaper.GetActiveTake(item)
+        local nm = take and select(2, reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", "", false)) or ""
+        if nm == "" and take then
+          nm = reaper.GetMediaSourceFileName(reaper.GetMediaItemTake_Source(take)):match("[^/\\]*$")
+        end
+        out[#out + 1] = { item = item, label = string.format("Camera %d: %s", c.id, nm) }
+      end
+    end
+  end
+  return out
+end
+
+-- Starts lining the cameras up against `ref_track` (see audiosync's M.start); nil and a message when there is
+-- nothing to line up.
+function M.sync_start(ref_track)
+  local items = M.sync_items(ref_track)
+  if #items == 0 then return nil, "No camera clips to line up besides the reference track's." end
+  return AS.start(ref_track, items)
+end
+
+-- The same, start to finish, for scripts: returns the results, or nil and a message.
+function M.sync_now(ref_track)
+  local items = M.sync_items(ref_track)
+  if #items == 0 then return nil, "No camera clips to line up besides the reference track's." end
+  local results = AS.analyze(ref_track, items)
+  M.sync_apply(results)
+  return results
+end
+
+-- Moves the clips to where their audio matched, as one undo step.
+function M.sync_apply(results)
+  reaper.Undo_BeginBlock()
+  AS.apply(results)
+  reaper.Undo_EndBlock("Larry Seyer Video Effects: line up cameras by audio", -1)
 end
 
 -- View and clicks ------------------------------------------------------------------------------------
