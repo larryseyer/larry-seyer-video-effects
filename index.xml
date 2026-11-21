@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<index version="1" name="Larry Seyer" commit="b86547cc11f8219c3660da3f5f45a755fec739db">
+<index version="1" name="Larry Seyer" commit="f274e38e20d4c7f4a5dd00d66d1a855730f45690">
   <category name="Video">
     <reapack name="Larry Seyer Video Effects.lua" type="script" desc="Larry Seyer Video Effects">
       <metadata>
@@ -521,6 +521,97 @@ Requires ReaImGui. Manual: https://github.com/larryseyer/larry-seyer-video-effec
         <source file="lib/lsvfx.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/b86547cc11f8219c3660da3f5f45a755fec739db/Video/lib/lsvfx.lua</source>
         <source file="lib/multicam.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/b86547cc11f8219c3660da3f5f45a755fec739db/Video/lib/multicam.lua</source>
         <source file="lib/widgets.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/b86547cc11f8219c3660da3f5f45a755fec739db/Video/lib/widgets.lua</source>
+      </version>
+      <version name="1.1.2" author="Larry Seyer" time="2026-11-21T05:55:00Z">
+        <changelog>Multicam: line the cameras up by their audio. The Multicam window's new Line up by audio section (and a setup option, on by default) moves every camera's clips to where their sound matches camera 1 or any reference track, to within a millisecond, in one undo step; clips that do not match stay put and are listed. Scripts: LS.multicam_sync.</changelog>
+        <source main="main">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/Larry%20Seyer%20Video%20Effects.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Install or update presets.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/Larry%20Seyer%20Video%20Effects%20-%20Install%20or%20update%20presets.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/Larry%20Seyer%20Video%20Effects%20-%20Multicam.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 1.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 1 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 2.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 2 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 3.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 3 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 4.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 4 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 5.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 5 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 6.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 6 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 7.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 7 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 8.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 8 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 9.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source main="main" file="Larry Seyer Video Effects - Multicam camera 9 (Shift).lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/actions/multicam_camera.lua</source>
+        <source file="LICENSE">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/LICENSE</source>
+        <source file="LS Title Carrier.png">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/LS%20Title%20Carrier.png</source>
+        <source file="README.md">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/README.md</source>
+        <source file="ai/claude-skill/larry-seyer-video-effects/SKILL.md">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/ai/claude-skill/larry-seyer-video-effects/SKILL.md</source>
+        <source file="ai/claude-skill/larry-seyer-video-effects/reference.md">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/ai/claude-skill/larry-seyer-video-effects/reference.md</source>
+        <source file="docs/AI-REFERENCE.md">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/docs/AI-REFERENCE.md</source>
+        <source file="docs/MANUAL.md">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/docs/MANUAL.md</source>
+        <source file="docs/effects.json">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/docs/effects.json</source>
+        <source file="effects/beat_pulse.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/beat_pulse.eel</source>
+        <source file="effects/blend.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/blend.eel</source>
+        <source file="effects/border.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/border.eel</source>
+        <source file="effects/callout.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/callout.eel</source>
+        <source file="effects/color_grade.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/color_grade.eel</source>
+        <source file="effects/corner_pin.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/corner_pin.eel</source>
+        <source file="effects/credits.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/credits.eel</source>
+        <source file="effects/curves.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/curves.eel</source>
+        <source file="effects/film.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/film.eel</source>
+        <source file="effects/freeze.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/freeze.eel</source>
+        <source file="effects/glitch.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/glitch.eel</source>
+        <source file="effects/glow.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/glow.eel</source>
+        <source file="effects/green_screen.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/green_screen.eel</source>
+        <source file="effects/hue_curves.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/hue_curves.eel</source>
+        <source file="effects/isolate.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/isolate.eel</source>
+        <source file="effects/lib/ease.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/ease.eel</source>
+        <source file="effects/lib/frame.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/frame.eel</source>
+        <source file="effects/lib/layer.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/layer.eel</source>
+        <source file="effects/lib/noise.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/noise.eel</source>
+        <source file="effects/lib/overlay.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/overlay.eel</source>
+        <source file="effects/lib/pyramid.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/pyramid.eel</source>
+        <source file="effects/lib/rgbsplit.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/rgbsplit.eel</source>
+        <source file="effects/lib/shapes.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/shapes.eel</source>
+        <source file="effects/lib/transition.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/transition.eel</source>
+        <source file="effects/lib/trstyles.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lib/trstyles.eel</source>
+        <source file="effects/looks.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/looks.eel</source>
+        <source file="effects/lower_third.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/lower_third.eel</source>
+        <source file="effects/magnifier.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/magnifier.eel</source>
+        <source file="effects/mirror.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/mirror.eel</source>
+        <source file="effects/motion_blur.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/motion_blur.eel</source>
+        <source file="effects/multicam.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/multicam.eel</source>
+        <source file="effects/multicam_camera.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/multicam_camera.eel</source>
+        <source file="effects/multicam_clicks.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/multicam_clicks.eel</source>
+        <source file="effects/multicam_switcher.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/multicam_switcher.eel</source>
+        <source file="effects/pan_zoom.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/pan_zoom.eel</source>
+        <source file="effects/place.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/place.eel</source>
+        <source file="effects/reframe.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/reframe.eel</source>
+        <source file="effects/region_blur.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/region_blur.eel</source>
+        <source file="effects/shake.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/shake.eel</source>
+        <source file="effects/sharpen.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/sharpen.eel</source>
+        <source file="effects/split_screen.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/split_screen.eel</source>
+        <source file="effects/spotlight.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/spotlight.eel</source>
+        <source file="effects/title_card.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/title_card.eel</source>
+        <source file="effects/tr_dissolve.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/tr_dissolve.eel</source>
+        <source file="effects/tr_flash.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/tr_flash.eel</source>
+        <source file="effects/tr_push.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/tr_push.eel</source>
+        <source file="effects/tr_shape.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/tr_shape.eel</source>
+        <source file="effects/tr_zoom.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/tr_zoom.eel</source>
+        <source file="effects/trails.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/trails.eel</source>
+        <source file="effects/transform.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/transform.eel</source>
+        <source file="effects/vhs.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/vhs.eel</source>
+        <source file="effects/vignette.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/vignette.eel</source>
+        <source file="effects/zoom_region.eel">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/effects/zoom_region.eel</source>
+        <source file="lib/agent.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/agent.lua</source>
+        <source file="lib/audiosync.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/audiosync.lua</source>
+        <source file="lib/fxapi.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/fxapi.lua</source>
+        <source file="lib/lsvfx.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/lsvfx.lua</source>
+        <source file="lib/multicam.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/multicam.lua</source>
+        <source file="lib/widgets.lua">https://raw.githubusercontent.com/larryseyer/larry-seyer-video-effects/f274e38e20d4c7f4a5dd00d66d1a855730f45690/Video/lib/widgets.lua</source>
       </version>
     </reapack>
   </category>
