@@ -66,10 +66,12 @@ want, or click that camera in the Video window.
    the cursor.
 7. Close the window: the Video window goes back to the program, which is what renders.
 
-The cuts are points on the Multicam Switcher's **Camera** envelope (with matching points on Transition,
-Transition frames and Direction), so you can also drag them in the arrange view. Drag the Camera point: while the
-Multicam window is open, or the next time you open it, the cut's other points move to it. Transitions play and
-render in order; jumping the play cursor into one shows a straight cut.
+The cuts are points on the Multicam Switcher's **Camera** envelope, so you can also drag, copy or delete them in
+the arrange view. Each point carries its cut's transition in its value, just above the camera number (2.0288 is
+camera 2 with a 15-frame cross dissolve), so the transition always moves with the cut. Change a cut's camera or
+transition in the Multicam window; a whole number typed into a point makes it use the switcher's Transition
+controls. Projects cut before version 1.1.7, which kept transitions on separate envelopes, are converted when the
+Multicam window opens. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
 
 - **Number keys anywhere in REAPER:** the keys work while the Multicam window has focus. After clicking in the
   Video window, focus is there; to switch from the keyboard then, assign *Larry Seyer Video Effects - Multicam

@@ -1,6 +1,8 @@
 -- Multicam editing for Larry Seyer Video Effects: finds the Multicam Switcher and its camera tracks, sets them up
--- from selected tracks, and writes cuts. A cut is a point on the switcher's Camera envelope, with points at the
--- same time on its Transition, Transition frames and Direction envelopes, all square-shaped.
+-- from selected tracks, and writes cuts. A cut is one square point on the switcher's Camera envelope whose value
+-- also carries the cut's transition (see M.encode), so dragging, copying or ripple editing the point keeps them
+-- together. A whole-number point (typed by hand, or written before 1.1.7) uses the switcher's Transition,
+-- Transition frames and Direction controls instead.
 
 local AS = require "audiosync"
 
@@ -87,6 +89,23 @@ local function env(sw, param, create)
   return reaper.GetFXEnvelope(sw.track, sw.fx, param, create or false)
 end
 
+-- Camera point values: camera + code/100000, code = 1 + style + 12*((frames - 1) + 120*dir), 1 to 5760, so the
+-- point sits at most 0.06 above its camera. The switcher decodes the same way.
+function M.encode(cam, style, frames, dir)
+  local function clamp(v, lo, hi) return math.min(math.max(math.floor(v + 0.5), lo), hi) end
+  style, frames, dir = clamp(style, 0, 11), clamp(frames, 1, 120), clamp(dir, 0, 3)
+  return cam + (1 + style + 12*((frames - 1) + 120*dir))/100000
+end
+
+-- Camera, then style, frames and direction (nil for a whole-number point).
+function M.decode(v)
+  local cam = math.floor(v + 0.001)
+  local code = math.floor((v - cam)*100000 + 0.5)
+  if code < 1 then return cam end
+  local r = (code - 1)//12
+  return cam, (code - 1) % 12, r % 120 + 1, r//120
+end
+
 -- Setup ----------------------------------------------------------------------------------------------
 
 local function add_preset(track, name)
@@ -134,12 +153,10 @@ function M.setup(insert_in_front_of, tracks)
   reaper.TrackFX_SetParam(mc, fx, P_SHOW, 1)
   local sw = { track = mc, fx = fx }
   local s = M.settings()
-  for param, v in pairs({ [P_CAM] = 1, [P_TRANS] = 0, [P_FRAMES] = s.frames, [P_DIR] = s.dir }) do
-    local e = env(sw, param, true)
-    reaper.DeleteEnvelopePointRange(e, -1, math.huge)
-    reaper.InsertEnvelopePoint(e, 0, v, 1, 0, false, true)
-    reaper.Envelope_SortPoints(e)
-  end
+  local e = env(sw, P_CAM, true)
+  reaper.DeleteEnvelopePointRange(e, -1, math.huge)
+  reaper.InsertEnvelopePoint(e, 0, M.encode(1, 0, s.frames, s.dir), 1, 0, false, true)
+  reaper.Envelope_SortPoints(e)
   reaper.SetOnlyTrackSelected(mc)
   M.keep_tags_last()
   reaper.TrackList_AdjustWindows(false)
@@ -155,14 +172,14 @@ local function frame_time(t)
   return math.floor(t*fr + 0.5)/fr, 0.5/fr
 end
 
--- Cut points as { time, cam } in time order.
+-- Cut points as { time, cam, value } in time order.
 function M.cuts(sw)
   local e = env(sw, P_CAM)
   local out = {}
   if not e then return out end
   for k = 0, reaper.CountEnvelopePoints(e) - 1 do
     local _, t, v = reaper.GetEnvelopePoint(e, k)
-    out[#out + 1] = { time = t, cam = math.floor(v + 0.5) }
+    out[#out + 1] = { time = t, cam = M.decode(v), value = v }
   end
   table.sort(out, function(a, b) return a.time < b.time end)
   return out
@@ -171,12 +188,12 @@ end
 -- Camera on air at time t.
 function M.live_at(sw, t)
   local e = env(sw, P_CAM)
-  if not e then return math.floor(reaper.TrackFX_GetParam(sw.track, sw.fx, P_CAM) + 0.5) end
+  if not e then return M.decode(reaper.TrackFX_GetParam(sw.track, sw.fx, P_CAM)) end
   local _, v = reaper.Envelope_Evaluate(e, t, 0, 0)
-  return math.floor(v + 0.5)
+  return (M.decode(v))
 end
 
--- The cut at or before time t (within half a frame), as { time, cam } or nil.
+-- The cut at or before time t (within half a frame), as { time, cam, value } or nil.
 function M.cut_before(sw, t)
   local _, half = frame_time(t)
   local best
@@ -194,24 +211,17 @@ local function set_point(e, t, v, half)
 end
 
 local function write_cut(sw, t, half, cam, style, frames, dir)
-  set_point(env(sw, P_CAM, true), t, cam, half)
-  set_point(env(sw, P_TRANS, true), t, style, half)
-  set_point(env(sw, P_FRAMES, true), t, frames, half)
-  set_point(env(sw, P_DIR, true), t, dir, half)
+  set_point(env(sw, P_CAM, true), t, M.encode(cam, style, frames, dir), half)
 end
 
 local function clear_range(sw, t0, t1)
-  for _, param in ipairs({ P_CAM, P_TRANS, P_FRAMES, P_DIR }) do
-    local e = env(sw, param, false)
-    if e then reaper.DeleteEnvelopePointRange(e, t0, t1) end
-  end
+  local e = env(sw, P_CAM, false)
+  if e then reaper.DeleteEnvelopePointRange(e, t0, t1) end
 end
 
 local function sort_all(sw)
-  for _, param in ipairs({ P_CAM, P_TRANS, P_FRAMES, P_DIR }) do
-    local e = env(sw, param, false)
-    if e then reaper.Envelope_SortPoints(e) end
-  end
+  local e = env(sw, P_CAM, false)
+  if e then reaper.Envelope_SortPoints(e) end
 end
 
 -- Points as { t, v, shape, tension } in time order.
@@ -235,16 +245,9 @@ local function unmatched(list, other, tol)
   return out
 end
 
--- Moves each cut's Transition, Transition frames and Direction points to its Camera point after the Camera point
--- was dragged on its own in the arrange view (paired in time order); drops them when their Camera point was
--- deleted. Not an undo step of its own: Undo goes back to before the drag, where the points still match.
--- Returns true when it changed anything.
-function M.follow_moved_cuts(sw)
-  local ce = env(sw, P_CAM)
-  if not ce then return false end
-  local cams = points(ce)
-  local _, tol = frame_time(0)
-  local changed = false
+-- Moves the Transition, Transition frames and Direction points of old-style cuts to their Camera points when a
+-- Camera point was dragged on its own (paired in time order); drops them when their Camera point was deleted.
+local function realign_lanes(sw, cams, tol)
   for _, param in ipairs({ P_TRANS, P_FRAMES, P_DIR }) do
     local e = env(sw, param)
     if e then
@@ -253,12 +256,51 @@ function M.follow_moved_cuts(sw)
       for i, p in ipairs(lost) do
         reaper.DeleteEnvelopePointRange(e, p.t - 1e-6, p.t + 1e-6)
         if dest[i] then reaper.InsertEnvelopePoint(e, dest[i].t, p.v, p.shape, p.tension, false, true) end
-        changed = true
       end
       if #lost > 0 then reaper.Envelope_SortPoints(e) end
     end
   end
-  return changed
+end
+
+-- Value of switcher control `param` at time t: its envelope when it has points, else the control.
+local function control_at(sw, param, t)
+  local e = env(sw, param)
+  if e and reaper.CountEnvelopePoints(e) > 0 then
+    local _, v = reaper.Envelope_Evaluate(e, t, 0, 0)
+    return math.floor(v + 0.5)
+  end
+  return math.floor(reaper.TrackFX_GetParam(sw.track, sw.fx, param) + 0.5)
+end
+
+-- Gives every whole-number Camera point (old projects, or typed by hand) the transition it plays with now, so it
+-- carries it from then on, and empties the Transition, Transition frames and Direction envelopes once no point
+-- needs them. Not an undo step of its own: Undo returns to a state that plays the same. Returns true when it
+-- changed anything.
+function M.convert_old_cuts(sw)
+  local ce = env(sw, P_CAM)
+  if not ce then return false end
+  local cams = points(ce)
+  local old = {}
+  for _, p in ipairs(cams) do
+    if not select(2, M.decode(p.v)) then old[#old + 1] = p end
+  end
+  if #old == 0 then return false end
+  local _, tol = frame_time(0)
+  realign_lanes(sw, cams, tol)
+  for _, p in ipairs(old) do
+    local v = M.encode(M.decode(p.v), control_at(sw, P_TRANS, p.t), control_at(sw, P_FRAMES, p.t),
+                       control_at(sw, P_DIR, p.t))
+    reaper.DeleteEnvelopePointRange(ce, p.t - 1e-6, p.t + 1e-6)
+    reaper.InsertEnvelopePoint(ce, p.t, v, p.shape, p.tension, false, true)
+  end
+  reaper.Envelope_SortPoints(ce)
+  for _, param in ipairs({ P_TRANS, P_FRAMES, P_DIR }) do
+    local e = env(sw, param)
+    if e then   -- point by point: a range delete leaves the point at 0
+      for k = reaper.CountEnvelopePoints(e) - 1, 0, -1 do reaper.DeleteEnvelopePointEx(e, -1, k) end
+    end
+  end
+  return true
 end
 
 -- Writes a cut at project time t (for scripts and agents): camera, transition style (0 = cut), frames, direction.
@@ -307,8 +349,13 @@ function M.switch(sw, cam, other, t)
   else
     local c = M.cut_before(sw, ft)
     local e = env(sw, P_CAM, true)
-    if c then set_point(e, c.time, cam, 0.0001)
-    else reaper.InsertEnvelopePoint(e, 0, cam, 1, 0, false, true) end
+    local s = M.settings()
+    if c then
+      local _, style, frames, dir = M.decode(c.value)
+      set_point(e, c.time, style and M.encode(cam, style, frames, dir) or cam, 0.0001)
+    else
+      reaper.InsertEnvelopePoint(e, 0, M.encode(cam, 0, s.frames, s.dir), 1, 0, false, true)
+    end
   end
   sort_all(sw)
   reaper.Undo_EndBlock("Larry Seyer Video Effects: multicam camera " .. cam, -1)
@@ -320,23 +367,16 @@ function M.set_cut_transition(sw, style)
   if not c then return end
   local s = M.settings()
   reaper.Undo_BeginBlock()
-  local half = 0.0001
-  set_point(env(sw, P_TRANS, true), c.time, style, half)
-  set_point(env(sw, P_FRAMES, true), c.time, s.frames, half)
-  set_point(env(sw, P_DIR, true), c.time, s.dir, half)
+  set_point(env(sw, P_CAM, true), c.time, M.encode(c.cam, style, s.frames, s.dir), 0.0001)
   sort_all(sw)
   reaper.Undo_EndBlock("Larry Seyer Video Effects: multicam transition", -1)
 end
 
--- Transition of the cut at or before time t: style, frames, direction.
-function M.transition_at(sw, t)
-  local function val(param, d)
-    local e = env(sw, param)
-    if not e then return d end
-    local _, v = reaper.Envelope_Evaluate(e, t, 0, 0)
-    return math.floor(v + 0.5)
-  end
-  return val(P_TRANS, 0), val(P_FRAMES, 12), val(P_DIR, 0)
+-- Transition of cut `c` (from M.cuts or M.cut_before): style, frames, direction.
+function M.transition(sw, c)
+  local _, style, frames, dir = M.decode(c.value)
+  if style then return style, frames, dir end
+  return control_at(sw, P_TRANS, c.time), control_at(sw, P_FRAMES, c.time), control_at(sw, P_DIR, c.time)
 end
 
 -- Removes the cut at or before the edit cursor (the first shot stays; set its camera instead).

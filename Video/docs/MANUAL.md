@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.1.6 - 43 video effects for REAPER.
+Version 1.1.7 - 43 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -66,10 +66,12 @@ want, or click that camera in the Video window.
    the cursor.
 7. Close the window: the Video window goes back to the program, which is what renders.
 
-The cuts are points on the Multicam Switcher's **Camera** envelope (with matching points on Transition,
-Transition frames and Direction), so you can also drag them in the arrange view. Drag the Camera point: while the
-Multicam window is open, or the next time you open it, the cut's other points move to it. Transitions play and
-render in order; jumping the play cursor into one shows a straight cut.
+The cuts are points on the Multicam Switcher's **Camera** envelope, so you can also drag, copy or delete them in
+the arrange view. Each point carries its cut's transition in its value, just above the camera number (2.0288 is
+camera 2 with a 15-frame cross dissolve), so the transition always moves with the cut. Change a cut's camera or
+transition in the Multicam window; a whole number typed into a point makes it use the switcher's Transition
+controls. Projects cut before version 1.1.7, which kept transitions on separate envelopes, are converted when the
+Multicam window opens. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
 
 - **Number keys anywhere in REAPER:** the keys work while the Multicam window has focus. After clicking in the
   Video window, focus is there; to switch from the keyboard then, assign *Larry Seyer Video Effects - Multicam
@@ -243,15 +245,15 @@ Lets you click a camera in the video window to cut to it while the Multicam Swit
 
 ![Multicam Switcher](images/multicam_switcher.jpg)
 
-Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window). **Goes on:** track. Preset name: `LS Transform: Multicam Switcher`.
+Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut carries its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window). **Goes on:** track. Preset name: `LS Transform: Multicam Switcher`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
-| Camera | Camera on air. Its envelope holds the cuts: each point switches to that camera. | 1 to 9 (1) |
+| Camera | Camera on air. Its envelope holds the cuts: each point switches to that camera. A cut made in the Multicam window also carries its transition in the point's value, just above the camera number (2.0288 is camera 2 with a 15-frame cross dissolve), so it moves with the point. | 1 to 9 (1) |
 | View | Program shows the edit (what renders). Switcher shows the program with all cameras underneath, for cutting; the Multicam action sets it back to Program when you close it. | Program, Switcher |
-| Transition | How the switch to the next camera happens. Automate it with the camera to give each cut its own transition. | Cut, Cross dissolve, Dip to black, Dip to white, Additive dissolve, Blur dissolve, Luma dissolve, Push, Slide in, Slide out, Split open, Squeeze |
-| Transition frames | Length of the transition in frames. | 1 to 120 (12) |
-| Direction | Direction for Push, Slide, Split and Squeeze. | Left, Right, Up, Down |
+| Transition | How the switch happens at Camera points with a whole-number value (typed by hand). Cuts made in the Multicam window carry their own transition. | Cut, Cross dissolve, Dip to black, Dip to white, Additive dissolve, Blur dissolve, Luma dissolve, Push, Slide in, Slide out, Split open, Squeeze |
+| Transition frames | Length of the transition in frames (for whole-number Camera points). | 1 to 120 (12) |
+| Direction | Direction for Push, Slide, Split and Squeeze (for whole-number Camera points). | Left, Right, Up, Down |
 | Smoothness | How the transition speeds up and slows down. | Linear, Smooth, Ease in, Ease out |
 | Motion blur | Motion blur for Push and Slide. | 0 to 1 (0.5) |
 | Source | Camera tracks: each camera on its own track, marked with a Multicam Camera effect. Multiview: one recording with the cameras in a grid, on the track directly behind. | Camera tracks, 2x2 multiview, 3x3 multiview |
@@ -260,14 +262,11 @@ Cuts between cameras like a live switcher. Goes on a Multicam track in front of 
 
 **Try this:**
 
-- *Straight cuts* - Transition Cut.
-- *Half-second dissolves (30 fps)* - Transition Cross dissolve, Transition frames 15.
-- *Quick push to the left* - Transition Push, Transition frames 10, Direction Left.
 - *Switcher view while cutting* - View Switcher.
 - *2x2 multiview recording* - Source 2x2 multiview.
 
 - Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
-- Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.
+- Edit cuts on the Camera envelope: drag a point to move a cut with its transition. To change a cut's camera or transition, use the Multicam window (stopped, a number changes the shot at the cursor); typing a whole number into a point makes it use the Transition controls.
 - Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
 
 ### Multiview Camera Select

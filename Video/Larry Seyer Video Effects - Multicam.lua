@@ -260,7 +260,7 @@ local function draw_cut_tools(sw)
   if ImGui.Button(ctx, "Make it a cut") then MC.set_cut_transition(sw, 0) end
   local c = MC.cut_before(sw, reaper.GetCursorPosition())
   if c then
-    local st, fr, dr = MC.transition_at(sw, c.time)
+    local st, fr, dr = MC.transition(sw, c)
     local what = st == 0 and "cut" or (MC.TRANSITIONS[st + 1] .. ", " .. fr .. " frames"
                  .. (st >= PUSH_FAMILY and (", " .. MC.DIRECTIONS[dr + 1]) or ""))
     dim(string.format("At the cursor: camera %d from %s (%s).", c.cam, reaper.format_timestr_pos(c.time, "", -1), what))
@@ -290,7 +290,7 @@ local function frame()
   step_sync()
   local sw = MC.find()
   if not sw then draw_setup() return end
-  MC.follow_moved_cuts(sw)
+  MC.convert_old_cuts(sw)
   local click = MC.poll_click()
   if click and click.cam >= 1 then MC.switch(sw, click.cam, click.shift, click.time) end
   local live = MC.live_at(sw, cursor_time())

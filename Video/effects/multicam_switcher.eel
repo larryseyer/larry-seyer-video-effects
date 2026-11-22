@@ -2,24 +2,21 @@
 //@ls category Transform
 //@ls title Multicam Switcher
 //@ls where track
-//@ls about Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).
-//@ls help cam Camera on air. Its envelope holds the cuts: each point switches to that camera.
+//@ls about Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut carries its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).
+//@ls help cam Camera on air. Its envelope holds the cuts: each point switches to that camera. A cut made in the Multicam window also carries its transition in the point's value, just above the camera number (2.0288 is camera 2 with a 15-frame cross dissolve), so it moves with the point.
 //@ls help show Program shows the edit (what renders). Switcher shows the program with all cameras underneath, for cutting; the Multicam action sets it back to Program when you close it.
-//@ls help trans How the switch to the next camera happens. Automate it with the camera to give each cut its own transition.
-//@ls help frames Length of the transition in frames.
-//@ls help dir Direction for Push, Slide, Split and Squeeze.
+//@ls help trans How the switch happens at Camera points with a whole-number value (typed by hand). Cuts made in the Multicam window carry their own transition.
+//@ls help frames Length of the transition in frames (for whole-number Camera points).
+//@ls help dir Direction for Push, Slide, Split and Squeeze (for whole-number Camera points).
 //@ls help ease How the transition speeds up and slows down.
 //@ls help pushblur Motion blur for Push and Slide.
 //@ls help source Camera tracks: each camera on its own track, marked with a Multicam Camera effect. Multiview: one recording with the cameras in a grid, on the track directly behind.
 //@ls help trim With a multiview recording: cuts this fraction off each cell's edges to hide dividers.
 //@ls help names Show each camera's track name in switcher view.
-//@ls example Straight cuts :: trans=0
-//@ls example Half-second dissolves (30 fps) :: trans=1 frames=15
-//@ls example Quick push to the left :: trans=7 frames=10 dir=0
 //@ls example Switcher view while cutting :: show=1
 //@ls example 2x2 multiview recording :: source=1
 //@ls tip Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
-//@ls tip Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.
+//@ls tip Edit cuts on the Camera envelope: drag a point to move a cut with its transition. To change a cut's camera or transition, use the Multicam window (stopped, a number changes the shot at the cursor); typing a whole number into a point makes it use the Transition controls.
 //@ls tip Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
 //@ls enum show Program|Switcher
 //@ls enum trans Cut|Cross dissolve|Dip to black|Dip to white|Additive dissolve|Blur dissolve|Luma dissolve|Push|Slide in|Slide out|Split open|Squeeze
@@ -125,14 +122,23 @@ function cam_canvas(img, k) (
 
 // Live camera and transition. Frames arrive in order while playing and rendering; a jump starts fresh (no
 // transition), so scrubbing always shows a clean picture.
+// A Camera value above its whole number carries the cut's transition: code = 1 + style + 12*((frames - 1) + 120*dir)
+// in the fraction times 100000 (the Multicam action writes it). A whole-number value uses the Transition controls.
 frame_no = floor(project_time*framerate + 0.5);
-want = min(max(floor(cam + 0.5), 1), ncam);
+camno = floor(cam + 0.001);
+want = min(max(camno, 1), ncam);
 steady = frame_no >= lastframe && frame_no - lastframe <= 2;
 !steady ? tstart = -1000000;
 want != live ? (
-  steady && live >= 1 && trans >= 0.5 ? (
+  code = floor((cam - camno)*100000 + 0.5);
+  code >= 1 ? (
+    ckind = (code - 1) % 12; cr = floor((code - 1)/12); clen = cr % 120 + 1; cdir = floor(cr/120);
+  ) : (
+    ckind = floor(trans + 0.5); clen = floor(frames + 0.5); cdir = floor(dir + 0.5);
+  );
+  steady && live >= 1 && ckind >= 1 ? (
     fromcam = live; tstart = frame_no;
-    tkind = floor(trans + 0.5); tlen = max(floor(frames + 0.5), 1); tdir = floor(dir + 0.5);
+    tkind = ckind; tlen = max(clen, 1); tdir = cdir;
   ) : tstart = -1000000;
   live = want;
 );

@@ -635,12 +635,12 @@
       "title": "Multicam Clicks"
     },
     {
-      "about": "Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut can have its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).",
+      "about": "Cuts between cameras like a live switcher. Goes on a Multicam track in front of the camera tracks; its Camera envelope is the cut list and each cut carries its own transition. Switcher view shows the program with every camera underneath and the live one outlined in red. Set it up and cut with the Larry Seyer Video Effects - Multicam action (number keys or clicks in the video window).",
       "category": "Transform",
       "controls": [
         {
           "default": 1,
-          "help": "Camera on air. Its envelope holds the cuts: each point switches to that camera.",
+          "help": "Camera on air. Its envelope holds the cuts: each point switches to that camera. A cut made in the Multicam window also carries its transition in the point's value, just above the camera number (2.0288 is camera 2 with a 15-frame cross dissolve), so it moves with the point.",
           "index": 0,
           "label": "Camera",
           "max": 9,
@@ -664,7 +664,7 @@
         },
         {
           "default": 0,
-          "help": "How the switch to the next camera happens. Automate it with the camera to give each cut its own transition. Options: 0 Cut, 1 Cross dissolve, 2 Dip to black, 3 Dip to white, 4 Additive dissolve, 5 Blur dissolve, 6 Luma dissolve, 7 Push, 8 Slide in, 9 Slide out, 10 Split open, 11 Squeeze.",
+          "help": "How the switch happens at Camera points with a whole-number value (typed by hand). Cuts made in the Multicam window carry their own transition. Options: 0 Cut, 1 Cross dissolve, 2 Dip to black, 3 Dip to white, 4 Additive dissolve, 5 Blur dissolve, 6 Luma dissolve, 7 Push, 8 Slide in, 9 Slide out, 10 Split open, 11 Squeeze.",
           "index": 2,
           "label": "Transition",
           "max": 11,
@@ -688,7 +688,7 @@
         },
         {
           "default": 12,
-          "help": "Length of the transition in frames.",
+          "help": "Length of the transition in frames (for whole-number Camera points).",
           "index": 3,
           "label": "Transition frames",
           "max": 120,
@@ -698,7 +698,7 @@
         },
         {
           "default": 0,
-          "help": "Direction for Push, Slide, Split and Squeeze. Options: 0 Left, 1 Right, 2 Up, 3 Down.",
+          "help": "Direction for Push, Slide, Split and Squeeze (for whole-number Camera points). Options: 0 Left, 1 Right, 2 Up, 3 Down.",
           "index": 4,
           "label": "Direction",
           "max": 3,
@@ -778,30 +778,6 @@
         {
           "notes": "",
           "set": {
-            "trans": 0
-          },
-          "title": "Straight cuts"
-        },
-        {
-          "notes": "",
-          "set": {
-            "frames": 15,
-            "trans": 1
-          },
-          "title": "Half-second dissolves (30 fps)"
-        },
-        {
-          "notes": "",
-          "set": {
-            "dir": 0,
-            "frames": 10,
-            "trans": 7
-          },
-          "title": "Quick push to the left"
-        },
-        {
-          "notes": "",
-          "set": {
             "show": 1
           },
           "title": "Switcher view while cutting"
@@ -820,7 +796,7 @@
       "text": false,
       "tips": [
         "Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.",
-        "Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.",
+        "Edit cuts on the Camera envelope: drag a point to move a cut with its transition. To change a cut's camera or transition, use the Multicam window (stopped, a number changes the shot at the cursor); typing a whole number into a point makes it use the Transition controls.",
         "Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut."
       ],
       "title": "Multicam Switcher"
@@ -6870,5 +6846,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.1.6"
+  "version": "1.1.7"
 }
