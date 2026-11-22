@@ -22,7 +22,7 @@
 //@ls help shadows Lifts (positive) or deepens dark areas only.
 //@ls help highlights Recovers (negative) or boosts bright areas.
 //@ls help mix Blend with the original (1 = full effect).
-//@ls help split Shows the original on the left half for comparison. Turn off before rendering.
+//@ls help split Shows this effect's input on the left half for comparison (looks and effects before or after Color Grade show on both halves). Turn off before rendering.
 //@ls example Warm stage look :: temp=0.25 sat=1.1 contrast=1.1
 //@ls example Teal shadows, warm highlights :: liftr=-0.02 liftb=0.04 gainr=0.06 gainb=-0.05 contrast=1.1
 //@ls example Rescue a dark recording :: exposure=0.5 shadows=0.3

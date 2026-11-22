@@ -36,9 +36,14 @@ date the next time they open.
 - **Frame pad:** effects with positions or areas show a frame you drag on (points move, areas move and resize
   from the corner square). Watch the result in REAPER's Video window.
 - **+ Lower third, + Title, + Callout** add a transparent title item at the edit cursor (or over the time
-  selection) carrying that effect. The item name is the text; `|` starts a new line. The item's fade-in and
-  fade-out handles set how long it animates on and off.
-- **Lock** keeps the panel on the current item or track while you select other things.
+  selection) carrying that effect, and select it. The item name is the text; `|` starts a new line. The item's
+  fade-in and fade-out handles set how long it animates on and off. The item goes on the first track named
+  **Titles** that has nothing at that time; only when every Titles track is busy there is a new one added, in
+  front of everything (a track shows one item at a time).
+- **Lock** keeps the panel on the current item or track while you select other things. While it is on, the line
+  under the buttons reads *Locked to ...* in color.
+- Effects that work on a whole track (transitions, Split Screen) go on the selected item's track; the panel then
+  shows that track and says so.
 
 Without the panel: add a Video processor to an item or track and choose any **LS ...** entry from its preset list.
 
@@ -71,7 +76,7 @@ the arrange view. Each point carries its cut's transition in its value, just abo
 camera 2 with a 15-frame cross dissolve), so the transition always moves with the cut. Change a cut's camera or
 transition in the Multicam window; a whole number typed into a point makes it use the switcher's Transition
 controls. Projects cut before version 1.1.7, which kept transitions on separate envelopes, are converted when the
-Multicam window opens. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
+Multicam window opens; check the transitions of a converted project, since some can come back as straight cuts. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
 
 - **Number keys anywhere in REAPER:** the keys work while the Multicam window has focus. After clicking in the
   Video window, focus is there; to switch from the keyboard then, assign *Larry Seyer Video Effects - Multicam
@@ -113,7 +118,21 @@ millisecond; the window lists what moved. **Undo** puts everything back in one s
 - **Transitions:** put a transition effect on a track; every crossfade between items on that track becomes the
   transition, as long as the crossfade.
 - **Animated entrances** follow the item fades (titles, callouts, picture-in-picture, Zoom to Region,
-  Spotlight, Magnifier).
+  Spotlight, Magnifier). Where the edit cursor is inside a fade, the effect shows part way in; set *Animate with*
+  to *Manual* to keep it fully on regardless of the fades.
+- **Still pictures:** REAPER treats a picture (PNG, JPG) as a 5-second clip: with *Loop source* off it disappears
+  after 5 s, and with it on, effects that move over time start again every 5 s. When you add an effect to a
+  picture item, the panel makes the picture hold for the whole item (it wraps the file in a long section of
+  itself), so Pan & Zoom and Scrolling Credits run once from start to end. Title items from the **+** buttons are
+  made that way.
+- **Vertical and square projects:** REAPER fits a clip of a different shape inside the frame with bars (a wide
+  clip in a 1080x1920 project shows as a band across the middle). Add **Reframe** to the clip to fill the frame
+  and choose which part shows.
+- **Fonts:** the Font menus name styles (Clean sans, Serif, Mono...). Each style uses a font that comes with
+  macOS, Windows or Linux, picked when the panel installs the presets on that computer.
+- **Switching controls during playback:** REAPER prepares video frames ahead of the play position, so a control
+  changed while playing (for example ticking Freeze) shows up about a second later. Keyframes take effect on
+  their exact frame.
 - **Speed:** most effects are light. Effects that process every pixel (Color Grade with hue rotate or vibrance,
   Hue Curves, Isolate Color, Looks, Sharpen, Green Screen, Blend Modes, some transitions) are slower at 4K.
   For smooth playback while editing, lower the preview resolution in the Video window, or bypass them until

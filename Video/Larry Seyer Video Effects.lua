@@ -1,5 +1,5 @@
 -- @description Larry Seyer Video Effects: control panel for the Larry Seyer Video Effects Video Processor effects
--- @version 1.1.7
+-- @version 1.1.8
 -- @author Larry Seyer
 -- @about Library of video effects for REAPER's Video Processor with color wheels, curve editors, a frame pad
 --   for positions and regions, keyframes at the edit cursor, and one-click titles and callouts.
@@ -44,7 +44,8 @@ local FONT_B = ImGui.CreateFont("sans-serif", ImGui.FontFlags_Bold)
 ImGui.Attach(ctx, FONT)
 ImGui.Attach(ctx, FONT_B)
 
-local S = { locked = nil, sel = nil, filter = "", curve_tab = 1, hue_tab = 1, pending_undo = nil }
+local S = { locked = nil, sel = nil, filter = "", curve_tab = 1, hue_tab = 1, pending_undo = nil,
+            note = nil, groups = {} }
 
 -- Helpers ------------------------------------------------------------------------------------------
 
@@ -108,6 +109,27 @@ local function key_button(t, fx, p, v)
   if ImGui.IsItemClicked(ctx) then
     if here then A.delete_key(t, fx, p.index - 1) else A.set_key(t, fx, p.index - 1, v) end
     undo_point("keyframe " .. p.label)
+  end
+end
+
+-- While stopped, REAPER keeps showing its cached frames after an item is renamed (the text of titles and callouts).
+-- Clearing the video cache and moving the edit cursor 1 ms, then back, makes it draw the frame again. Runs once
+-- typing pauses for 0.3 s.
+local VIDEO_CLEAR_CACHE = 50123   -- Video: Clear video cache/re-render frames
+local function refresh_video_step()
+  local r = S.refresh
+  if not r and S.refresh_at and reaper.time_precise() >= S.refresh_at then
+    S.refresh_at = nil
+    if reaper.GetPlayState() & 5 == 0 then   -- playing or recording draws new frames anyway
+      reaper.Main_OnCommand(VIDEO_CLEAR_CACHE, 0)
+      S.refresh = { stage = 1, pos = reaper.GetCursorPosition() }
+    end
+  elseif r and r.stage == 1 then
+    reaper.SetEditCurPos(r.pos + 0.001, false, false)
+    r.stage = 2
+  elseif r then
+    if math.abs(reaper.GetCursorPosition() - (r.pos + 0.001)) < 1e-6 then reaper.SetEditCurPos(r.pos, false, false) end
+    S.refresh = nil
   end
 end
 
@@ -294,7 +316,7 @@ local function editor_header(t, fx, e)
     if t.kind == "take" then
       ImGui.SetNextItemWidth(ctx, -1)
       local changed, s = ImGui.InputText(ctx, "##text", A.take_text(t) or "")
-      if changed then A.set_take_text(t, s) end
+      if changed then A.set_take_text(t, s); S.refresh_at = reaper.time_precise() + 0.3 end
       after_edit("text")
       small_text(e.text .. ". Use | to start a new line.")
     else
@@ -337,28 +359,56 @@ local function draw_editor(t, fx, e)
     undo_point(S.pending_undo)
     S.pending_undo = nil
   end
+  -- space after the last control, so a dropdown at the bottom can be scrolled up and open fully below itself
+  ImGui.Dummy(ctx, 1, ImGui.GetFrameHeightWithSpacing(ctx) * 8)
 end
 
 -- Library ------------------------------------------------------------------------------------------
 
+-- The panel follows the selection, so whatever an add creates or moves to (a new title item, the track of a
+-- track-only effect) becomes the selection; Lock stays as the user set it.
 local function add_effect(t, e)
   reaper.Undo_BeginBlock()
   local dest = t
   if e.where == "item" and (not t or t.kind ~= "take") then
     dest = A.add_carrier(CARRIER, e.text and (e.category == "Title" and "Title | Subtitle" or "Label") or "", 5)
-    S.locked = dest
   elseif e.where == "track" and t and t.kind == "take" then
     dest = { kind = "track", track = t.track }
-    S.locked = dest
+    A.select_only_track(t.track)
+    S.note = { target = dest, text = e.title .. " goes on a track, not on a single item, so it was added to "
+               .. A.describe(dest) .. ". Click an item to edit its own effects again." }
+  elseif t and t.kind == "take" then
+    t.take = A.hold_still(t.item, t.take)
   end
   if not dest then
     reaper.Undo_EndBlock("Larry Seyer Video Effects: add " .. e.title, -1)
     reaper.MB("Select a track or an item first.", "Larry Seyer Video Effects", 0)
     return
   end
+  if S.locked and not A.same(S.locked, dest) then S.locked = nil end
   local fx = A.add(dest, e.name)
   S.sel = fx
   reaper.Undo_EndBlock("Larry Seyer Video Effects: add " .. e.title, -1)
+end
+
+local function matches(e, q)
+  if q == "" then return true end
+  for _, s in ipairs({ e.title, e.category or "", e.about or "", e.tags }) do
+    if s:lower():find(q, 1, true) then return true end
+  end
+  return false
+end
+
+-- Which library groups are open, kept per project tab (a project opened for the first time starts with
+-- Transform open). While searching, every group with a match is open.
+local function group_header(cat, searching)
+  local proj = tostring(reaper.EnumProjects(-1))
+  S.groups[proj] = S.groups[proj] or { Transform = true }
+  local g = S.groups[proj]
+  ImGui.SetNextItemOpen(ctx, searching or g[cat] == true, ImGui.Cond_Always)
+  local open = ImGui.CollapsingHeader(ctx, cat)
+  if not searching then g[cat] = open end
+  return open
 end
 
 local function draw_library(t)
@@ -369,18 +419,17 @@ local function draw_library(t)
   local cat
   local open = true
   for _, e in ipairs(EFFECTS) do
-    local match = e.where ~= "monitor"   -- Monitoring FX effects are managed by their own actions
-      and (q == "" or e.title:lower():find(q, 1, true) or (e.about or ""):lower():find(q, 1, true))
-    if match then
+    -- Monitoring FX effects are managed by their own actions
+    if e.where ~= "monitor" and matches(e, q) then
       if e.category ~= cat then
         cat = e.category
-        open = ImGui.CollapsingHeader(ctx, cat, nil, (q ~= "" or cat == "Transform") and ImGui.TreeNodeFlags_DefaultOpen or 0)
+        open = group_header(cat, q ~= "")
       end
       if open then
         if ImGui.Selectable(ctx, "  " .. e.title .. "##lib" .. e.file) then add_effect(t, e) end
         if ImGui.IsItemHovered(ctx, ImGui.HoveredFlags_DelayShort) then
           local where = e.where == "item" and "Adds a title item if no item is selected."
-                     or e.where == "track" and "Goes on the track (works on crossfades between its items)."
+                     or e.where == "track" and "Goes on a track, not a single item (with an item selected, on that item's track)."
                      or "Goes on the selected item, or the selected track."
           ImGui.SetTooltip(ctx, (e.about or "") .. "\n\n" .. where)
         end
@@ -416,26 +465,50 @@ end
 
 -- Main window --------------------------------------------------------------------------------------
 
+-- `s` cut to fit `width` pixels, ending in "..." when shortened.
+local function fit_text(s, width)
+  if ImGui.CalcTextSize(ctx, s) <= width then return s end
+  local lo, hi = 0, #s
+  while lo < hi do
+    local mid = (lo + hi + 1) // 2
+    if ImGui.CalcTextSize(ctx, s:sub(1, mid) .. "...") <= width then lo = mid else hi = mid - 1 end
+  end
+  return s:sub(1, lo) .. "..."
+end
+
+-- Second header row: Lock and what the panel is editing (shortened to fit; the full name is in the tooltip).
+local function target_row(t)
+  local lk = S.locked ~= nil
+  local c, nv = ImGui.Checkbox(ctx, "Lock", lk)
+  if c then S.locked = nv and t or nil end
+  if ImGui.IsItemHovered(ctx) then
+    ImGui.SetTooltip(ctx, lk and "Locked: the panel keeps editing this item or track. Untick to follow the selection again."
+                              or "Keep editing this item or track while you select others")
+  end
+  ImGui.SameLine(ctx)
+  local full = (lk and "Locked to " or "") .. A.describe(t)
+  local shown = fit_text(full, ImGui.GetContentRegionAvail(ctx))
+  ImGui.TextColored(ctx, lk and W.ACCENT or W.TEXT_DIM, shown)
+  if shown ~= full and ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, full) end
+end
+
 local function toolbar(t)
   ImGui.PushFont(ctx, FONT_B, 15)
   ImGui.TextColored(ctx, W.ACCENT, "Larry Seyer Video Effects")
   ImGui.PopFont(ctx)
-  ImGui.SameLine(ctx)
-  ImGui.TextColored(ctx, W.TEXT_DIM, "  " .. A.describe(t))
-  ImGui.SameLine(ctx)
-  local lk = S.locked ~= nil
-  local c, nv = ImGui.Checkbox(ctx, "Lock", lk)
-  if c then S.locked = nv and t or nil end
-  if ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, "Keep editing this item or track while you select others") end
-  ImGui.SameLine(ctx)
+  ImGui.SameLine(ctx, 0, 16)
   for _, q in ipairs({ { "Lower third", "LS Title: Lower Third", "Your Name | Subtitle" },
                        { "Title", "LS Title: Title & Subtitle", "Title | Subtitle" },
                        { "Callout", "LS Tutorial: Callout", "Label" } }) do
     if ImGui.SmallButton(ctx, "+ " .. q[1]) then
       reaper.Undo_BeginBlock()
       local dest = A.add_carrier(CARRIER, q[3], 5)
-      S.sel = A.add(dest, q[2]); S.locked = dest
+      S.sel = A.add(dest, q[2]); S.locked = nil
       reaper.Undo_EndBlock("Larry Seyer Video Effects: add " .. q[1], -1)
+    end
+    if ImGui.IsItemHovered(ctx) then
+      ImGui.SetTooltip(ctx, "Adds a " .. q[1]:lower() .. " item at the edit cursor (or over the time selection) on a "
+        .. "Titles track: the first one free at that time, or a new one in front of everything")
     end
     ImGui.SameLine(ctx)
   end
@@ -448,6 +521,7 @@ local function toolbar(t)
     if reaper.CF_ShellExecute then reaper.CF_ShellExecute(L.MANUAL_URL) else os.execute('open "' .. L.MANUAL_URL .. '"') end
   end
   if ImGui.IsItemHovered(ctx) then ImGui.SetTooltip(ctx, "Open the illustrated manual in your browser") end
+  target_row(t)
   ImGui.Separator(ctx)
 end
 
@@ -461,6 +535,13 @@ local function frame()
   end
   ImGui.SameLine(ctx)
   if ImGui.BeginChild(ctx, "main", avail_w - 238, avail_h, ImGui.ChildFlags_Borders) then
+    if S.note and not A.same(S.note.target, t) then S.note = nil end
+    if S.note then
+      ImGui.PushStyleColor(ctx, ImGui.Col_Text, W.ACCENT)
+      ImGui.TextWrapped(ctx, S.note.text)
+      ImGui.PopStyleColor(ctx)
+      ImGui.Separator(ctx)
+    end
     if t then
       local inst = A.instances(t, BYNAME)
       draw_chain(t, inst)
@@ -479,15 +560,42 @@ local function frame()
   end
 end
 
+-- The panel's position and size are saved here and set again when it opens, so it comes back exactly where it was.
+local RECT_KEY = "panel_rect"
+local saved_rect = {}
+for v in reaper.GetExtState("LS_VIDEO_FX", RECT_KEY):gmatch("%-?%d+") do saved_rect[#saved_rect + 1] = tonumber(v) end
+
+local function place_window()
+  if #saved_rect == 4 then
+    ImGui.SetNextWindowPos(ctx, saved_rect[1], saved_rect[2], ImGui.Cond_Once)
+    ImGui.SetNextWindowSize(ctx, saved_rect[3], saved_rect[4], ImGui.Cond_Once)
+  else
+    ImGui.SetNextWindowSize(ctx, 900, 780, ImGui.Cond_FirstUseEver)
+  end
+end
+
+local function remember_window()
+  if ImGui.IsWindowDocked(ctx) or ImGui.IsMouseDown(ctx, ImGui.MouseButton_Left) then return end
+  local x, y = ImGui.GetWindowPos(ctx)
+  local w, h = ImGui.GetWindowSize(ctx)
+  local rect = string.format("%d %d %d %d", math.floor(x + 0.5), math.floor(y + 0.5), math.floor(w + 0.5), math.floor(h + 0.5))
+  if rect ~= S.rect then
+    S.rect = rect
+    reaper.SetExtState("LS_VIDEO_FX", RECT_KEY, rect, true)
+  end
+end
+
 local function loop()
   ImGui.PushFont(ctx, FONT, 14)
   local nc, nv = W.push_theme(ctx)
-  ImGui.SetNextWindowSize(ctx, 900, 780, ImGui.Cond_FirstUseEver)
+  place_window()
   local visible, open = ImGui.Begin(ctx, "Larry Seyer Video Effects", true)
   if visible then
+    remember_window()
     frame()
     ImGui.End(ctx)
   end
+  refresh_video_step()
   ImGui.PopStyleVar(ctx, nv)
   ImGui.PopStyleColor(ctx, nc)
   ImGui.PopFont(ctx)

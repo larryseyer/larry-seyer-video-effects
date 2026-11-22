@@ -4,7 +4,7 @@
 //@ls where both
 //@ls about Moving subjects leave fading echoes behind them, with optional zoom or spin drift for psychedelic tunnels.
 //@ls help persist Trail length (0 none, 0.95 very long).
-//@ls help mode Blend smears; Additive glow brightens overlapping trails.
+//@ls help mode Blend smears every moving part; Additive glow keeps only the trails that are brighter than the picture, adding light where they cross.
 //@ls help drift Trails zoom in or out over time.
 //@ls help spin Trails rotate over time, degrees per frame.
 //@ls example Dreamy echoes :: persist=0.85
@@ -21,20 +21,38 @@ own = input_info(0, sw, sh);
 ls_frame_size();
 W = project_w; H = project_h;
 
+// acc holds the last output, base the output before it (the trails history). A frame drawn again at the same time
+// (paused, or a control changed) is redrawn from base, so it never blends into itself; any other step that is not
+// the next frame (a cursor jump, a seek, a scrub backwards) starts the trails over.
 own ? (
-  jump = abs(project_time - last_t) > 0.5 || !acc || acc_w != W || acc_h != H;
+  fdt = 1/max(framerate, 1);
+  dt = project_time - last_t;
+  sized = acc && acc_w == W && acc_h == H;
+  same = sized && abs(dt) < fdt*0.25;
+  step = sized && !same && dt > 0 && dt < fdt*2.5;
+  step ? ( tmp = base; base = acc; acc = tmp; base_ok = 1; ) : !same ? base_ok = 0;
   last_t = project_time;
   gfx_mode = 0; gfx_a = 1;
-  jump || persist < 0.001 ? (
+  !base_ok || persist < 0.001 ? (
     gfx_blit(0, 1);
   ) : (
-    mode == 1 ? ( gfx_blit(0, 1); gfx_mode = 0x101; ) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); gfx_mode = 0x100; );
-    gfx_a = persist*(mode == 1 ? 0.4 : 1);
+    // the history, drifted, then the new frame on top
+    gfx_set(0); gfx_fillrect(0, 0, W, H);
+    gfx_mode = 0; gfx_a = 1;
     zs = 1 + drift;
     abs(spin) > 0.001 ? (
-      gfx_rotoblit(acc, spin*$pi/180, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
-    ) : gfx_blit(acc, 0, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
-    mode == 0 ? ( gfx_mode = 0x100; gfx_a = 1 - persist; gfx_blit(0, 1); gfx_a = 1; gfx_mode = 0; );
+      gfx_rotoblit(base, spin*$pi/180, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
+    ) : gfx_blit(base, 0, (W - W*zs)*0.5, (H - H*zs)*0.5, W*zs, H*zs);
+    mode == 1 ? (
+      // Additive glow: only light the history has beyond the new frame is added, so still areas keep their brightness
+      cur = gfx_img_resize(cur, W, H);
+      gfx_dest = cur; gfx_blit(0, 1); gfx_dest = -1;
+      tp = persist;
+      gfx_evalrect(0, 0, W, H, "r = sr + tp*max(r - sr, 0); g = sg + tp*max(g - sg, 0); b = sb + tp*max(b - sb, 0); a = 255;", 0, cur);
+    ) : (
+      // Blend: the weights sum to 1, so a still picture keeps its brightness
+      gfx_mode = 0x100; gfx_a = 1 - persist; gfx_blit(0, 1);
+    );
   );
   acc = gfx_img_resize(acc, W, H); acc_w = W; acc_h = H;
   gfx_dest = acc; gfx_mode = 0; gfx_a = 1; gfx_blit(-1); gfx_dest = -1;

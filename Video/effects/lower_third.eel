@@ -10,12 +10,12 @@
 //@ls help size Name text height, fraction of frame height.
 //@ls help subsize Subtitle size relative to the name.
 //@ls help baropacity Bar opacity.
-//@ls help font Font.
+//@ls help font Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux).
 //@ls help bold Bold name.
 //@ls help anim Animation; plays over the item fade-in and reverses over the fade-out.
 //@ls help animsrc Item fades or Manual amount.
 //@ls help amount Manual mode: 0 hidden, 1 shown.
-//@ls example Guest name :: style=0 align=0 :: Item name: "Jane Doe | Drums". Item fades 0.5 s.
+//@ls example Guest name :: style=0 align=0 :: Item name: "Jane Doe | Director". Item fades 0.5 s.
 //@ls example Centered pill :: style=1 align=1 font=1
 //@ls tip Use the panel's + Lower third button, or put it on a transparent title item. The text is the item name; | starts the subtitle.
 //@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
@@ -24,7 +24,7 @@
 //@ls enum align Left|Center|Right
 //@ls enum anim Slide|Wipe|Fade|Pop
 //@ls enum animsrc Item fades|Manual
-//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls enum font Clean sans|Modern sans|Geometric sans|Serif|Humanist sans|Mono|Heavy display
 //@ls toggle bold
 //@ls color "Bar" brr brg brb
 //@ls color "Accent" acr acg acb

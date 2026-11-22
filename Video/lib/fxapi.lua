@@ -202,30 +202,90 @@ function A.insert_in_front_of(track, name)
   return t
 end
 
+-- Still images ----------------------------------------------------------------------------------------
+
+-- picture formats that are always a single frame (GIF and WebP can be animated, so they are left as they are)
+local STILL = { png = true, jpg = true, jpeg = true, bmp = true, tif = true, tiff = true, heic = true }
+local HOLD = 86400   -- seconds a held still image lasts
+
+function A.is_still(take)
+  local src = take and reaper.GetMediaItemTake_Source(take)
+  if not src or reaper.GetMediaSourceType(src, "") ~= "VIDEO" then return false end
+  local ext = (reaper.GetMediaSourceFileName(src) or ""):match("%.(%w+)$")
+  return ext ~= nil and STILL[ext:lower()] == true
+end
+
+-- REAPER plays a still image as a 5 s source: with Loop source off it disappears after 5 s, with it on the picture
+-- repeats and effects that animate over the item (Scrolling Credits, Pan & Zoom) restart every 5 s. Wrapping the
+-- image in a long section makes it hold for the whole item with one continuous clock. Returns the item's active take
+-- (the take is rebuilt from the item's state chunk, so an earlier take pointer may no longer be valid).
+function A.hold_still(item, take)
+  if not A.is_still(take) then return take end
+  local _, guid = reaper.GetSetMediaItemTakeInfo_String(take, "GUID", "", false)
+  local ok, chunk = reaper.GetItemStateChunk(item, "", false)
+  local at = ok and chunk:find("\nGUID " .. guid, 1, true)
+  local s = at and chunk:find("\n<SOURCE VIDEO\n", at, true)
+  local e = s and chunk:find("\n>", s + 1, true)
+  if not e then return take end
+  local block = chunk:sub(s + 1, e + 1)
+  chunk = chunk:sub(1, s) .. "<SOURCE SECTION\nLENGTH " .. HOLD .. "\nSTARTPOS 0\nOVERLAP 0\n" .. block
+          .. "\n>" .. chunk:sub(e + 2)
+  reaper.SetItemStateChunk(item, chunk, false)
+  reaper.SetMediaItemInfo_Value(item, "B_LOOPSRC", 0)
+  return reaper.GetActiveTake(item)
+end
+
+-- Selection -------------------------------------------------------------------------------------------
+
+-- Makes `item` the only selected item, so the panel (which follows the selection) shows it.
+function A.select_only_item(item)
+  reaper.SelectAllMediaItems(0, false)
+  reaper.SetMediaItemSelected(item, true)
+  reaper.UpdateArrange()
+end
+
+-- Makes `track` the only selected track and clears the item selection, so the panel shows the track.
+function A.select_only_track(track)
+  reaper.SelectAllMediaItems(0, false)
+  reaper.SetOnlyTrackSelected(track)
+  reaper.UpdateArrange()
+end
+
 -- Title carriers ------------------------------------------------------------------------------------
 
--- Inserts a transparent carrier item (for titles and callouts) at the edit cursor or time selection,
--- on the selected track or a new "Titles" track at the front of the layer order. Returns the new target.
-function A.add_carrier(carrier_png, text, length)
-  local track = reaper.GetSelectedTrack(0, 0)
-  if not track then
-    local idx = A.front_is_top() and 0 or reaper.CountTracks(0)
-    reaper.InsertTrackAtIndex(idx, true)
-    track = reaper.GetTrack(0, idx)
-    reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "Titles", true)
-  end
-  local ts, te = reaper.GetSet_LoopTimeRange(false, false, 0, 0, false)
-  local pos, len = reaper.GetCursorPosition(), length
-  if te > ts then pos, len = ts, te - ts end
-  -- a track shows one item at a time: put overlapping graphics on a new track in front of it
+-- First item on `track` overlapping pos..pos+len, or nil.
+function A.overlapping(track, pos, len)
   for k = 0, reaper.CountTrackMediaItems(track) - 1 do
     local it = reaper.GetTrackMediaItem(track, k)
     local p = reaper.GetMediaItemInfo_Value(it, "D_POSITION")
-    if p < pos + len - 1e-6 and p + reaper.GetMediaItemInfo_Value(it, "D_LENGTH") > pos + 1e-6 then
-      track = A.insert_in_front_of(track, "Titles")
-      break
-    end
+    local l = reaper.GetMediaItemInfo_Value(it, "D_LENGTH")
+    if p < pos + len - 1e-6 and p + l > pos + 1e-6 then return it, p, l end
   end
+end
+
+-- Track for a new title or callout at pos..pos+len: the front-most track named "Titles..." that is free then
+-- (a track shows one item at a time), otherwise a new "Titles" track at the front of the layer order.
+function A.titles_track(pos, len)
+  local n, top = reaper.CountTracks(0), A.front_is_top()
+  for k = 0, n - 1 do
+    local tr = reaper.GetTrack(0, top and k or (n - 1 - k))
+    local _, name = reaper.GetSetMediaTrackInfo_String(tr, "P_NAME", "", false)
+    if name:match("^Titles") and not A.overlapping(tr, pos, len) then return tr end
+  end
+  local idx = top and 0 or n
+  reaper.InsertTrackAtIndex(idx, true)
+  local track = reaper.GetTrack(0, idx)
+  reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "Titles", true)
+  return track
+end
+
+-- Inserts a transparent carrier item (for titles and callouts) at the edit cursor or time selection on a Titles
+-- track (A.titles_track) and selects only it. Returns the new target.
+function A.add_carrier(carrier_png, text, length)
+  local ts, te = reaper.GetSet_LoopTimeRange(false, false, 0, 0, false)
+  local pos, len = reaper.GetCursorPosition(), length
+  if te > ts then pos, len = ts, te - ts end
+  local track = A.titles_track(pos, len)
   local item = reaper.AddMediaItemToTrack(track)
   reaper.SetMediaItemInfo_Value(item, "D_POSITION", pos)
   reaper.SetMediaItemInfo_Value(item, "D_LENGTH", len)
@@ -237,8 +297,8 @@ function A.add_carrier(carrier_png, text, length)
   local take = reaper.AddTakeToMediaItem(item)
   reaper.SetMediaItemTake_Source(take, reaper.PCM_Source_CreateFromFile(carrier_png))
   reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", text, true)
-  reaper.SetMediaItemSelected(item, true)
-  reaper.UpdateArrange()
+  take = A.hold_still(item, take)
+  A.select_only_item(item)
   return { kind = "take", take = take, item = item, track = track }
 end
 

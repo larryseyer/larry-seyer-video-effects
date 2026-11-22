@@ -1,6 +1,7 @@
 // LS Camera Shake
 //@ls category Transform
 //@ls title Camera Shake
+//@ls tags motion look handheld wobble earthquake
 //@ls where both
 //@ls about Handheld drift, nervous jitter or an earthquake rumble. Automate the amount to hit specific moments.
 //@ls help amount Movement in frame widths (0.015 gentle, 0.05 violent).

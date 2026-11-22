@@ -96,12 +96,40 @@ local function words(s)
   return out
 end
 
+-- The effects name macOS fonts (effects/lib/shapes.eel). On Windows and Linux the installed presets use the nearest
+-- font that ships there, so each menu style keeps its look instead of falling back to one default font.
+M.FONT_SUBST = {
+  Win = { ["Helvetica Neue"] = "Arial", ["Avenir Next"] = "Segoe UI", ["Futura"] = "Century Gothic",
+          ["Gill Sans"] = "Trebuchet MS", ["Menlo"] = "Consolas" },
+  Other = { ["Helvetica Neue"] = "Liberation Sans", ["Avenir Next"] = "DejaVu Sans", ["Futura"] = "DejaVu Sans",
+            ["Georgia"] = "DejaVu Serif", ["Gill Sans"] = "DejaVu Sans", ["Menlo"] = "DejaVu Sans Mono",
+            ["Impact"] = "DejaVu Sans" },
+}
+
+-- Font table for the system REAPER runs on (nil on macOS and outside REAPER, where the names stay as written).
+local function font_subst()
+  if not (reaper and reaper.GetOS) then return nil end
+  local os_name = reaper.GetOS()
+  if os_name:match("^OSX") or os_name:match("^mac") then return nil end
+  return os_name:match("^Win") and M.FONT_SUBST.Win or M.FONT_SUBST.Other
+end
+
+local function localize_fonts(code, subst)
+  if not subst then return code end
+  for i, line in ipairs(code) do
+    if line:find("gfx_setfont", 1, true) then
+      code[i] = line:gsub('"([^"]+)"', function(name) return '"' .. (subst[name] or name) .. '"' end)
+    end
+  end
+  return code
+end
+
 -- Parse one effect file into { file, name, category, title, about, where, text, params, meta, code }.
 function M.read_effect(effects_dir, file)
-  local code = M.expand(effects_dir, effects_dir .. "/" .. file)
+  local code = localize_fonts(M.expand(effects_dir, effects_dir .. "/" .. file), font_subst())
   local e = { file = file, formerly = {}, params = {}, byvar = {}, enums = {}, toggles = {}, colors = {}, wheels = {},
               curves = {}, huecurves = {}, rects = {}, points = {}, sections = {}, help = {}, examples = {}, hidden = {},
-              tips = {}, code = code }
+              tips = {}, tags = "", code = code }
   for _, line in ipairs(code) do
     local idx, var, rest = line:match("^%s*//@param%s*(%d+)%s*:%s*([%w_.]+)%s+(.*)$")
     if idx then
@@ -127,6 +155,7 @@ function M.read_effect(effects_dir, file)
       elseif key == "title" then e.title = args
       elseif key == "about" then e.about = args
       elseif key == "formerly" then e.formerly[#e.formerly + 1] = args
+      elseif key == "tags" then e.tags = args   -- extra words the panel's library search matches
       elseif key == "where" then e.where = args
       elseif key == "text" then e.text = w[1] or args
       elseif key == "enum" then

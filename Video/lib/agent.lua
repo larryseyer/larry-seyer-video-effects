@@ -2,7 +2,7 @@
 --
 --   local LS = dofile(reaper.GetExtState("LS_VIDEO_FX", "path") .. "lib/agent.lua")
 --   local fx = LS.add_to_item(item, "LS Color: Color Grade", { temp = 0.25, sat = 1.1 })
---   local title, tfx = LS.add_title(track, 2.0, 5.0, "Jane Doe | Drums", "LS Title: Lower Third", { align = 0 })
+--   local title, tfx = LS.add_title(track, 2.0, 5.0, "Jane Doe | Director", "LS Title: Lower Third", { align = 0 })
 --   LS.keyframe(item, fx, "exposure", 3.0, 0.5)
 --
 -- Controls are named by their variable name (see docs/AI-REFERENCE.md); values are in the ranges listed there.
@@ -105,6 +105,7 @@ end
 local function add(obj, name, params)
   M.ensure_presets()
   local e = M.effect(name)
+  if reaper.ValidatePtr2(0, obj, "MediaItem*") then A.hold_still(obj, reaper.GetActiveTake(obj)) end
   local t = target_of(obj)
   local fx = A.add(t, e.name)
   if fx < 0 then error("Larry Seyer Video Effects: could not add a Video processor", 3) end
@@ -124,16 +125,6 @@ function M.set(obj, fx, params)
   apply(t, fx, effect_at(t, fx), params)
 end
 
--- Returns the first item on `track` overlapping pos..pos+len, or nil.
-local function overlapping(track, pos, len)
-  for k = 0, reaper.CountTrackMediaItems(track) - 1 do
-    local it = reaper.GetTrackMediaItem(track, k)
-    local p = reaper.GetMediaItemInfo_Value(it, "D_POSITION")
-    local l = reaper.GetMediaItemInfo_Value(it, "D_LENGTH")
-    if p < pos + len - 1e-6 and p + l > pos + 1e-6 then return it, p, l end
-  end
-end
-
 -- True when the top of the track list is in front (REAPER's default Track order); false when the bottom is.
 function M.front_is_top() return A.front_is_top() end
 
@@ -151,7 +142,8 @@ function M.add_track(name, index)
 end
 
 -- Puts a media file on `track` at `pos` for `len` seconds, starting `offset` seconds into the file. Without `len`
--- the item is as long as the file (5 s for still images). Sets no fades. Returns the item.
+-- the item is as long as the file (5 s for still images). A still image holds for the whole item. Sets no fades.
+-- Returns the item.
 function M.add_media(track, path, pos, len, offset)
   local src = reaper.PCM_Source_CreateFromFile(path)
   if not src then error("Larry Seyer Video Effects: cannot open media '" .. tostring(path) .. "'", 2) end
@@ -162,6 +154,7 @@ function M.add_media(track, path, pos, len, offset)
   reaper.SetMediaItemInfo_Value(item, "D_POSITION", pos or 0)
   local srclen = reaper.GetMediaSourceLength(src) - (offset or 0)
   reaper.SetMediaItemInfo_Value(item, "D_LENGTH", len or (srclen > 0.05 and srclen or 5))
+  A.hold_still(item, take)
   reaper.UpdateArrange()
   return item
 end
@@ -187,7 +180,7 @@ end
 -- Creates a transparent title item (text = item name, | for a new line) at `pos` for `len` seconds on `track`,
 -- with fade-in/out (default 0.5 s, these drive the animation), and adds the effect. Returns item, fx.
 function M.add_title(track, pos, len, text, name, params, fade_in, fade_out)
-  local other, op, ol = overlapping(track, pos, len)
+  local other, op, ol = A.overlapping(track, pos, len)
   if other then
     error(string.format("Larry Seyer Video Effects: this title (%.2f-%.2f s) overlaps another item (%.2f-%.2f s) on the same track. " ..
       "A track shows one item at a time, so graphics that overlap in time need separate tracks " ..
@@ -203,6 +196,7 @@ function M.add_title(track, pos, len, text, name, params, fade_in, fade_out)
   local take = reaper.AddTakeToMediaItem(item)
   reaper.SetMediaItemTake_Source(take, reaper.PCM_Source_CreateFromFile(M.CARRIER))
   reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", text or "", true)
+  A.hold_still(item, take)
   local fx = add(item, name, params)
   reaper.UpdateArrange()
   return item, fx

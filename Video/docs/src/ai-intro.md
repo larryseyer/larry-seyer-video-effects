@@ -38,7 +38,7 @@ local fx = LS.add_to_item(item, "LS Color: Color Grade", { temp = 0.25, sat = 1.
 local tfx = LS.add_to_track(track, "LS Transition: Dissolve & Dip", { style = 0 })
 -- a title, lower third or callout: creates a transparent title item; the text is the item name.
 -- Arguments: track, position, length, text, effect, controls[, fade_in = 0.5, fade_out = 0.5]. Returns item, fx.
-local titem, lfx = LS.add_title(titles, 2.0, 5.0, "Jane Doe | Drums", "LS Title: Lower Third", { align = 0 })
+local titem, lfx = LS.add_title(titles, 2.0, 5.0, "Jane Doe | Director", "LS Title: Lower Third", { align = 0 })
 -- change controls later
 LS.set(item, fx, { contrast = 1.15 })
 -- keyframe: control reaches value at project time (seconds); points are linear, the effect's own easing still applies

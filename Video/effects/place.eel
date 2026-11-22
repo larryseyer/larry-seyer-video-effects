@@ -96,6 +96,43 @@ function alpha_shadow(lay, lw, lh, padpx, alpha) local(f, s1w, s1h, k) (
   kx /= f; ky /= f; cx0 *= f; cy0 *= f; ax *= f; ay *= f;
 );
 
+// True when the image has see-through pixels along its edges (a logo PNG); video and plain pictures are opaque.
+function has_transparency(img, iw, ih) local(k, px, py, cr, cg, cb, ca, found) (
+  found = 0; k = 0;
+  loop(8,
+    px = k == 0 || k == 3 || k == 5 ? 0 : k == 1 || k == 6 ? floor(iw*0.5) : iw - 1;
+    py = k < 3 ? 0 : k < 5 ? floor(ih*0.5) : ih - 1;
+    gfx_getpixel(img, px, py, cr, cg, cb, ca) && ca < 0.98 ? found = 1;
+    k += 1;
+  );
+  found;
+);
+
+// Border for a see-through image: its alpha outline grown by `grow` pixels, in one color, into bimg
+// ((iw + 2*grow) x (ih + 2*grow)). Stamps the image around two rings so thin parts get a full border too.
+function outline_image(img, iw, ih, grow, colr, colg, colb) local(n, k, ang, rad, ring, ow, oh) (
+  ow = ceil(iw + 2*grow); oh = ceil(ih + 2*grow);
+  bimg = gfx_img_resize(bimg, ow, oh);
+  gfx_dest = bimg;
+  gfx_set(0, 0, 0, 1, 0, bimg, 0); gfx_fillrect(0, 0, ow, oh);
+  gfx_mode = 0x10100; gfx_a = 1;   // blend by the image's alpha (0x10000), filtered (0x100), so the stamps add up
+  ring = 0;
+  loop(2,
+    rad = grow*(ring == 0 ? 1 : 0.5);
+    n = min(max(ceil(2*$pi*rad/1.5), 8), 64);
+    k = 0;
+    loop(n,
+      ang = 2*$pi*k/n;
+      gfx_blit(img, 0, grow + cos(ang)*rad, grow + sin(ang)*rad, iw, ih, 0, 0, iw, ih);
+      k += 1;
+    );
+    ring += 1;
+  );
+  ol_r = colr*255; ol_g = colg*255; ol_b = colb*255;
+  gfx_evalrect(0, 0, ow, oh, "r = ol_r; g = ol_g; b = ol_b;");
+  gfx_dest = -1;
+);
+
 own && bg != 0 ? (
   gfx_mode = 0; gfx_a = 1;
   input_info(bg, bgw, bgh) ? gfx_blit(bg, 1) : ( gfx_set(0); gfx_fillrect(0, 0, W, H); );
@@ -143,6 +180,7 @@ own && bg != 0 ? (
     gfx_dest = layer; gfx_mode = 0; gfx_a = 1;
     gfx_blit(0, 0, 0, 0, cw, ch, cx0, cy0, cw, ch);
     usealpha < 0.5 ? gfx_evalrect(0, 0, cw, ch, "a = 255;");
+    cutout = usealpha >= 0.5 && has_transparency(layer, cw, ch);
     rL >= 1 ? round_corners(cw, ch, min(rL, min(cw, ch)*0.5));
     gfx_dest = -1;
 
@@ -154,7 +192,12 @@ own && bg != 0 ? (
     );
 
     bL = border*H/kx;
-    bL > 0.25 ? (
+    bL > 0.25 && cutout ? (
+      outline_image(layer, cw, ch, bL, bdr, bdg, bdb);
+      gfx_mode = 0x10100;
+      xblit(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL), -bL, -bL, alpha);
+      #last_bkey = "";
+    ) : bL > 0.25 ? (
       sprintf(#bkey, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g", cw, ch, rL, bL, bdr, bdg, bdb);
       strcmp(#bkey, #last_bkey) != 0 ? (
         bimg = gfx_img_resize(bimg, ceil(cw + 2*bL), ceil(ch + 2*bL));

@@ -76,6 +76,8 @@ function sdf_tri(x1, y1, x2, y2, x3, y3, cr, cg, cb, op) local(s) (
 );
 
 // Font list shared by titles and callouts; flags as for gfx_setfont ('B' bold, 'S' shadow, 'BS' both, 0 none).
+// The menus name styles; these are the macOS fonts, and lib/lsvfx.lua swaps in the nearest Windows or Linux font
+// when it installs the presets there.
 function ls_font(idx, px, flags) (
   idx == 1 ? gfx_setfont(px, "Avenir Next", flags)
   : idx == 2 ? gfx_setfont(px, "Futura", flags)

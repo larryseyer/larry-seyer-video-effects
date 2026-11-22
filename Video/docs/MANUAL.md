@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects manual
 
-Version 1.1.7 - 43 video effects for REAPER.
+Version 1.1.8 - 43 video effects for REAPER.
 
 Larry Seyer Video Effects turns REAPER's Video Processor into a complete set of video effects: color grading with
 lift, gamma and gain wheels, titles and lower thirds, tutorial callouts and zooms, transitions,
@@ -36,9 +36,14 @@ date the next time they open.
 - **Frame pad:** effects with positions or areas show a frame you drag on (points move, areas move and resize
   from the corner square). Watch the result in REAPER's Video window.
 - **+ Lower third, + Title, + Callout** add a transparent title item at the edit cursor (or over the time
-  selection) carrying that effect. The item name is the text; `|` starts a new line. The item's fade-in and
-  fade-out handles set how long it animates on and off.
-- **Lock** keeps the panel on the current item or track while you select other things.
+  selection) carrying that effect, and select it. The item name is the text; `|` starts a new line. The item's
+  fade-in and fade-out handles set how long it animates on and off. The item goes on the first track named
+  **Titles** that has nothing at that time; only when every Titles track is busy there is a new one added, in
+  front of everything (a track shows one item at a time).
+- **Lock** keeps the panel on the current item or track while you select other things. While it is on, the line
+  under the buttons reads *Locked to ...* in color.
+- Effects that work on a whole track (transitions, Split Screen) go on the selected item's track; the panel then
+  shows that track and says so.
 
 Without the panel: add a Video processor to an item or track and choose any **LS ...** entry from its preset list.
 
@@ -71,7 +76,7 @@ the arrange view. Each point carries its cut's transition in its value, just abo
 camera 2 with a 15-frame cross dissolve), so the transition always moves with the cut. Change a cut's camera or
 transition in the Multicam window; a whole number typed into a point makes it use the switcher's Transition
 controls. Projects cut before version 1.1.7, which kept transitions on separate envelopes, are converted when the
-Multicam window opens. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
+Multicam window opens; check the transitions of a converted project, since some can come back as straight cuts. Transitions play and render in order; jumping the play cursor into one shows a straight cut.
 
 - **Number keys anywhere in REAPER:** the keys work while the Multicam window has focus. After clicking in the
   Video window, focus is there; to switch from the keyboard then, assign *Larry Seyer Video Effects - Multicam
@@ -113,7 +118,21 @@ millisecond; the window lists what moved. **Undo** puts everything back in one s
 - **Transitions:** put a transition effect on a track; every crossfade between items on that track becomes the
   transition, as long as the crossfade.
 - **Animated entrances** follow the item fades (titles, callouts, picture-in-picture, Zoom to Region,
-  Spotlight, Magnifier).
+  Spotlight, Magnifier). Where the edit cursor is inside a fade, the effect shows part way in; set *Animate with*
+  to *Manual* to keep it fully on regardless of the fades.
+- **Still pictures:** REAPER treats a picture (PNG, JPG) as a 5-second clip: with *Loop source* off it disappears
+  after 5 s, and with it on, effects that move over time start again every 5 s. When you add an effect to a
+  picture item, the panel makes the picture hold for the whole item (it wraps the file in a long section of
+  itself), so Pan & Zoom and Scrolling Credits run once from start to end. Title items from the **+** buttons are
+  made that way.
+- **Vertical and square projects:** REAPER fits a clip of a different shape inside the frame with bars (a wide
+  clip in a 1080x1920 project shows as a band across the middle). Add **Reframe** to the clip to fill the frame
+  and choose which part shows.
+- **Fonts:** the Font menus name styles (Clean sans, Serif, Mono...). Each style uses a font that comes with
+  macOS, Windows or Linux, picked when the panel installs the presets on that computer.
+- **Switching controls during playback:** REAPER prepares video frames ahead of the play position, so a control
+  changed while playing (for example ticking Freeze) shows up about a second later. Keyframes take effect on
+  their exact frame.
 - **Speed:** most effects are light. Effects that process every pixel (Color Grade with hue rotate or vibrance,
   Hue Curves, Isolate Color, Looks, Sharpen, Green Screen, Blend Modes, some transitions) are slower at 4K.
   For smooth playback while editing, lower the preview resolution in the Video window, or bypass them until
@@ -482,7 +501,7 @@ Primary color grading: lift, gamma, gain and offset wheels, temperature and tint
 | Shadows | Lifts (positive) or deepens dark areas only. | -1 to 1 (0) |
 | Highlights | Recovers (negative) or boosts bright areas. | -1 to 1 (0) |
 | Mix | Blend with the original (1 = full effect). | 0 to 1 (1) |
-| Before/after split | Shows the original on the left half for comparison. Turn off before rendering. | off/on (off) |
+| Before/after split | Shows this effect's input on the left half for comparison (looks and effects before or after Color Grade show on both halves). Turn off before rendering. | off/on (off) |
 
 **Try this:**
 
@@ -646,7 +665,7 @@ Moving subjects leave fading echoes behind them, with optional zoom or spin drif
 | Control | What it does | Range (default) |
 |---|---|---|
 | Trail length | Trail length (0 none, 0.95 very long). | 0 to 0.98 (0.8) |
-| Mode | Blend smears; Additive glow brightens overlapping trails. | Blend, Additive glow |
+| Mode | Blend smears every moving part; Additive glow keeps only the trails that are brighter than the picture, adding light where they cross. | Blend, Additive glow |
 | Zoom drift | Trails zoom in or out over time. | -0.05 to 0.05 (0) |
 | Spin drift | Trails rotate over time, degrees per frame. | -5 to 5 (0) |
 
@@ -686,7 +705,7 @@ Digital breakup: torn slices, displaced blocks and color splitting. Automate the
 
 | Control | What it does | Range (default) |
 |---|---|---|
-| Amount | Overall strength; keyframe it for hits. | 0 to 1 (0.5) |
+| Amount | Overall strength; keyframe it for hits. | 0 to 1 (0.75) |
 | Slice tearing | Torn horizontal slices. | 0 to 1 (0.6) |
 | Block displacement | Displaced rectangles. | 0 to 1 (0.5) |
 | Color split | Color channel splitting. | 0 to 1 (0.6) |
@@ -917,7 +936,7 @@ Name and subtitle bar for the lower part of the screen. Name the item "Name | Su
 | Bar opacity | Bar opacity. | 0 to 1 (0.85) |
 | Accent | Color picker. |  |
 | Text | Color picker. |  |
-| Font | Font. | Helvetica Neue, Avenir Next, Futura, Georgia, Gill Sans, Menlo, Impact |
+| Font | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). | Clean sans, Modern sans, Geometric sans, Serif, Humanist sans, Mono, Heavy display |
 | Bold name | Bold name. | off/on (on) |
 | Animation | Animation; plays over the item fade-in and reverses over the fade-out. | Slide, Wipe, Fade, Pop |
 | Animate with | Item fades or Manual amount. | Item fades, Manual |
@@ -925,8 +944,8 @@ Name and subtitle bar for the lower part of the screen. Name the item "Name | Su
 
 **Try this:**
 
-- *Guest name* - Style Bar with accent, Align Left. Item name: "Jane Doe | Drums". Item fades 0.5 s.
-- *Centered pill* - Style Pill, Align Center, Font Avenir Next.
+- *Guest name* - Style Bar with accent, Align Left. Item name: "Jane Doe | Director". Item fades 0.5 s.
+- *Centered pill* - Style Pill, Align Center, Font Modern sans.
 
 - Use the panel's + Lower third button, or put it on a transparent title item. The text is the item name; | starts the subtitle.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
@@ -935,7 +954,7 @@ Name and subtitle bar for the lower part of the screen. Name the item "Name | Su
 
 ![Scrolling Credits](images/credits.jpg)
 
-Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Drums: Larry Seyer" becomes two columns. Set the duration to the item length. **Goes on:** item (title item). Preset name: `LS Title: Scrolling Credits`.
+Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Camera: Sam Taylor" becomes two columns. Set the duration to the item length. **Goes on:** item (title item). Preset name: `LS Title: Scrolling Credits`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -943,7 +962,7 @@ Rolling end credits or a sideways news-style crawl. Name the item with lines sep
 | Duration (s) | Seconds for the whole roll; set it to the item length. | 1 to 600 (10) |
 | Text size | Text height, fraction of frame height. | 0.015 to 0.15 (0.045) |
 | Line spacing | Line spacing. | 1 to 3 (1.6) |
-| Font | Font. | Helvetica Neue, Avenir Next, Futura, Georgia, Gill Sans, Menlo, Impact |
+| Font | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). | Clean sans, Modern sans, Geometric sans, Serif, Humanist sans, Mono, Heavy display |
 | Text | Color picker. |  |
 | Role text | Color picker. |  |
 | Backdrop | Darkening or color behind the text. | None, Dim picture, Solid color |
@@ -952,9 +971,9 @@ Rolling end credits or a sideways news-style crawl. Name the item with lines sep
 
 **Try this:**
 
-- *End credits* - Mode Roll up, Duration (s) 12. Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
+- *End credits* - Mode Roll up, Duration (s) 12. Item name: "Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching".
 
-- Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+- Separate lines with |. A line with a colon, like "Director: Jane Doe", becomes two columns.
 - The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 
 ### Title & Subtitle
@@ -973,7 +992,7 @@ Large centered title with an optional subtitle and backdrop. Name the item "Titl
 | Backdrop | Darkening, color or gradient behind the text. | None, Dim picture, Solid color, Bottom gradient |
 | Backdrop color | Color picker. |  |
 | Backdrop opacity | Backdrop opacity. | 0 to 1 (0.45) |
-| Font | Font. | Helvetica Neue, Avenir Next, Futura, Georgia, Gill Sans, Menlo, Impact |
+| Font | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). | Clean sans, Modern sans, Geometric sans, Serif, Humanist sans, Mono, Heavy display |
 | Bold | Bold title. | off/on (on) |
 | Text shadow | Soft text shadow. | off/on (on) |
 | Animation | Fade, rise, zoom or typewriter (types the text over the fade-in). | Fade, Rise, Zoom, Typewriter |
@@ -982,8 +1001,8 @@ Large centered title with an optional subtitle and backdrop. Name the item "Titl
 
 **Try this:**
 
-- *Episode title* - Animation Rise, Font Avenir Next, Backdrop Dim picture. Item name: "The Spice of Life | The Larry Seyer Show".
-- *Typewriter* - Animation Typewriter, Font Menlo, Backdrop None.
+- *Episode title* - Animation Rise, Font Modern sans, Backdrop Dim picture. Item name: "The Spice of Life | The Larry Seyer Show".
+- *Typewriter* - Animation Typewriter, Font Mono, Backdrop None.
 
 - Use the panel's + Title button. The text is the item name; | starts the subtitle.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
@@ -1018,7 +1037,7 @@ Hides part of the picture, such as an email address, serial number or face, with
 
 ![Callout](images/callout.jpg)
 
-Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out. **Goes on:** item (title item). Preset name: `LS Tutorial: Callout`.
+Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill. The label text is the item name. Item fades animate it in and out. **Goes on:** item (title item). Preset name: `LS Tutorial: Callout`.
 
 | Control | What it does | Range (default) |
 |---|---|---|
@@ -1028,7 +1047,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 | Box height |  | 0.005 to 1 (0.05) |
 | Label X | Label pill center X, fraction of frame width. | 0 to 1 (0.45) |
 | Label Y | Label pill center Y, fraction of frame height. | 0 to 1 (0.125) |
-| Style | Which parts to draw. Numbered badge is a pill sized for a short number. | Box + arrow + label, Arrow + label, Label only, Box only, Numbered badge |
+| Style | Which parts to draw. Badge only is a round pill sized for a short number; Box + arrow + badge points a numbered badge at the box. | Box + arrow + label, Arrow + label, Label only, Box only, Badge only, Box + arrow + badge |
 | Text size | Label text height, fraction of frame height. | 0.01 to 0.12 (0.032) |
 | Line width | Line width of the box, arrow and pill outline, fraction of frame height. | 0.0005 to 0.01 (0.0028) |
 | Box rounding | Box corner rounding (0 square to 1 fully round). | 0 to 1 (0.25) |
@@ -1036,7 +1055,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 | Label fill | Color picker. |  |
 | Text | Color picker. |  |
 | Dim outside box | Darkens everything outside the box. | 0 to 1 (0) |
-| Font | Font. | Helvetica Neue, Avenir Next, Futura, Georgia, Gill Sans, Menlo, Impact |
+| Font | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). | Clean sans, Modern sans, Geometric sans, Serif, Humanist sans, Mono, Heavy display |
 | Animation | Fade, Draw on (the arrow grows toward the target) or Pop. | None, Fade, Draw on, Pop |
 | Animate with | Item fades or Manual amount. | Item fades, Manual |
 | Manual amount | Manual mode: 0 hidden, 1 shown. | 0 to 1 (1) |
@@ -1044,9 +1063,10 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 **Try this:**
 
 - *Point at a control* - Box left 0.08, Box top 0.1, Box width 0.18, Box height 0.05, Label X 0.45, Label Y 0.125. Item name: "Call Outs". Place the box over the control and the label beside it.
+- *Numbered step* - Style Box + arrow + badge, Box left 0.08, Box top 0.1, Box width 0.18, Box height 0.05, Label X 0.32, Label Y 0.125. Item name: "1". One callout item per step, numbered 1, 2, 3.
 
 - Use the panel's + Callout button. The label text is the item name.
-- The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
+- The default colors are a mint outline and a dark pill; change them under Accent, Label fill and Text.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
 - The arrow runs from the label toward the box from any direction, so the label can sit on any side.
 
@@ -1185,7 +1205,7 @@ Freeze holds the picture from the moment it switches on (automate it for freeze 
 
 | Control | What it does | Range (default) |
 |---|---|---|
-| Freeze | Turn on (keyframe it) to hold the current picture. | off/on (off) |
+| Freeze | Turn on (keyframe it) to hold the current picture. Ticked during playback it holds about a second later (REAPER prepares frames ahead); a keyframe holds the exact frame. | off/on (off) |
 | Stutter (hold frames) | Holds each frame for this many frames (1 = off). | 1 to 30 (1) |
 
 **Try this:**

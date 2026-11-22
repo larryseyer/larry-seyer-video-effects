@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.1.7. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.1.8. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 43 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
@@ -38,7 +38,7 @@ local fx = LS.add_to_item(item, "LS Color: Color Grade", { temp = 0.25, sat = 1.
 local tfx = LS.add_to_track(track, "LS Transition: Dissolve & Dip", { style = 0 })
 -- a title, lower third or callout: creates a transparent title item; the text is the item name.
 -- Arguments: track, position, length, text, effect, controls[, fade_in = 0.5, fade_out = 0.5]. Returns item, fx.
-local titem, lfx = LS.add_title(titles, 2.0, 5.0, "Jane Doe | Drums", "LS Title: Lower Third", { align = 0 })
+local titem, lfx = LS.add_title(titles, 2.0, 5.0, "Jane Doe | Director", "LS Title: Lower Third", { align = 0 })
 -- change controls later
 LS.set(item, fx, { contrast = 1.15 })
 -- keyframe: control reaches value at project time (seconds); points are linear, the effect's own easing still applies
@@ -216,10 +216,10 @@ clock drift over 10 ms. Call it before writing cuts: moving clips after cutting 
 | `LS Transition: Shape Wipe` | Track | Put on a track: crossfades reveal the next shot through a growing circle, box, diamond, clock sweep, barn doors, angled wipe or blinds, with soft edges and an optional glowing border. |
 | `LS Transition: Zoom & Spin` | Track | Put on a track: crossfades punch through with a zoom in, zoom out or spinning zoom, blurred at the peak for speed. |
 | `LS Title: Lower Third` | Item (title item) | Name and subtitle bar for the lower part of the screen. Name the item "Name \| Subtitle". Drag the item fade-in and fade-out to set how long it animates on and off. |
-| `LS Title: Scrolling Credits` | Item (title item) | Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "\|"; a line like "Drums: Larry Seyer" becomes two columns. Set the duration to the item length. |
+| `LS Title: Scrolling Credits` | Item (title item) | Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "\|"; a line like "Camera: Sam Taylor" becomes two columns. Set the duration to the item length. |
 | `LS Title: Title & Subtitle` | Item (title item) | Large centered title with an optional subtitle and backdrop. Name the item "Title \| Subtitle". Item fades animate it in and out. |
 | `LS Tutorial: Blur or Pixelate Region` | Item or track | Hides part of the picture, such as an email address, serial number or face, with blur, pixelation or a solid box. Stack several to hide several things. |
-| `LS Tutorial: Callout` | Item (title item) | Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out. |
+| `LS Tutorial: Callout` | Item (title item) | Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill. The label text is the item name. Item fades animate it in and out. |
 | `LS Tutorial: Magnifier` | Item or track | A zoom lens that shows a small detail enlarged somewhere else on screen, with a marker on the original spot and an optional connecting line. Item fades animate it. |
 | `LS Tutorial: Spotlight` | Item or track | Dims and optionally blurs everything except one area, with an outline around it, to pull attention to a control or part of the screen. Item fades animate it. |
 | `LS Compose: Blend Modes` | Item or track | Blends this layer over the tracks behind it like a photo editor layer: multiply, screen, overlay, soft light, add, subtract, difference, lighten, darken and color dodge. |
@@ -605,7 +605,7 @@ Primary color grading: lift, gamma, gain and offset wheels, temperature and tint
 | 24 | `shadows` | Shadows | 0 | -1 to 1 | Lifts (positive) or deepens dark areas only. |
 | 25 | `highlights` | Highlights | 0 | -1 to 1 | Recovers (negative) or boosts bright areas. |
 | 26 | `mix` | Mix | 1 | 0 to 1 | Blend with the original (1 = full effect). |
-| 27 | `split` | Before/after split | 0 | 0 to 1 | Shows the original on the left half for comparison. Turn off before rendering. 0 off, 1 on. |
+| 27 | `split` | Before/after split | 0 | 0 to 1 | Shows this effect's input on the left half for comparison (looks and effects before or after Color Grade show on both halves). Turn off before rendering. 0 off, 1 on. |
 
 Examples:
 
@@ -814,7 +814,7 @@ Moving subjects leave fading echoes behind them, with optional zoom or spin drif
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
 | 0 | `persist` | Trail length | 0.8 | 0 to 0.98 | Trail length (0 none, 0.95 very long). |
-| 1 | `mode` | Mode | 0 | 0 to 1 | Blend smears; Additive glow brightens overlapping trails. Options: 0 Blend, 1 Additive glow. |
+| 1 | `mode` | Mode | 0 | 0 to 1 | Blend smears every moving part; Additive glow keeps only the trails that are brighter than the picture, adding light where they cross. Options: 0 Blend, 1 Additive glow. |
 | 2 | `drift` | Zoom drift | 0 | -0.05 to 0.05 | Trails zoom in or out over time. |
 | 3 | `spin` | Spin drift | 0 | -5 to 5 | Trails rotate over time, degrees per frame. |
 
@@ -854,7 +854,7 @@ Digital breakup: torn slices, displaced blocks and color splitting. Automate the
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
-| 0 | `amount` | Amount | 0.5 | 0 to 1 | Overall strength; keyframe it for hits. |
+| 0 | `amount` | Amount | 0.75 | 0 to 1 | Overall strength; keyframe it for hits. |
 | 1 | `slices` | Slice tearing | 0.6 | 0 to 1 | Torn horizontal slices. |
 | 2 | `blocks` | Block displacement | 0.5 | 0 to 1 | Displaced rectangles. |
 | 3 | `rgb` | Color split | 0.6 | 0 to 1 | Color channel splitting. |
@@ -1097,7 +1097,7 @@ Name and subtitle bar for the lower part of the screen. Name the item "Name | Su
 | 13 | `tcr` | Text red | 1 | 0 to 1 | Red part of Text (0..1). |
 | 14 | `tcg` | Text green | 1 | 0 to 1 | Green part of Text (0..1). |
 | 15 | `tcb` | Text blue | 1 | 0 to 1 | Blue part of Text (0..1). |
-| 16 | `font` | Font | 0 | 0 to 6 | Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact. |
+| 16 | `font` | Font | 0 | 0 to 6 | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display. |
 | 17 | `bold` | Bold name | 1 | 0 to 1 | Bold name. 0 off, 1 on. |
 | 18 | `anim` | Animation | 0 | 0 to 3 | Animation; plays over the item fade-in and reverses over the fade-out. Options: 0 Slide, 1 Wipe, 2 Fade, 3 Pop. |
 | 19 | `animsrc` | Animate with | 0 | 0 to 1 | Item fades or Manual amount. Options: 0 Item fades, 1 Manual. |
@@ -1105,7 +1105,7 @@ Name and subtitle bar for the lower part of the screen. Name the item "Name | Su
 
 Examples:
 
-- Guest name: `LS.add_title(track, pos, len, "Jane Doe | Drums", "LS Title: Lower Third", { style = 0, align = 0 })` Item name: "Jane Doe | Drums". Item fades 0.5 s.
+- Guest name: `LS.add_title(track, pos, len, "Jane Doe | Director", "LS Title: Lower Third", { style = 0, align = 0 })` Item name: "Jane Doe | Director". Item fades 0.5 s.
 - Centered pill: `LS.add_title(track, pos, len, "Title | Subtitle", "LS Title: Lower Third", { style = 1, align = 1, font = 1 })`
 
 - Use the panel's + Lower third button, or put it on a transparent title item. The text is the item name; | starts the subtitle.
@@ -1115,7 +1115,7 @@ Examples:
 
 *Placement:* an item (usually a transparent title item; see rule 3).
 
-Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Drums: Larry Seyer" becomes two columns. Set the duration to the item length.
+Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Camera: Sam Taylor" becomes two columns. Set the duration to the item length.
 
 *Text:* Line one | Role: Name | ... (item name).
 
@@ -1125,7 +1125,7 @@ Rolling end credits or a sideways news-style crawl. Name the item with lines sep
 | 1 | `dur` | Duration (s) | 10 | 1 to 600 | Seconds for the whole roll; set it to the item length. |
 | 2 | `size` | Text size | 0.045 | 0.015 to 0.15 | Text height, fraction of frame height. |
 | 3 | `spacing` | Line spacing | 1.6 | 1 to 3 | Line spacing. |
-| 4 | `font` | Font | 1 | 0 to 6 | Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact. |
+| 4 | `font` | Font | 1 | 0 to 6 | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display. |
 | 5 | `tcr` | Text red | 1 | 0 to 1 | Red part of Text (0..1). |
 | 6 | `tcg` | Text green | 1 | 0 to 1 | Green part of Text (0..1). |
 | 7 | `tcb` | Text blue | 1 | 0 to 1 | Blue part of Text (0..1). |
@@ -1140,9 +1140,9 @@ Rolling end credits or a sideways news-style crawl. Name the item with lines sep
 
 Examples:
 
-- End credits: `LS.add_title(track, pos, len, "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching", "LS Title: Scrolling Credits", { mode = 0, dur = 12 })` Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
+- End credits: `LS.add_title(track, pos, len, "Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching", "LS Title: Scrolling Credits", { mode = 0, dur = 12 })` Item name: "Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching".
 
-- Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+- Separate lines with |. A line with a colon, like "Director: Jane Doe", becomes two columns.
 - The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 
 ### LS Title: Title & Subtitle
@@ -1169,7 +1169,7 @@ Large centered title with an optional subtitle and backdrop. Name the item "Titl
 | 11 | `bkg` | Backdrop green | 0 | 0 to 1 | Green part of Backdrop color (0..1). |
 | 12 | `bkb` | Backdrop blue | 0 | 0 to 1 | Blue part of Backdrop color (0..1). |
 | 13 | `bkop` | Backdrop opacity | 0.45 | 0 to 1 | Backdrop opacity. |
-| 14 | `font` | Font | 1 | 0 to 6 | Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact. |
+| 14 | `font` | Font | 1 | 0 to 6 | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display. |
 | 15 | `bold` | Bold | 1 | 0 to 1 | Bold title. 0 off, 1 on. |
 | 16 | `shadow` | Text shadow | 1 | 0 to 1 | Soft text shadow. 0 off, 1 on. |
 | 17 | `anim` | Animation | 1 | 0 to 3 | Fade, rise, zoom or typewriter (types the text over the fade-in). Options: 0 Fade, 1 Rise, 2 Zoom, 3 Typewriter. |
@@ -1214,7 +1214,7 @@ Examples:
 
 *Placement:* an item (usually a transparent title item; see rule 3).
 
-Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out.
+Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill. The label text is the item name. Item fades animate it in and out.
 
 *Text:* Label text (item name).
 
@@ -1226,7 +1226,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 | 3 | `bh` | Box height | 0.05 | 0.005 to 1 | Box height. |
 | 4 | `lx` | Label X | 0.45 | 0 to 1 | Label pill center X, fraction of frame width. |
 | 5 | `ly` | Label Y | 0.125 | 0 to 1 | Label pill center Y, fraction of frame height. |
-| 6 | `style` | Style | 0 | 0 to 4 | Which parts to draw. Numbered badge is a pill sized for a short number. Options: 0 Box + arrow + label, 1 Arrow + label, 2 Label only, 3 Box only, 4 Numbered badge. |
+| 6 | `style` | Style | 0 | 0 to 5 | Which parts to draw. Badge only is a round pill sized for a short number; Box + arrow + badge points a numbered badge at the box. Options: 0 Box + arrow + label, 1 Arrow + label, 2 Label only, 3 Box only, 4 Badge only, 5 Box + arrow + badge. |
 | 7 | `size` | Text size | 0.032 | 0.01 to 0.12 | Label text height, fraction of frame height. |
 | 8 | `thick` | Line width | 0.0028 | 0.0005 to 0.01 | Line width of the box, arrow and pill outline, fraction of frame height. |
 | 9 | `radius` | Box rounding | 0.25 | 0 to 1 | Box corner rounding (0 square to 1 fully round). |
@@ -1240,7 +1240,7 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 | 17 | `tcg` | Text green | 1 | 0 to 1 | Green part of Text (0..1). |
 | 18 | `tcb` | Text blue | 1 | 0 to 1 | Blue part of Text (0..1). |
 | 19 | `dim` | Dim outside box | 0 | 0 to 1 | Darkens everything outside the box. |
-| 20 | `font` | Font | 0 | 0 to 6 | Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact. |
+| 20 | `font` | Font | 0 | 0 to 6 | Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display. |
 | 21 | `anim` | Animation | 2 | 0 to 3 | Fade, Draw on (the arrow grows toward the target) or Pop. Options: 0 None, 1 Fade, 2 Draw on, 3 Pop. |
 | 22 | `animsrc` | Animate with | 0 | 0 to 1 | Item fades or Manual amount. Options: 0 Item fades, 1 Manual. |
 | 23 | `amount` | Manual amount | 1 | 0 to 1 | Manual mode: 0 hidden, 1 shown. |
@@ -1248,9 +1248,10 @@ Labels a control in a screen recording: an outlined highlight box, an arrow and 
 Examples:
 
 - Point at a control: `LS.add_title(track, pos, len, "Call Outs", "LS Tutorial: Callout", { bx = 0.08, by = 0.1, bw = 0.18, bh = 0.05, lx = 0.45, ly = 0.125 })` Item name: "Call Outs". Place the box over the control and the label beside it.
+- Numbered step: `LS.add_title(track, pos, len, "1", "LS Tutorial: Callout", { style = 5, bx = 0.08, by = 0.1, bw = 0.18, bh = 0.05, lx = 0.32, ly = 0.125 })` Item name: "1". One callout item per step, numbered 1, 2, 3.
 
 - Use the panel's + Callout button. The label text is the item name.
-- The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
+- The default colors are a mint outline and a dark pill; change them under Accent, Label fill and Text.
 - If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
 - The arrow runs from the label toward the box from any direction, so the label can sit on any side.
 
@@ -1391,7 +1392,7 @@ Freeze holds the picture from the moment it switches on (automate it for freeze 
 
 | API index | var | Control | Default | Range | Meaning |
 |---|---|---|---|---|---|
-| 0 | `freeze` | Freeze | 0 | 0 to 1 | Turn on (keyframe it) to hold the current picture. 0 off, 1 on. |
+| 0 | `freeze` | Freeze | 0 | 0 to 1 | Turn on (keyframe it) to hold the current picture. Ticked during playback it holds about a second later (REAPER prepares frames ahead); a keyframe holds the exact frame. 0 off, 1 on. |
 | 1 | `stutter` | Stutter (hold frames) | 1 | 1 to 30 | Holds each frame for this many frames (1 = off). |
 
 Examples:

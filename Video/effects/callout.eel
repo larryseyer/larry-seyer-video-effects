@@ -2,29 +2,30 @@
 //@ls category Tutorial
 //@ls title Callout
 //@ls where item
-//@ls about Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out.
+//@ls about Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill. The label text is the item name. Item fades animate it in and out.
 //@ls help bx Highlight box rectangle, fractions of the frame (left, top, width, height).
 //@ls help lx Label pill center X, fraction of frame width.
 //@ls help ly Label pill center Y, fraction of frame height.
-//@ls help style Which parts to draw. Numbered badge is a pill sized for a short number.
+//@ls help style Which parts to draw. Badge only is a round pill sized for a short number; Box + arrow + badge points a numbered badge at the box.
 //@ls help size Label text height, fraction of frame height.
 //@ls help thick Line width of the box, arrow and pill outline, fraction of frame height.
 //@ls help radius Box corner rounding (0 square to 1 fully round).
 //@ls help dim Darkens everything outside the box.
-//@ls help font Font.
+//@ls help font Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux).
 //@ls help anim Fade, Draw on (the arrow grows toward the target) or Pop.
 //@ls help animsrc Item fades or Manual amount.
 //@ls help amount Manual mode: 0 hidden, 1 shown.
 //@ls example Point at a control :: bx=0.08 by=0.1 bw=0.18 bh=0.05 lx=0.45 ly=0.125 :: Item name: "Call Outs". Place the box over the control and the label beside it.
+//@ls example Numbered step :: style=5 bx=0.08 by=0.1 bw=0.18 bh=0.05 lx=0.32 ly=0.125 :: Item name: "1". One callout item per step, numbered 1, 2, 3.
 //@ls tip Use the panel's + Callout button. The label text is the item name.
-//@ls tip The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).
+//@ls tip The default colors are a mint outline and a dark pill; change them under Accent, Label fill and Text.
 //@ls tip If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.
 //@ls tip The arrow runs from the label toward the box from any direction, so the label can sit on any side.
 //@ls text "Label text (item name)"
-//@ls enum style Box + arrow + label|Arrow + label|Label only|Box only|Numbered badge
+//@ls enum style Box + arrow + label|Arrow + label|Label only|Box only|Badge only|Box + arrow + badge
 //@ls enum anim None|Fade|Draw on|Pop
 //@ls enum animsrc Item fades|Manual
-//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls enum font Clean sans|Modern sans|Geometric sans|Serif|Humanist sans|Mono|Heavy display
 //@ls rect "Highlight box" bx by bw bh
 //@ls point "Label" lx ly
 //@ls color "Accent" acr acg acb
@@ -39,7 +40,7 @@
 //@param4:bh 'Box height' 0.05 0.005 1 0.05 0.0005
 //@param5:lx 'Label X' 0.45 0 1 0.45 0.0005
 //@param6:ly 'Label Y' 0.125 0 1 0.125 0.0005
-//@param7:style 'Style' 0 0 4 0 1
+//@param7:style 'Style' 0 0 5 0 1
 //@param8:size 'Text size' 0.032 0.01 0.12 0.032 0.0005
 //@param9:thick 'Line width' 0.0028 0.0005 0.01 0.0028 0.0001
 //@param10:radius 'Box rounding' 0.25 0 1 0.25 0.001
@@ -80,8 +81,9 @@ prog > 0.001 ? (
   popk = anim == 3 ? max(ls_ease(prog, 4), 0.01) : 1;
   lw = max(thick*H, 1);
   x0 = bx*W; y0 = by*H; ww = bw*W; hh = bh*H; tcx = x0 + ww*0.5; tcy = y0 + hh*0.5;
-  showbox = style == 0 || style == 3;
-  showarrow = style == 0 || style == 1;
+  badge = style == 4 || style == 5;
+  showbox = style == 0 || style == 3 || style == 5;
+  showarrow = style == 0 || style == 1 || style == 5;
   showlabel = style != 3;
 
   dim > 0.001 ? (
@@ -97,7 +99,7 @@ prog > 0.001 ? (
   ls_font(font, tpx, 'B');
   gfx_str_measure(#ls_src, tw, th);
   padx = tpx*0.75; pady = tpx*0.35;
-  pw = style == 4 ? max(tw, th) + pady*2 : tw + padx*2; ph = th + pady*2;
+  pw = badge ? max(tw, th) + pady*2 : tw + padx*2; ph = th + pady*2;
   pcx = lx*W; pcy = ly*H;
 
   showarrow ? (
@@ -120,7 +122,7 @@ prog > 0.001 ? (
   );
 
   showlabel ? (
-    rp = style == 4 ? ph*0.5 : ph*0.5;
+    rp = ph*0.5;
     sdf_rrect(pcx - pw*0.5 + lw, pcy - ph*0.5 + lw*1.5, pw, ph, rp, lw*3, 2, 0, 0, 0, 0.35*op);
     sdf_rrect(pcx - pw*0.5, pcy - ph*0.5, pw, ph, rp, 0, 0, fcr, fcg, fcb, 0.92*op);
     sdf_rrect(pcx - pw*0.5, pcy - ph*0.5, pw, ph, rp, lw, 1, acr, acg, acb, op);

@@ -8,7 +8,7 @@
 //@ls help subsize Subtitle size relative to the title.
 //@ls help backdrop Darkening, color or gradient behind the text.
 //@ls help bkop Backdrop opacity.
-//@ls help font Font.
+//@ls help font Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux).
 //@ls help bold Bold title.
 //@ls help shadow Soft text shadow.
 //@ls help anim Fade, rise, zoom or typewriter (types the text over the fade-in).
@@ -22,7 +22,7 @@
 //@ls enum backdrop None|Dim picture|Solid color|Bottom gradient
 //@ls enum anim Fade|Rise|Zoom|Typewriter
 //@ls enum animsrc Item fades|Manual
-//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls enum font Clean sans|Modern sans|Geometric sans|Serif|Humanist sans|Mono|Heavy display
 //@ls toggle bold
 //@ls toggle shadow
 //@ls color "Title color" tcr tcg tcb

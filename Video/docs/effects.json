@@ -2338,7 +2338,7 @@
         },
         {
           "default": 0,
-          "help": "Shows the original on the left half for comparison. Turn off before rendering. 0 off, 1 on.",
+          "help": "Shows this effect's input on the left half for comparison (looks and effects before or after Color Grade show on both halves). Turn off before rendering. 0 off, 1 on.",
           "index": 27,
           "label": "Before/after split",
           "max": 1,
@@ -3604,7 +3604,7 @@
         },
         {
           "default": 0,
-          "help": "Blend smears; Additive glow brightens overlapping trails. Options: 0 Blend, 1 Additive glow.",
+          "help": "Blend smears every moving part; Additive glow keeps only the trails that are brighter than the picture, adding light where they cross. Options: 0 Blend, 1 Additive glow.",
           "index": 1,
           "label": "Mode",
           "max": 1,
@@ -3798,7 +3798,7 @@
       "category": "Look",
       "controls": [
         {
-          "default": 0.5,
+          "default": 0.75,
           "help": "Overall strength; keyframe it for hits.",
           "index": 0,
           "label": "Amount",
@@ -5072,19 +5072,19 @@
         },
         {
           "default": 0,
-          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "help": "Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display.",
           "index": 16,
           "label": "Font",
           "max": 6,
           "min": 0,
           "options": [
-            "Helvetica Neue",
-            "Avenir Next",
-            "Futura",
-            "Georgia",
-            "Gill Sans",
-            "Menlo",
-            "Impact"
+            "Clean sans",
+            "Modern sans",
+            "Geometric sans",
+            "Serif",
+            "Humanist sans",
+            "Mono",
+            "Heavy display"
           ],
           "toggle": false,
           "var": "font"
@@ -5142,7 +5142,7 @@
       ],
       "examples": [
         {
-          "notes": "Item name: \"Jane Doe | Drums\". Item fades 0.5 s.",
+          "notes": "Item name: \"Jane Doe | Director\". Item fades 0.5 s.",
           "set": {
             "align": 0,
             "style": 0
@@ -5170,7 +5170,7 @@
       "title": "Lower Third"
     },
     {
-      "about": "Rolling end credits or a sideways news-style crawl. Name the item with lines separated by \"|\"; a line like \"Drums: Larry Seyer\" becomes two columns. Set the duration to the item length.",
+      "about": "Rolling end credits or a sideways news-style crawl. Name the item with lines separated by \"|\"; a line like \"Camera: Sam Taylor\" becomes two columns. Set the duration to the item length.",
       "category": "Title",
       "controls": [
         {
@@ -5219,19 +5219,19 @@
         },
         {
           "default": 1,
-          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "help": "Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display.",
           "index": 4,
           "label": "Font",
           "max": 6,
           "min": 0,
           "options": [
-            "Helvetica Neue",
-            "Avenir Next",
-            "Futura",
-            "Georgia",
-            "Gill Sans",
-            "Menlo",
-            "Impact"
+            "Clean sans",
+            "Modern sans",
+            "Geometric sans",
+            "Serif",
+            "Humanist sans",
+            "Mono",
+            "Heavy display"
           ],
           "toggle": false,
           "var": "font"
@@ -5354,7 +5354,7 @@
       ],
       "examples": [
         {
-          "notes": "Item name: \"The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching\".",
+          "notes": "Item name: \"Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching\".",
           "set": {
             "dur": 12,
             "mode": 0
@@ -5367,7 +5367,7 @@
       "placement": "item",
       "text": "Line one | Role: Name | ... (item name)",
       "tips": [
-        "Separate lines with |. A line with a colon, like \"Drums: Larry\", becomes two columns.",
+        "Separate lines with |. A line with a colon, like \"Director: Jane Doe\", becomes two columns.",
         "The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect."
       ],
       "title": "Scrolling Credits"
@@ -5524,19 +5524,19 @@
         },
         {
           "default": 1,
-          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "help": "Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display.",
           "index": 14,
           "label": "Font",
           "max": 6,
           "min": 0,
           "options": [
-            "Helvetica Neue",
-            "Avenir Next",
-            "Futura",
-            "Georgia",
-            "Gill Sans",
-            "Menlo",
-            "Impact"
+            "Clean sans",
+            "Modern sans",
+            "Geometric sans",
+            "Serif",
+            "Humanist sans",
+            "Mono",
+            "Heavy display"
           ],
           "toggle": false,
           "var": "font"
@@ -5781,7 +5781,7 @@
       "title": "Blur or Pixelate Region"
     },
     {
-      "about": "Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill, in the style of the Larry Seyer Drums tutorials. The label text is the item name. Item fades animate it in and out.",
+      "about": "Labels a control in a screen recording: an outlined highlight box, an arrow and a label pill. The label text is the item name. Item fades animate it in and out.",
       "category": "Tutorial",
       "controls": [
         {
@@ -5846,17 +5846,18 @@
         },
         {
           "default": 0,
-          "help": "Which parts to draw. Numbered badge is a pill sized for a short number. Options: 0 Box + arrow + label, 1 Arrow + label, 2 Label only, 3 Box only, 4 Numbered badge.",
+          "help": "Which parts to draw. Badge only is a round pill sized for a short number; Box + arrow + badge points a numbered badge at the box. Options: 0 Box + arrow + label, 1 Arrow + label, 2 Label only, 3 Box only, 4 Badge only, 5 Box + arrow + badge.",
           "index": 6,
           "label": "Style",
-          "max": 4,
+          "max": 5,
           "min": 0,
           "options": [
             "Box + arrow + label",
             "Arrow + label",
             "Label only",
             "Box only",
-            "Numbered badge"
+            "Badge only",
+            "Box + arrow + badge"
           ],
           "toggle": false,
           "var": "style"
@@ -5993,19 +5994,19 @@
         },
         {
           "default": 0,
-          "help": "Font. Options: 0 Helvetica Neue, 1 Avenir Next, 2 Futura, 3 Georgia, 4 Gill Sans, 5 Menlo, 6 Impact.",
+          "help": "Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux). Options: 0 Clean sans, 1 Modern sans, 2 Geometric sans, 3 Serif, 4 Humanist sans, 5 Mono, 6 Heavy display.",
           "index": 20,
           "label": "Font",
           "max": 6,
           "min": 0,
           "options": [
-            "Helvetica Neue",
-            "Avenir Next",
-            "Futura",
-            "Georgia",
-            "Gill Sans",
-            "Menlo",
-            "Impact"
+            "Clean sans",
+            "Modern sans",
+            "Geometric sans",
+            "Serif",
+            "Humanist sans",
+            "Mono",
+            "Heavy display"
           ],
           "toggle": false,
           "var": "font"
@@ -6063,6 +6064,19 @@
             "ly": 0.125
           },
           "title": "Point at a control"
+        },
+        {
+          "notes": "Item name: \"1\". One callout item per step, numbered 1, 2, 3.",
+          "set": {
+            "bh": 0.05,
+            "bw": 0.18,
+            "bx": 0.08,
+            "by": 0.1,
+            "lx": 0.32,
+            "ly": 0.125,
+            "style": 5
+          },
+          "title": "Numbered step"
         }
       ],
       "file": "callout.eel",
@@ -6071,7 +6085,7 @@
       "text": "Label text (item name)",
       "tips": [
         "Use the panel's + Callout button. The label text is the item name.",
-        "The default colors match the Larry Seyer Drums tutorials (mint outline, dark pill).",
+        "The default colors are a mint outline and a dark pill; change them under Accent, Label fill and Text.",
         "If the item's fades already make a crossfade, set Animate with to Manual and keyframe Manual amount.",
         "The arrow runs from the label toward the box from any direction, so the label can sit on any side."
       ],
@@ -6810,7 +6824,7 @@
       "controls": [
         {
           "default": 0,
-          "help": "Turn on (keyframe it) to hold the current picture. 0 off, 1 on.",
+          "help": "Turn on (keyframe it) to hold the current picture. Ticked during playback it holds about a second later (REAPER prepares frames ahead); a keyframe holds the exact frame. 0 off, 1 on.",
           "index": 0,
           "label": "Freeze",
           "max": 1,
@@ -6846,5 +6860,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.1.7"
+  "version": "1.1.8"
 }

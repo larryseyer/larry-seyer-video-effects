@@ -2,20 +2,20 @@
 //@ls category Title
 //@ls title Scrolling Credits
 //@ls where item
-//@ls about Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Drums: Larry Seyer" becomes two columns. Set the duration to the item length.
+//@ls about Rolling end credits or a sideways news-style crawl. Name the item with lines separated by "|"; a line like "Camera: Sam Taylor" becomes two columns. Set the duration to the item length.
 //@ls help mode Roll up the screen, or crawl sideways along the bottom.
 //@ls help dur Seconds for the whole roll; set it to the item length.
 //@ls help size Text height, fraction of frame height.
 //@ls help spacing Line spacing.
-//@ls help font Font.
+//@ls help font Lettering style. Each style uses a font that comes with your computer (macOS, Windows or Linux).
 //@ls help backdrop Darkening or color behind the text.
 //@ls help bkop Backdrop opacity.
-//@ls example End credits :: mode=0 dur=12 :: Item name: "The Larry Seyer Show | Guitar: Larry Seyer | Keys: Larry Seyer | Thanks for watching".
-//@ls tip Separate lines with |. A line with a colon, like "Drums: Larry", becomes two columns.
+//@ls example End credits :: mode=0 dur=12 :: Item name: "Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching".
+//@ls tip Separate lines with |. A line with a colon, like "Director: Jane Doe", becomes two columns.
 //@ls tip The roll starts with the text just below the frame and ends with it just above. Allow about 1.5 s per line. Item fades have no effect.
 //@ls text "Line one | Role: Name | ... (item name)"
 //@ls enum mode Roll up|Crawl left
-//@ls enum font Helvetica Neue|Avenir Next|Futura|Georgia|Gill Sans|Menlo|Impact
+//@ls enum font Clean sans|Modern sans|Geometric sans|Serif|Humanist sans|Mono|Heavy display
 //@ls enum backdrop None|Dim picture|Solid color
 //@ls color "Text" tcr tcg tcb
 //@ls color "Role text" rcr rcg rcb
@@ -68,7 +68,7 @@ ls_draw_base();
 backdrop == 1 ? ( gfx_set(0, 0, 0, bkop); gfx_fillrect(0, 0, W, H); )
 : backdrop == 2 ? ( gfx_set(bkr, bkg, bkb, bkop); gfx_fillrect(0, 0, W, H); );
 #ls_src = ""; input_get_name(-1, #ls_src);
-strlen(#ls_src) == 0 ? #ls_src = "The Larry Seyer Show | Music: Larry Seyer | Video: Larry Seyer | Thanks for watching";
+strlen(#ls_src) == 0 ? #ls_src = "Our Show | Director: Jane Doe | Camera: Sam Taylor | Thanks for watching";
 get_host_placement(chainpos, hostflags);
 tnow = (hostflags & 1) ? time : project_time;
 px = size*H; lh = px*spacing;

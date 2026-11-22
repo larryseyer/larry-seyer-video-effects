@@ -3,7 +3,7 @@
 //@ls title Freeze & Stutter
 //@ls where both
 //@ls about Freeze holds the picture from the moment it switches on (automate it for freeze frames). Stutter holds every frame for several frames for a choppy, stop-motion feel.
-//@ls help freeze Turn on (keyframe it) to hold the current picture.
+//@ls help freeze Turn on (keyframe it) to hold the current picture. Ticked during playback it holds about a second later (REAPER prepares frames ahead); a keyframe holds the exact frame.
 //@ls help stutter Holds each frame for this many frames (1 = off).
 //@ls example Freeze frame :: freeze=1 :: Keyframe Freeze from 0 to 1 at the moment to hold, and back to 0 to release.
 //@ls toggle freeze
