@@ -11,13 +11,14 @@
 //@gmem=LSVFX_Multicam
 
 // The switcher reads camid and tag from this effect through input_info. On a track with no video item at this
-// moment, input 0 is the layer behind (input_track(0) == 0): show black instead of another camera's picture.
+// moment, input 0 is the layer behind (input_track(0) == 0): show black instead of another camera's picture. A clip
+// of another shape (a portrait phone clip) is fitted with black bars, as REAPER shows it without this effect.
 colorspace = 'RGBA';
 own = input_track(0) != 0 && input_info(0, ow, oh);
 frame_no = floor(project_time*framerate + 0.5) + 1;
 id = min(max(floor(camid + 0.5), 1), 9);
 gmem[40 + id] = own ? frame_no : -frame_no;
-own ? gfx_blit(0, 0) : (
+own ? gfx_blit(0, 1) : (
   input_info(0, ow, oh) ? ( project_w = ow; project_h = oh; );
   gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, project_w, project_h);
 );

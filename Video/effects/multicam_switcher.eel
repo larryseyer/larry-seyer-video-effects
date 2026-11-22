@@ -19,7 +19,7 @@
 //@ls example Switcher view while cutting :: show=1
 //@ls example 2x2 multiview recording :: source=1
 //@ls tip Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
-//@ls tip Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.
+//@ls tip Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.
 //@ls tip Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
 //@ls enum show Program|Switcher
 //@ls enum trans Cut|Cross dissolve|Dip to black|Dip to white|Additive dissolve|Blur dissolve|Luma dissolve|Push|Slide in|Slide out|Split open|Squeeze

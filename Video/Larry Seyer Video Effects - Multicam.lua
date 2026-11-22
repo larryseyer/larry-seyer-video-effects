@@ -290,6 +290,7 @@ local function frame()
   step_sync()
   local sw = MC.find()
   if not sw then draw_setup() return end
+  MC.follow_moved_cuts(sw)
   local click = MC.poll_click()
   if click and click.cam >= 1 then MC.switch(sw, click.cam, click.shift, click.time) end
   local live = MC.live_at(sw, cursor_time())
@@ -319,7 +320,8 @@ local function loop()
   ImGui.PushFont(ctx, FONT, 14)
   local nc, nv = W.push_theme(ctx)
   ImGui.SetNextWindowSize(ctx, 560, 420, ImGui.Cond_FirstUseEver)
-  local visible, open = ImGui.Begin(ctx, "Multicam - Larry Seyer Video Effects", true)
+  -- NoNavInputs: the arrow keys jump between cuts and must not also move the keyboard focus onto a button.
+  local visible, open = ImGui.Begin(ctx, "Multicam - Larry Seyer Video Effects", true, ImGui.WindowFlags_NoNavInputs)
   if visible then
     frame()
     ImGui.End(ctx)

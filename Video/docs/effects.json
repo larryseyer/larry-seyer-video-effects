@@ -820,7 +820,7 @@
       "text": false,
       "tips": [
         "Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.",
-        "Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.",
+        "Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.",
         "Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut."
       ],
       "title": "Multicam Switcher"
@@ -6870,5 +6870,5 @@
       "title": "Freeze & Stutter"
     }
   ],
-  "version": "1.1.5"
+  "version": "1.1.6"
 }

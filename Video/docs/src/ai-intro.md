@@ -165,7 +165,9 @@ LS.multicam_cut(mc, 24.0, 1, "Push", 10, 0)                       -- push to the
 
 Each camera track gets a `LS Transform: Multicam Camera` effect (its `camid` is the camera number; keep it last on
 the track). Cuts are square points on the `LS Transform: Multicam Switcher` envelopes `cam`, `trans`, `frames` and
-`dir` at the same time. A camera with no video at a moment shows black.
+`dir` at the same time; to move a cut, move all four (the Multicam window moves the other three to a Camera point
+dragged on its own). A camera with no video at a moment shows black, and a clip of another shape is fitted with black
+bars.
 
 `LS.multicam_sync(mc[, reference_track])` lines the cameras up when they were started at different times: every
 clip on every camera track moves to where its audio matches the reference track (default camera 1's track; any

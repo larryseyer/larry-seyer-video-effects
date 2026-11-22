@@ -1,6 +1,6 @@
 # Larry Seyer Video Effects: reference for AI agents
 
-Version 1.1.5. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
+Version 1.1.6. This file is generated from the effect files by `tools/build_docs.lua`; edit those, not this.
 
 Larry Seyer Video Effects adds 43 video effects to REAPER. Every effect is a REAPER **Video Processor** preset named
 `LS <Category>: <Title>` (for example `LS Color: Color Grade`). They work in any REAPER project and render
@@ -165,7 +165,9 @@ LS.multicam_cut(mc, 24.0, 1, "Push", 10, 0)                       -- push to the
 
 Each camera track gets a `LS Transform: Multicam Camera` effect (its `camid` is the camera number; keep it last on
 the track). Cuts are square points on the `LS Transform: Multicam Switcher` envelopes `cam`, `trans`, `frames` and
-`dir` at the same time. A camera with no video at a moment shows black.
+`dir` at the same time; to move a cut, move all four (the Multicam window moves the other three to a Camera point
+dragged on its own). A camera with no video at a moment shows black, and a clip of another shape is fitted with black
+bars.
 
 `LS.multicam_sync(mc[, reference_track])` lines the cameras up when they were started at different times: every
 clip on every camera track moves to where its audio matches the reference track (default camera 1's track; any
@@ -375,7 +377,7 @@ Examples:
 - 2x2 multiview recording: `LS.add_to_track(track, "LS Transform: Multicam Switcher", { source = 1 })`
 
 - Run the Larry Seyer Video Effects - Multicam action: select your camera tracks and click Set up, then play and press 1-9 or click a camera in the video window.
-- Edit cuts on the Camera envelope: drag a point to move a cut, change its value to change the shot.
+- Edit cuts on the Camera envelope: drag a point to move a cut (the Multicam window moves its transition points with it), change its value to change the shot.
 - Transitions play and render in order; when you jump the play cursor into one, it shows as a straight cut.
 
 ### LS Transform: Multiview Camera Select

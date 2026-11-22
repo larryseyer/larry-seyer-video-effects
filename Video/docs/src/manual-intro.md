@@ -57,7 +57,7 @@ want, or click that camera in the Video window.
    underneath with its track name, and the camera on air outlined in red.
 4. Play. Press **1-9**, click a camera button in the window, or click a camera in the Video window. Each switch is
    a cut at that moment. Playing a section again and switching replaces its earlier cuts from your first switch
-   to your last. **Space** plays and stops.
+   to your last, and any cut in the half second before your first switch. **Space** plays and stops.
 5. Stopped, a number (or a click) changes the camera of the shot at the edit cursor. **Left/Right arrows** jump
    between cuts, **Delete** removes the cut at the cursor.
 6. **Switch with** sets how switches happen: **Cut**, or a **Transition** (cross dissolve, dip to black or white,
@@ -67,8 +67,9 @@ want, or click that camera in the Video window.
 7. Close the window: the Video window goes back to the program, which is what renders.
 
 The cuts are points on the Multicam Switcher's **Camera** envelope (with matching points on Transition,
-Transition frames and Direction), so you can also drag them in the arrange view. Transitions play and render in
-order; jumping the play cursor into one shows a straight cut.
+Transition frames and Direction), so you can also drag them in the arrange view. Drag the Camera point: while the
+Multicam window is open, or the next time you open it, the cut's other points move to it. Transitions play and
+render in order; jumping the play cursor into one shows a straight cut.
 
 - **Number keys anywhere in REAPER:** the keys work while the Multicam window has focus. After clicking in the
   Video window, focus is there; to switch from the keyboard then, assign *Larry Seyer Video Effects - Multicam
@@ -76,6 +77,7 @@ order; jumping the play cursor into one shows a straight cut.
   *(Shift)* versions to Shift+number.
 - **Color matching:** put color effects on a camera track before its Multicam Camera effect; that effect must
   stay last (the Multicam window moves it back when it opens).
+- **Portrait clips** (a phone held upright) show with black bars at the sides, as REAPER shows them on their own.
 - **A camera that starts late or stops early** shows black (and *no video* in switcher view) where its track has
   no video.
 - **One multiview recording** (four or nine cameras in one picture): put it on the track behind the switcher and

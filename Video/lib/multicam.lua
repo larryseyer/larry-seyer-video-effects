@@ -214,6 +214,53 @@ local function sort_all(sw)
   end
 end
 
+-- Points as { t, v, shape, tension } in time order.
+local function points(e)
+  local out = {}
+  for k = 0, reaper.CountEnvelopePoints(e) - 1 do
+    local _, t, v, shape, tension = reaper.GetEnvelopePoint(e, k)
+    out[#out + 1] = { t = t, v = v, shape = shape, tension = tension }
+  end
+  table.sort(out, function(a, b) return a.t < b.t end)
+  return out
+end
+
+-- The points of `list` with no point of `other` within `tol` seconds (both in time order).
+local function unmatched(list, other, tol)
+  local out, j = {}, 1
+  for _, p in ipairs(list) do
+    while other[j] and other[j].t < p.t - tol do j = j + 1 end
+    if not (other[j] and other[j].t <= p.t + tol) then out[#out + 1] = p end
+  end
+  return out
+end
+
+-- Moves each cut's Transition, Transition frames and Direction points to its Camera point after the Camera point
+-- was dragged on its own in the arrange view (paired in time order); drops them when their Camera point was
+-- deleted. Not an undo step of its own: Undo goes back to before the drag, where the points still match.
+-- Returns true when it changed anything.
+function M.follow_moved_cuts(sw)
+  local ce = env(sw, P_CAM)
+  if not ce then return false end
+  local cams = points(ce)
+  local _, tol = frame_time(0)
+  local changed = false
+  for _, param in ipairs({ P_TRANS, P_FRAMES, P_DIR }) do
+    local e = env(sw, param)
+    if e then
+      local pts = points(e)
+      local lost, dest = unmatched(pts, cams, tol), unmatched(cams, pts, tol)
+      for i, p in ipairs(lost) do
+        reaper.DeleteEnvelopePointRange(e, p.t - 1e-6, p.t + 1e-6)
+        if dest[i] then reaper.InsertEnvelopePoint(e, dest[i].t, p.v, p.shape, p.tension, false, true) end
+        changed = true
+      end
+      if #lost > 0 then reaper.Envelope_SortPoints(e) end
+    end
+  end
+  return changed
+end
+
 -- Writes a cut at project time t (for scripts and agents): camera, transition style (0 = cut), frames, direction.
 function M.add_cut(sw, t, cam, style, frames, dir)
   local ft, half = frame_time(t)
@@ -231,6 +278,10 @@ function M.style_for(s, other)
   return 0
 end
 
+-- The first switch of a pass also replaces cuts this many seconds before it: an earlier take of the same switch,
+-- pressed a little sooner, would otherwise stay on as a flash of another camera.
+local PASS_LEAD = 0.5
+
 -- Switches to camera `cam`. While playing: cuts at time `t` (default: play position). Cutting again in the same
 -- pass replaces the earlier cuts between your previous switch and this one, so you can re-cut over a section.
 -- While stopped: changes the camera of the shot at time `t` (default: edit cursor).
@@ -246,6 +297,8 @@ function M.switch(sw, cam, other, t)
     local rate = reaper.Master_GetPlayRate(0)
     if last_t and last_clock and ft > last_t and math.abs((ft - last_t) - (now - last_clock)*rate) < 0.35 then
       clear_range(sw, last_t + half, ft + half)
+    elseif ft > half then
+      clear_range(sw, math.max(ft - PASS_LEAD, half), ft)   -- keeps the first shot's point at 0
     end
     reaper.SetExtState(EXT, "pass_t", tostring(ft), false)
     reaper.SetExtState(EXT, "pass_clock", tostring(now), false)
